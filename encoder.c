@@ -71,11 +71,11 @@
 	"ENC_EXEC2CASE_%=: "
 		
 	#if ENCODER_MOSTLY_COUNTING_DIRECTION == 0 // CW
-		"sbiw	r24, 0x01 \n\t"
+		"sbiw	r24, 0x01 \n\t"                     /* 2 */
 	#else // CCW
-		"adiw	r24, 0x01 \n\t"
+		"adiw	r24, 0x01 \n\t"                     /* 2 */
 	#endif
-		"rjmp ENC_EXIT_%= \n\t"
+		"rjmp ENC_EXIT_%= \n\t"                     /* 2 */
 		
 		: /* output operands */
 		
@@ -125,14 +125,14 @@
 		"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
 		"rjmp	ENC_EXEC2CASE_%= \n\t"              /* 2 */
 		"adiw	r24, 0x01 \n\t"                     /* 2 */
-		"adc	r26, r1 \n\t"
-		"adc	r27, r1 \n\t"
+		"adc	r26, r1 \n\t"                       /* 1 */
+		"adc	r27, r1 \n\t"                       /* 1 */
 	#else // CCW
 		"sbic	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
 		"rjmp	ENC_EXEC2CASE_%= \n\t"              /* 2 */
 		"sbiw	r24, 0x01 \n\t"                     /* 2 */
-		"sbc	r26, r1 \n\t"
-		"sbc	r27, r1 \n\t"
+		"sbc	r26, r1 \n\t"                       /* 1 */
+		"sbc	r27, r1 \n\t"                       /* 1 */
 	#endif
 		
 		"ENC_EXIT_%=: "
@@ -155,15 +155,15 @@
 		"ENC_EXEC2CASE_%=: "
 		
 	#if ENCODER_MOSTLY_COUNTING_DIRECTION == 0 // CW
-		"sbiw	r24, 0x01 \n\t"
-		"sbc	r26, r1 \n\t"
-		"sbc	r27, r1 \n\t"
+		"sbiw	r24, 0x01 \n\t"                     /* 2 */
+		"sbc	r26, r1 \n\t"                       /* 1 */
+		"sbc	r27, r1 \n\t"                       /* 1 */
 	#else // CCW
-		"adiw	r24, 0x01 \n\t"
-		"adc	r26, r1 \n\t"
-		"adc	r27, r1 \n\t"
+		"adiw	r24, 0x01 \n\t"                     /* 2 */
+		"adc	r26, r1 \n\t"                       /* 1 */
+		"adc	r27, r1 \n\t"                       /* 1 */
 	#endif
-		"rjmp ENC_EXIT_%= \n\t"
+		"rjmp ENC_EXIT_%= \n\t"                     /* 2 */
 		
 		: /* output operands */
 		
