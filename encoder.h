@@ -4,7 +4,6 @@
 //#define ENCODER_32BIT_ACCUMULATOR
 //#define ENCODER_REVERSE_DIRECTION // reverse counting direction
 
-#define ENCODER_MOSTLY_COUNTING_DIRECTION 0 // 0 for CW, 1 for CCW // interrupt is executed 4 cycles faster for choosen direction
 
 //#define INTERRUPT SOURCE ????
 //#define

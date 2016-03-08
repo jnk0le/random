@@ -46,37 +46,21 @@
 		"lds   r24, EncoderSteps \n\t"		        /* 2 */
 		"lds   r25, EncoderSteps+1 \n\t"            /* 2 */
 		 
-	#if ENCODER_MOSTLY_COUNTING_DIRECTION == 0 // CW
 		"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-		"rjmp	ENC_EXEC2CASE_%= \n\t"              /* 2 */
+		"sbiw	r24, 0x02 \n\t"                     /* 2 */
 		"adiw	r24, 0x01 \n\t"                     /* 2 */
-	#else // CCW
-		"sbic	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-		"rjmp	ENC_EXEC2CASE_%= \n\t"              /* 2 */
-		"sbiw	r24, 0x01 \n\t"                     /* 2 */
-	#endif
-	
-	"ENC_EXIT_%=: "
-		"sts   EncoderSteps+1, r25\n\t"            /* 2 */
-		"sts   EncoderSteps, r24\n\t"              /* 2 */
+
+		"sts   EncoderSteps+1, r25\n\t"             /* 2 */
+		"sts   EncoderSteps, r24\n\t"               /* 2 */
 		
-		"pop   r25 \n\t"                           /* 2 */
-		"pop   r24 \n\t"                           /* 2 */
+		"pop   r25 \n\t"                            /* 2 */
+		"pop   r24 \n\t"                            /* 2 */
 		
-		"out   __SREG__ , r0 \n\t"                 /* 1 */
-		"pop   r0 \n\t"                            /* 2 */
+		"out   __SREG__ , r0 \n\t"                  /* 1 */
+		"pop   r0 \n\t"                             /* 2 */
 
 		"reti \n\t"                            /* 4 ISR return */
 	
-	"ENC_EXEC2CASE_%=: "
-		
-	#if ENCODER_MOSTLY_COUNTING_DIRECTION == 0 // CW
-		"sbiw	r24, 0x01 \n\t"                     /* 2 */
-	#else // CCW
-		"adiw	r24, 0x01 \n\t"                     /* 2 */
-	#endif
-		"rjmp ENC_EXIT_%= \n\t"                     /* 2 */
-		
 		: /* output operands */
 		
 		: /* input operands */
@@ -110,7 +94,7 @@
 		"in    r0, __SREG__ \n\t"                   /* 1 */
 		
 		"push  r1 \n\t"                            /* 2 */
-		"clr   r1 \n\t"                            /* 2 */
+		"clr   r1 \n\t"                            /* 1 */
 		"push  r24 \n\t"                            /* 2 */
 		"push  r25 \n\t"                            /* 2 */
 		"push  r26 \n\t"                            /* 2 */
@@ -121,21 +105,13 @@
 		"lds   r26, EncoderSteps+2 \n\t"            /* 2 */
 		"lds   r27, EncoderSteps+3 \n\t"            /* 2 */
 		
-	#if ENCODER_MOSTLY_COUNTING_DIRECTION == 0 // CW
 		"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
 		"rjmp	ENC_EXEC2CASE_%= \n\t"              /* 2 */
 		"adiw	r24, 0x01 \n\t"                     /* 2 */
 		"adc	r26, r1 \n\t"                       /* 1 */
 		"adc	r27, r1 \n\t"                       /* 1 */
-	#else // CCW
-		"sbic	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-		"rjmp	ENC_EXEC2CASE_%= \n\t"              /* 2 */
-		"sbiw	r24, 0x01 \n\t"                     /* 2 */
-		"sbc	r26, r1 \n\t"                       /* 1 */
-		"sbc	r27, r1 \n\t"                       /* 1 */
-	#endif
-		
-		"ENC_EXIT_%=: "
+
+	"ENC_EXIT_%=: "
 		"sts   EncoderSteps+3, r27\n\t"            /* 2 */
 		"sts   EncoderSteps+2, r26\n\t"            /* 2 */
 		"sts   EncoderSteps+1, r25\n\t"            /* 2 */
@@ -152,17 +128,11 @@
 
 		"reti \n\t"                            /* 4 ISR return */
 		
-		"ENC_EXEC2CASE_%=: "
-		
-	#if ENCODER_MOSTLY_COUNTING_DIRECTION == 0 // CW
+	"ENC_EXEC2CASE_%=: "
 		"sbiw	r24, 0x01 \n\t"                     /* 2 */
 		"sbc	r26, r1 \n\t"                       /* 1 */
 		"sbc	r27, r1 \n\t"                       /* 1 */
-	#else // CCW
-		"adiw	r24, 0x01 \n\t"                     /* 2 */
-		"adc	r26, r1 \n\t"                       /* 1 */
-		"adc	r27, r1 \n\t"                       /* 1 */
-	#endif
+
 		"rjmp ENC_EXIT_%= \n\t"                     /* 2 */
 		
 		: /* output operands */
