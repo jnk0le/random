@@ -6,4 +6,4 @@ This in only example code for full step and glith free quadrature encoders, thus
 The real allowable speed is slower due need of reading steps counter before it wrap-around.
 
 #notes
-- If encoder is standstill at trigger edge it will count only up/down in one direction in case of bouncing around edge point (not contacts).
+- If encoder is standstill at trigger edge it will count only up/down in one direction in case of shifting around edge point.
