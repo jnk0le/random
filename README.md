@@ -3,8 +3,8 @@ This in only example code for full step and glith free quadrature encoders, thus
 Interrupt execution time (worst case):
 - 16 bit accumulator - 35 cycles (max 571k steps/s @20MHz)
 - 16 bit accumulator in GPIOR - 31 cycles (max 645k steps/s @20MHz)
-- 32 bit accumulator - 56 cycles (max 357k steps/s @20MHz)
-- 32 bit accumulator in GPIOR - 50 cycles (max 400k steps/s @20MHz)
+- 32 bit accumulator - 55 cycles (max 363k steps/s @20MHz)
+- 32 bit accumulator in GPIOR - 49 cycles (max 408k steps/s @20MHz)
 
 The real allowable speed is slower due need of reading steps counter before it wrap-around.
 

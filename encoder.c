@@ -243,6 +243,7 @@
 		
 			"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
 			"rjmp	ENC_EXEC2CASE_%= \n\t"              /* 2 */
+			
 			"adiw	r24, 0x01 \n\t"                     /* 2 */
 		#ifdef ENCODER_GPIOR_STORAGE
 			"out  %M[gpior0], r24 \n\t"                 /* 1 */
@@ -252,6 +253,18 @@
 			"clr	r24 \n\t"                       /* 1 */
 			"adc	r26, r24 \n\t"                       /* 1 */
 			"adc	r27, r24 \n\t"                       /* 1 */
+			"rjmp ENC_EXIT_%= \n\t"                     /* 2 */
+
+		"ENC_EXEC2CASE_%=: "
+			"sbiw	r24, 0x01 \n\t"                     /* 2 */
+		#ifdef ENCODER_GPIOR_STORAGE
+			"out  %M[gpior0], r24 \n\t"                 /* 1 */
+		#else
+			"sts   EncoderSteps, r24\n\t"              /* 2 */
+		#endif
+			"clr	r24 \n\t"                       /* 1 */
+			"sbc	r26, r24 \n\t"                       /* 1 */
+			"sbc	r27, r24 \n\t"                       /* 1 */
 
 		"ENC_EXIT_%=: "
 		#ifdef ENCODER_GPIOR_STORAGE
@@ -275,19 +288,6 @@
 			"pop   r0 \n\t"                            /* 2 */
 
 			"reti \n\t"                            /* 4 ISR return */
-		
-		"ENC_EXEC2CASE_%=: "
-			"sbiw	r24, 0x01 \n\t"                     /* 2 */
-		#ifdef ENCODER_GPIOR_STORAGE
-			"out  %M[gpior0], r24 \n\t"                 /* 1 */
-		#else
-			"sts   EncoderSteps, r24\n\t"              /* 2 */
-		#endif
-			"clr	r24 \n\t"                       /* 1 */
-			"sbc	r26, r24 \n\t"                       /* 1 */
-			"sbc	r27, r24 \n\t"                       /* 1 */
-
-			"rjmp ENC_EXIT_%= \n\t"                     /* 2 */
 		
 			: /* output operands */
 		
