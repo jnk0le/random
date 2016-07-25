@@ -25,12 +25,6 @@
 	#define ___XPIN(x) (PORT ## x)
 #endif
 
-#ifdef ENCODER_GPIOR_STORAGE
-	#define ENC_ATTRIBUTE __attribute__ ((naked))
-#else
-	#define ENC_ATTRIBUTE
-#endif
-
 #ifdef ENCODER_32BIT_ACCUMULATOR
 	#define enc_step_t int32_t
 #else
@@ -39,7 +33,7 @@
 
 	void encoder_init(void);
 
-	enc_step_t EncoderReadDiff(void) ENC_ATTRIBUTE; // clears counter after reading
-	enc_step_t EncoderRead(void) ENC_ATTRIBUTE;
+	enc_step_t EncoderReadDiff(void); // clears counter after reading
+	enc_step_t EncoderRead(void);
 
 #endif /* ENCODER_H_ */
