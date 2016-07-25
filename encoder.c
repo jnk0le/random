@@ -50,25 +50,32 @@
 		asm volatile("\n\t"                      /* 4 ISR entry */
 		
 			"push  r0 \n\t"                             /* 2 */
-			"in    r0, __SREG__ \n\t"                   /* 1 */
+			//"in    r0, __SREG__ \n\t"                   /* 1 */
 		
-			"push  r24 \n\t"                            /* 2 */
-			"push  r25 \n\t"                            /* 2 */
+			"push  r28 \n\t"                            /* 2 */
+			"push  r29 \n\t"                            /* 2 */
 		
-			"lds   r24, EncoderSteps \n\t"		        /* 2 */
-			"lds   r25, EncoderSteps+1 \n\t"            /* 2 */
+			"lds   r28, EncoderSteps \n\t"		        /* 2 */
+			"lds   r29, EncoderSteps+1 \n\t"            /* 2 */
 		
+			// no SREG affected, weird but works
 			"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-			"sbiw	r24, 0x02 \n\t"                     /* 2 */
-			"adiw	r24, 0x01 \n\t"                     /* 2 */
+			"ld 	r0, -Y \n\t"                     /* 2 */
+			
+			"sbic	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
+			"ld 	r0, Y+ \n\t"                      /* 2 */
+												
+			//"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
+			//"sbiw	r28, 0x02 \n\t"                     /* 2 */
+			//"adiw	r28, 0x01 \n\t"                     /* 2 */
 
-			"sts   EncoderSteps+1, r25\n\t"             /* 2 */
-			"sts   EncoderSteps, r24\n\t"               /* 2 */
+			"sts   EncoderSteps+1, r29 \n\t"             /* 2 */
+			"sts   EncoderSteps, r28 \n\t"               /* 2 */
 		
-			"pop   r25 \n\t"                            /* 2 */
-			"pop   r24 \n\t"                            /* 2 */
+			"pop   r29 \n\t"                            /* 2 */
+			"pop   r28 \n\t"                            /* 2 */
 		
-			"out   __SREG__ , r0 \n\t"                  /* 1 */
+			//"out   __SREG__ , r0 \n\t"                  /* 1 */
 			"pop   r0 \n\t"                             /* 2 */
 
 			"reti \n\t"                            /* 4 ISR return */
@@ -76,8 +83,6 @@
 			: /* output operands */
 		
 			: /* input operands */
-			[gpior1]   "M"    (_SFR_IO_ADDR(GPIOR1)),
-			[gpior2]   "M"    (_SFR_IO_ADDR(GPIOR2)),
 			[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
 			[Input_Pin]        "M"    (ENCODER_CHANNELB_PIN)
 			/* no clobbers */
@@ -141,9 +146,6 @@
 			: /* output operands */
 		
 			: /* input operands */
-			[gpior0]   "M"    (_SFR_IO_ADDR(GPIOR0)),
-			[gpior1]   "M"    (_SFR_IO_ADDR(GPIOR1)),
-			[gpior2]   "M"    (_SFR_IO_ADDR(GPIOR2)),
 			[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
 			[Input_Pin]        "M"    (ENCODER_CHANNELB_PIN)
 			/* no clobbers */
