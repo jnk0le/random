@@ -49,34 +49,37 @@
 	{
 		asm volatile("\n\t"                      /* 4 ISR entry */
 		
-			"push  r0 \n\t"                             /* 2 */
-			//"in    r0, __SREG__ \n\t"                   /* 1 */
-		
+			"push  r16 \n\t"                             /* 2 */
 			"push  r28 \n\t"                            /* 2 */
 			"push  r29 \n\t"                            /* 2 */
 		
 			"lds   r28, EncoderSteps \n\t"		        /* 2 */
 			"lds   r29, EncoderSteps+1 \n\t"            /* 2 */
 		
+		#if defined(__AVR_ATtiny2313__)||defined(__AVR_ATtiny2313A__)
+			
+			"in    r16, __SREG__ \n\t"                   /* 1 */
+			
+			"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
+			"sbiw	r28, 0x02 \n\t"                     /* 2 */
+			"adiw	r28, 0x01 \n\t"                     /* 2 */
+			
+			"out   __SREG__ , r16 \n\t"                  /* 1 */
+		#else
 			// no SREG affected, weird but works
 			"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
 			"ld 	r0, -Y \n\t"                     /* 2 */
-			
+		
 			"sbic	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
 			"ld 	r0, Y+ \n\t"                      /* 2 */
-												
-			//"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-			//"sbiw	r28, 0x02 \n\t"                     /* 2 */
-			//"adiw	r28, 0x01 \n\t"                     /* 2 */
-
+		#endif
+		
 			"sts   EncoderSteps+1, r29 \n\t"             /* 2 */
 			"sts   EncoderSteps, r28 \n\t"               /* 2 */
 		
 			"pop   r29 \n\t"                            /* 2 */
 			"pop   r28 \n\t"                            /* 2 */
-		
-			//"out   __SREG__ , r0 \n\t"                  /* 1 */
-			"pop   r0 \n\t"                             /* 2 */
+			"pop   r16 \n\t"                             /* 2 */
 
 			"reti \n\t"                            /* 4 ISR return */
 		
@@ -84,7 +87,7 @@
 		
 			: /* input operands */
 			[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
-			[Input_Pin]        "M"    (ENCODER_CHANNELB_PIN)
+			[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
 			/* no clobbers */
 		);
 	}
@@ -147,7 +150,7 @@
 		
 			: /* input operands */
 			[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
-			[Input_Pin]        "M"    (ENCODER_CHANNELB_PIN)
+			[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
 			/* no clobbers */
 		);
 		
@@ -156,7 +159,7 @@
 	
 //ISR prototype
 
-	/*ISR(INT1_vect)
+	/*ISR(INTn_vect)
 	{
 		register int tmp = EncoderSteps;
 		

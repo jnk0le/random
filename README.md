@@ -8,4 +8,4 @@ The real allowable speed is slower due need of reading steps counter before it w
 
 #notes
 - If encoder is standstill at trigger edge it will count only up/down in one direction in case of shifting around edge point. (on todo list)
-- ISR overhead can be further reduced if step counter is stored in GPIORs or in globally reserved lower registers
+- ISR overhead can be further reduced if step counter is stored in unused GPIORs or in globally reserved lower registers
