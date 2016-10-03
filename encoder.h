@@ -1,8 +1,6 @@
 #ifndef ENCODER_H_
 #define ENCODER_H_
 
-//#define ENCODER_GPIOR_STORAGE // save couple of cpu cycles on loading/storing step counter to GPIOR instead of SRAM 
-
 //#define ENCODER_32BIT_ACCUMULATOR
 //#define ENCODER_REVERSE_DIRECTION // reverse counting direction
 
