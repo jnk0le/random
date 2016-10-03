@@ -68,10 +68,10 @@
 		#else
 			// no SREG affected, weird but works
 			"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-			"ld 	r0, -Y \n\t"                     /* 2 */
+			"ld 	r16, -Y \n\t"                     /* 2 */
 		
 			"sbic	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-			"ld 	r0, Y+ \n\t"                      /* 2 */
+			"ld 	r16, Y+ \n\t"                      /* 2 */
 		#endif
 		
 			"sts   EncoderSteps+1, r29 \n\t"             /* 2 */
@@ -98,8 +98,8 @@
 	{
 		asm volatile("\n\t"                      /* 4 ISR entry */
 		
-			"push  r0 \n\t"                             /* 2 */
-			"in    r0, __SREG__ \n\t"                   /* 1 */
+			"push  r16 \n\t"                             /* 2 */
+			"in    r16, __SREG__ \n\t"                   /* 1 */
 			
 			"push  r24 \n\t"                            /* 2 */
 			"push  r25 \n\t"                            /* 2 */
@@ -141,8 +141,8 @@
 			"pop   r25 \n\t"                           /* 2 */
 			"pop   r24 \n\t"                           /* 2 */
 		
-			"out   __SREG__ , r0 \n\t"                 /* 1 */
-			"pop   r0 \n\t"                            /* 2 */
+			"out   __SREG__ , r16 \n\t"                 /* 1 */
+			"pop   r16 \n\t"                            /* 2 */
 
 			"reti \n\t"                            /* 4 ISR return */
 		
