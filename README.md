@@ -1,11 +1,35 @@
-This in only example code for full step and glith free quadrature encoders, thus requiring hardware debouncing for mechanical encoders (and no, 2x10k pullups + 2x100nF is NOT correct debouncing).
+This is just example of low-level encoder driver (no support for multiple encoders "per-lib").
+Code can be extracted and reused to create multiple instances working simultaneously.
+This "library" is intended to work especially with high speed rotary encoders (the ones used in motor applications), and requires already debounced signals on the inputs.
 
-Interrupt execution time (worst case):
-- 16 bit accumulator - 33(+1/4 jitter) cycles (max 600k steps/s @20MHz)
-- 32 bit accumulator - 55(+1/4 jitter) cycles (max 360k steps/s @20MHz)
-
-The real allowable speed is slower due need of reading steps counter before it wrap-around.
+#setup
+- define all used input pins in header file
+	* channel A input pin have to be used as an interrupt trigger source
+- define used interrupt vector in encoder.c file
+- modify encoder_init() function with init sequence corresponding to used interrupt vector
+- define other switches if needed
 
 #notes
-- If encoder is standstill at trigger edge it will count only up/down in one direction in case of shifting around edge point. (on todo list)
-- ISR overhead can be further reduced if step counter is stored in unused GPIORs or in globally reserved lower registers
+- Currently only X1 and X2 counting modes are implemented (switchable by ENCODER_USE_X2_MODE macro).
+	* x1 -- one edge on one channel
+	* x2 -- both edges on one channel
+	* x4 -- both edges on both channels
+- The biggest drawback of the X1 mode is that, the counter will "run away" if the encoder is held (therefore bouncing) at the trigger point. 
+- ISR overhead can be further reduced by using globally reserved lower registers for the counter, or optimizing interrups even more (jump-less execution, single register increment/decrement) thus increasing code size. 
+
+#interrupt timming
+
+- Inputs have to be sampled within 1/4 of the step period (total execution time can be longer).
+- All timmings are given for no jitter (completing execution of the ongoing instruction) and 4 cycle isr entry/exit.
+
+| accumulator  | mode | total cycles | cycles to sample | size in bytes | maximum peak rate at 16MHz | 
+| --- | --- | --- | --- | --- | --- |
+| 16 bit | X1 | 35 | 15 | 40 | 267k steps/s |
+| 16 bit | X2 | 37/39 | 17/20 | 50 | 216/200k steps/s |
+| 32 bit | X1 | 54 | 23 | 80 | 174k steps/s |
+| 32 bit | X2 | 57 | 26 | 90 | 140k steps/s |
+
+#todo
+- something for shared pcint vectors (x2 or x4)
+- hardcore optimized interrupts
+- circuits / debouncing
