@@ -30,6 +30,6 @@ This "library" is intended to work especially with high speed rotary encoders (t
 | 32 bit | X2 | 57 | 26 | 90 | 140k steps/s |
 
 #todo
-- something for shared pcint vectors (x2 or x4)
+- something for shared pcint vectors (x2/x4)
 - hardcore optimized interrupts
 - circuits / debouncing
