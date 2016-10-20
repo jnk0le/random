@@ -1,4 +1,4 @@
-This is just example of low-level encoder driver (no support for multiple encoders "per-lib").
+This is just example of low-level encoder driver (no support for multiple encoders "per-lib" yet).
 Code can be extracted and reused to create multiple instances working simultaneously.
 This "library" is intended to work especially with high speed rotary encoders (the ones used in motor applications), and requires already debounced signals on the inputs.
 
@@ -22,14 +22,21 @@ This "library" is intended to work especially with high speed rotary encoders (t
 - Inputs have to be sampled within 1/4 of the step period (total execution time can be longer).
 - All timmings are given for no jitter (completing execution of the ongoing instruction) and 4 cycle isr entry/exit.
 
-| accumulator  | mode | total cycles | cycles to sample | size in bytes | maximum peak rate at 16MHz | 
+| accumulator  | mode | total cycles (worst case) | cycles to sample | size in bytes | maximum peak rate at 16MHz | 
 | --- | --- | --- | --- | --- | --- |
 | 16 bit | X1 | 35 | 15 | 40 | 267k steps/s |
 | 16 bit | X2 | 37/39 | 17/20 | 50 | 216/200k steps/s |
 | 32 bit | X1 | 54 | 23 | 80 | 174k steps/s |
 | 32 bit | X2 | 57 | 26 | 90 | 140k steps/s |
 
+If ENCODER_OPTIMIZE_MORE is defined:
+| accumulator  | mode | total cycles (worst case) | cycles to sample | size in bytes | maximum peak rate at 16MHz | 
+| --- | --- | --- | --- | --- | --- |
+| 16 bit | X1 | 31 | 4 | 72 | 516k steps/s |
+| 16 bit | X2 | 34 | 7 | 82 | 235k steps/s |
+| 32 bit | X1 | 41 | 4 | 112 | 390k steps/s |
+| 32 bit | X2 | 44 | 7 | 122 | 182k steps/s |
+
 #todo
-- something for shared pcint vectors (x2/x4)
-- hardcore optimized interrupts
+- something for shared pcint vectors
 - circuits / debouncing

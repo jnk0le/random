@@ -43,41 +43,31 @@
 	#if !defined(ENCODER_USE_X2_MODE) // X1 counting mode
 		ISR(ENCODER_INTERRUPT_VECT, ISR_NAKED)
 		{
-			asm volatile("\n\t"                      /* 4 ISR entry */
+		#if !defined(ENCODER_OPTIMIZE_MORE)
+			asm volatile("\n\t"
+				"push  r16 \n\t"
+				"push  r28 \n\t"
+				"push  r29 \n\t"
 		
-				"push  r16 \n\t"                             /* 2 */
-				"push  r28 \n\t"                            /* 2 */
-				"push  r29 \n\t"                            /* 2 */
+				"lds   r28, EncoderSteps \n\t"
+				"lds   r29, EncoderSteps+1 \n\t"
 		
-				"lds   r28, EncoderSteps \n\t"		        /* 2 */
-				"lds   r29, EncoderSteps+1 \n\t"            /* 2 */
-		
-				"in    r16, __SREG__ \n\t"                   /* 1 */
+				"in    r16, __SREG__ \n\t"
 			
-				"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-				"sbiw	r28, 0x02 \n\t"                     /* 2 */
-				"adiw	r28, 0x01 \n\t"                     /* 2 */
+				"sbis	%M[Input_Port], %M[Input_Pin] \n\t"
+				"sbiw	r28, 0x02 \n\t"
+				"adiw	r28, 0x01 \n\t"
 			
-				"out   __SREG__, r16 \n\t"                  /* 1 */
+				"out   __SREG__, r16 \n\t"
 				
-// 			//#if defined(__AVR_ATtiny2313__)||defined(__AVR_ATtiny2313A__) 
-//			//#else
-// 				// no SREG affected, weird but works // rejected due to late sampling
-// 				"sbis	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-// 				"ld 	r16, -Y \n\t"                     /* 2 */
-// 		
-// 				"sbic	%M[Input_Port], %M[Input_Pin] \n\t" /* 1/2 */
-// 				"ld 	r16, Y+ \n\t"                      /* 2 */
-// 			#endif
+				"sts   EncoderSteps+1, r29 \n\t"
+				"sts   EncoderSteps, r28 \n\t"
 		
-				"sts   EncoderSteps+1, r29 \n\t"             /* 2 */
-				"sts   EncoderSteps, r28 \n\t"               /* 2 */
-		
-				"pop   r29 \n\t"                            /* 2 */
-				"pop   r28 \n\t"                            /* 2 */
-				"pop   r16 \n\t"                             /* 2 */
+				"pop   r29 \n\t"
+				"pop   r28 \n\t"
+				"pop   r16 \n\t"
 
-				"reti \n\t"                            /* 4 ISR return */
+				"reti \n\t"
 		
 				: /* output operands */
 		
@@ -86,12 +76,60 @@
 				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
 				/* no clobbers */
 			);
+		#else
+			asm volatile("\n\t"     
+				"sbis	%M[Input_Port], %M[Input_Pin] \n\t"
+				"rjmp	ENC_DEC_%= \n\t" // 7
+		
+				"push  r16 \n\t"
+				"in    r16, __SREG__ \n\t"
+				"push	r17 \n\t" 
+		
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, -1 \n\t"
+				"sts	EncoderSteps, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t"
+		
+				"pop	r17 \n\t"
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+				"reti \n\t"
+		
+			"ENC_DEC_%=:"
+				"push  r16 \n\t"
+				"in    r16, __SREG__ \n\t"
+				"push	r17 \n\t" // 12
+	
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, 1 \n\t"
+				"sts	EncoderSteps, r17 \n\t" // 17
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t" // 22
+		
+				"pop	r17 \n\t"
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+				"reti \n\t" // 31
+	
+				: /* output operands */
+	
+				: /* input operands */
+				[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
+				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
+				/* no clobbers */
+			);
+		#endif
 		}
 	#else // ENCODER_USE_X2_MODE
 		ISR(ENCODER_INTERRUPT_VECT, ISR_NAKED)
 		{
+		#if !defined(ENCODER_OPTIMIZE_MORE)
 			asm volatile("\n\t"                      /* 4 ISR entry */
-		
 				"push  r16 \n\t"                             /* 2 */
 				"push  r28 \n\t"                            /* 2 */
 				"push  r29 \n\t"                            /* 2 */
@@ -163,6 +201,75 @@
 				
 				/* no clobbers */
 			);
+		#else
+			asm volatile("\n\t"
+		
+			#ifdef ENCODER_REVERSE_DIRECTION
+				"sbis	%M[InputA_Port], %M[InputA_Pin] \n\t"
+			#else
+				"sbic	%M[InputA_Port], %M[InputA_Pin] \n\t"
+			#endif
+				"rjmp	ENCODER_AH_%= \n\t"
+				
+				"sbis	%M[InputB_Port], %M[InputB_Pin] \n\t"
+				"rjmp	ENCODER_DEC_%= \n\t"
+				"rjmp	ENCODER_INC_%= \n\t"
+				
+			"ENCODER_AH_%=:"
+				"sbis	%M[InputB_Port], %M[InputB_Pin] \n\t"
+				"rjmp	ENCODER_INC_%= \n\t"
+			                                                  
+			"ENCODER_DEC_%=:"      
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t"
+	
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, 1 \n\t"
+				"sts	EncoderSteps, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t"
+		
+				"pop	r17 \n\t"
+		
+				"out __SREG__, r16 \n\t"
+				"pop   r16 \n\t"
+
+				"reti \n\t"
+		
+			"ENCODER_INC_%=:"
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t" // 15
+	
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, -1 \n\t"
+				"sts	EncoderSteps, r17 \n\t" //20
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t" //25
+		
+				"pop	r17 \n\t"
+		
+				"out __SREG__, r16 \n\t" 
+				"pop   r16 \n\t"   
+
+				"reti \n\t" // 34
+	
+				: /* output operands */
+	
+				: /* input operands */
+				[InputA_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELA_PORT))),
+				[InputA_Pin]    "M"    (ENCODER_CHANNELA_PIN),
+				[InputB_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
+				[InputB_Pin]    "M"    (ENCODER_CHANNELB_PIN)
+	
+				/* no clobbers */
+			);	
+		#endif
 		}
 		
 	#endif
@@ -170,8 +277,8 @@
 	#if !defined(ENCODER_USE_X2_MODE) // X1 counting mode
 		ISR(ENCODER_INTERRUPT_VECT, ISR_NAKED)
 		{
+		#if !defined(ENCODER_OPTIMIZE_MORE)
 			asm volatile("\n\t"                      /* 4 ISR entry */
-		
 				"push  r16 \n\t"                             /* 2 */
 				"in    r16, __SREG__ \n\t"                   /* 1 */
 			
@@ -223,12 +330,78 @@
 				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
 				/* no clobbers */
 			);
+		#else
+			asm volatile("\n\t"     
+				"sbis	%M[Input_Port], %M[Input_Pin] \n\t"
+				"rjmp	ENC_DEC_%= \n\t"
+		
+				"push  r16 \n\t"
+				"in    r16, __SREG__ \n\t"
+				"push	r17 \n\t" 
+		
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, -1 \n\t"
+				"sts	EncoderSteps, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+2 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+2, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+3 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+3, r17 \n\t"
+		
+				"pop	r17 \n\t"
+		
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+				"reti \n\t"
+		
+			"ENC_DEC_%=:"
+				"push  r16 \n\t"
+				"in    r16, __SREG__ \n\t"
+				"push	r17 \n\t" //12
+	
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, 1 \n\t"
+				"sts	EncoderSteps, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+2 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+2, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+3 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+3, r17 \n\t" //32
+		
+				"pop	r17 \n\t"
+		
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+				"reti \n\t" //41
+	
+				: /* output operands */
+	
+				: /* input operands */
+				[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
+				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
+				/* no clobbers */
+			);
+		#endif
 		}
 	#else // ENCODER_USE_X2_MODE
 		ISR(ENCODER_INTERRUPT_VECT, ISR_NAKED)
 		{
+		#if !defined(ENCODER_OPTIMIZE_MORE)
 			asm volatile("\n\t"                      /* 4 ISR entry */
-		
 				"push  r16 \n\t"                             /* 2 */
 				"in    r16, __SREG__ \n\t"                   /* 1 */
 			
@@ -295,6 +468,89 @@
 				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
 				/* no clobbers */
 			);
+		#else
+			asm volatile("\n\t"      
+		
+			#ifdef ENCODER_REVERSE_DIRECTION
+				"sbis	%M[InputA_Port], %M[InputA_Pin] \n\t"
+			#else
+				"sbic	%M[InputA_Port], %M[InputA_Pin] \n\t"
+			#endif
+				"rjmp	ENCODER_AH_%= \n\t" 
+				
+				"sbis	%M[InputB_Port], %M[InputB_Pin] \n\t"
+				"rjmp	ENCODER_DEC_%= \n\t"
+				"rjmp	ENCODER_INC_%= \n\t"
+				
+			"ENCODER_AH_%=:"
+				"sbis	%M[InputB_Port], %M[InputB_Pin] \n\t" 
+				"rjmp	ENCODER_INC_%= \n\t" //10
+			                                                  
+			"ENCODER_DEC_%=:"
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t" 
+				"push	r17 \n\t"
+	
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, 1 \n\t"
+				"sts	EncoderSteps, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+2 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+2, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+3 \n\t"
+				"sbci	r17, 0 \n\t"
+				"sts	EncoderSteps+3, r17 \n\t"
+		
+				"pop	r17 \n\t"
+				"out __SREG__, r16 \n\t"
+				"pop   r16 \n\t"
+
+				"reti \n\t"
+		
+			"ENCODER_INC_%=:"
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t" 
+				"push	r17 \n\t" //15
+	
+				"lds	r17, EncoderSteps \n\t"
+				"subi	r17, -1 \n\t"
+				"sts	EncoderSteps, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+1 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+1, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+2 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+2, r17 \n\t"
+		
+				"lds	r17, EncoderSteps+3 \n\t"
+				"sbci	r17, -1 \n\t"
+				"sts	EncoderSteps+3, r17 \n\t" //35
+		
+				"pop	r17 \n\t"
+				"out __SREG__, r16 \n\t"
+				"pop   r16 \n\t"  //40
+
+				"reti \n\t" //44
+	
+				: /* output operands */
+	
+				: /* input operands */
+				[InputA_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELA_PORT))),
+				[InputA_Pin]    "M"    (ENCODER_CHANNELA_PIN),
+				[InputB_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
+				[InputB_Pin]    "M"    (ENCODER_CHANNELB_PIN)
+	
+				/* no clobbers */
+			);
+		#endif
 		}
 	#endif
 #endif

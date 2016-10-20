@@ -1,9 +1,10 @@
 #ifndef ENCODER_H_
 #define ENCODER_H_
 
-#define ENCODER_USE_X2_MODE // count steps on edges of the 
+//#define ENCODER_USE_X2_MODE // count steps on both edges of the channel A
 //#define ENCODER_32BIT_ACCUMULATOR
-//#define ENCODER_REVERSE_DIRECTION // reverse counting direction 
+//#define ENCODER_REVERSE_DIRECTION // reverse counting direction
+#define ENCODER_OPTIMIZE_MORE // use larger and faster interrupt handlers
 
 // channel A definitions are used in X2_MODE only
 #define ENCODER_CHANNELA_PORT B // A,B,C,D ... port naming
