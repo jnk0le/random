@@ -30,6 +30,7 @@ This "library" is intended to work especially with high speed rotary encoders (t
 | 32 bit | X2 | 57 | 26 | 90 | 140k steps/s |
 
 If ENCODER_OPTIMIZE_MORE is defined:
+
 | accumulator  | mode | total cycles (worst case) | cycles to sample | size in bytes | maximum peak rate at 16MHz | 
 | --- | --- | --- | --- | --- | --- |
 | 16 bit | X1 | 31 | 4 | 72 | 516k steps/s |
