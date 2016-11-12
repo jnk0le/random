@@ -15,7 +15,7 @@ This "library" is intended to work especially with high speed rotary encoders (t
 	* x2 -- both edges on one channel
 	* x4 -- both edges on both channels
 - The biggest drawback of the X1 mode is that, the counter will "run away" if the encoder is held (therefore bouncing) at the trigger point. 
-- ISR overhead can be further reduced by using globally reserved lower registers for the counter, or optimizing interrups even more (jump-less execution, single register increment/decrement) thus increasing code size. 
+- ISR overhead can be further reduced by using globally reserved lower registers or GPIOR's for the counter. 
 - All defined inputs have to be mapped in lower IO address space.
 
 #interrupt timming
@@ -42,3 +42,5 @@ If ENCODER_OPTIMIZE_MORE is defined:
 #todo
 - something for shared pcint vectors
 - circuits / debouncing
+- momory mapped IO's
+- xmega

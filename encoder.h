@@ -34,7 +34,8 @@ void encoder_init(void);
 #ifdef ENCODER_32BIT_ACCUMULATOR
 	extern volatile int32_t EncoderSteps;
 	
-	inline int32_t EncoderReadDiff(void) // clears counter after reading
+	static inline int32_t EncoderReadDiff(void) __attribute__((always_inline));
+	static inline int32_t EncoderReadDiff(void) // clears counter after reading
 	{
 		int32_t tmp;
 		
@@ -47,7 +48,8 @@ void encoder_init(void);
 		return tmp;
 	}
 	
-	inline int32_t EncoderRead(void)
+	static inline int32_t EncoderRead(void) __attribute__((always_inline));
+	static inline int32_t EncoderRead(void)
 	{
 		int32_t tmp;
 		
@@ -61,7 +63,8 @@ void encoder_init(void);
 #else
 	extern volatile int16_t EncoderSteps;
 
-	inline int16_t EncoderReadDiff(void) // clears counter after reading
+	static inline int16_t EncoderReadDiff(void) __attribute__((always_inline));
+	static inline int16_t EncoderReadDiff(void) // clears counter after reading
 	{
 		int16_t tmp;
 		
@@ -74,7 +77,8 @@ void encoder_init(void);
 		return tmp;
 	}
 	
-	inline int16_t EncoderRead(void)
+	static inline int16_t EncoderRead(void) __attribute__((always_inline));
+	static inline int16_t EncoderRead(void)
 	{
 		int16_t tmp;
 		
