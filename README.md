@@ -42,5 +42,5 @@ If ENCODER_OPTIMIZE_MORE is defined:
 #todo
 - something for shared pcint vectors
 - circuits / debouncing
-- momory mapped IO's
+- memory mapped IO's
 - xmega
