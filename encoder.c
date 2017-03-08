@@ -296,9 +296,9 @@
 				"rjmp	ENC_INC_%= \n\t"              /* 2 */
 			
 				"subi	r24, 1 \n\t"
-				"sbci	r24, 0 \n\t"
-				"sbci	r24, 0 \n\t"
-				"sbci	r24, 0 \n\t"
+				"sbci	r25, 0 \n\t"
+				"sbci	r26, 0 \n\t"
+				"sbci	r27, 0 \n\t"
 				"rjmp ENC_EXIT_%= \n\t"                     /* 2 */
 
 			"ENC_INC_%=: "
@@ -432,9 +432,9 @@
 			                                                   // 6/5/5/6
 			"ENCODER_DEC_%=:"
 				"subi	r24, 1 \n\t"
-				"sbci	r24, 0 \n\t"
-				"sbci	r24, 0 \n\t"
-				"sbci	r24, 0 \n\t"
+				"sbci	r25, 0 \n\t"
+				"sbci	r26, 0 \n\t"
+				"sbci	r27, 0 \n\t"
 				"rjmp	ENCODER_EXIT_%= \n\t"
 			
 			"ENCODER_INC_%=:"
