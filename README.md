@@ -27,8 +27,8 @@ This "library" is intended to work especially with high speed rotary encoders (t
 | --- | --- | --- | --- | --- | --- |
 | 16 bit | X1 | 35 | 16 | 40 | 250k steps/s |
 | 16 bit | X2 | 37/39 | 18/20 | 50 | 432/400k half steps/s |
-| 32 bit | X1 | 54 | 24 | 80 | 166k steps/s |
-| 32 bit | X2 | 57 | 27 | 90 | 280k half steps/s |
+| 32 bit | X1 | 54 | 24 | 78 | 166k steps/s |
+| 32 bit | X2 | 57 | 27 | 88 | 280k half steps/s |
 
 If ENCODER_OPTIMIZE_MORE is defined:
 
@@ -47,8 +47,8 @@ If ENCODER_OPTIMIZE_MORE is defined:
 | --- | --- | --- | --- | --- | --- |
 | 16 bit | X1 | 25 | 13 | 40 | 307k steps/s |
 | 16 bit | X2 | 26 | 14 | 50 | 571k half steps/s |
-| 32 bit | X1 | 41 | 19 | 80 | 210k steps/s |
-| 32 bit | X2 | 43 | 21 | 90 | 372k half steps/s |
+| 32 bit | X1 | 40 | 19 | 78 | 210k steps/s |
+| 32 bit | X2 | 43 | 21 | 88 | 372k half steps/s |
 
 If ENCODER_OPTIMIZE_MORE is defined:
 

@@ -295,8 +295,12 @@
 				"sbic	%M[Input_Port], %M[Input_Pin] \n\t"
 				"rjmp	ENC_INC_%= \n\t"
 			
+			#ifdef __AVR_HAVE_MOVW__
+				"sbiw	r24, 1 \n\t"
+			#else
 				"subi	r24, 1 \n\t"
 				"sbci	r25, 0 \n\t"
+			#endif
 				"sbci	r26, 0 \n\t"
 				"sbci	r27, 0 \n\t"
 				"rjmp ENC_EXIT_%= \n\t"
@@ -431,8 +435,12 @@
 				"rjmp	ENCODER_INC_%= \n\t"
 			                                                   // 6/5/5/6
 			"ENCODER_DEC_%=:"
+			#ifdef __AVR_HAVE_MOVW__
+				"sbiw	r24, 1 \n\t"
+			#else
 				"subi	r24, 1 \n\t"
 				"sbci	r25, 0 \n\t"
+			#endif
 				"sbci	r26, 0 \n\t"
 				"sbci	r27, 0 \n\t"
 				"rjmp	ENCODER_EXIT_%= \n\t"
