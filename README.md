@@ -2,14 +2,14 @@ This is just example of low-level encoder driver (no support for multiple encode
 Code can be extracted and reused to create multiple instances working simultaneously.
 This "library" is intended to work especially with high speed rotary encoders (the ones used in motor applications), and requires already debounced signals on the inputs.
 
-##Setup
+## Setup
 - define all used input pins in header file
 	* channel A input pin have to be used as an interrupt trigger source
 - define used interrupt vector in encoder.c file
 - modify encoder_init() function with init sequence corresponding to used interrupt vector
 - define other switches if needed
 
-###Notes
+### Notes
 - Currently only X1 and X2 counting modes are implemented (switchable by ENCODER_USE_X2_MODE macro).
 	* x1 -- one edge on one channel
 	* x2 -- both edges on one channel
@@ -18,7 +18,7 @@ This "library" is intended to work especially with high speed rotary encoders (t
 - ISR overhead can be further reduced by using globally reserved lower registers or GPIOR's for the counter. 
 - All defined inputs have to be mapped in lower IO address space.
 
-##ISR timmings
+## ISR timmings
 
 - Inputs have to be sampled within 1/4 of the step period (total execution time can be longer).
 - All timmings are given for no jitter (completing execution of the ongoing instruction), same edge to interrupt delay as edge to IO register (which may be different) and 4 cycle isr entry/exit.
@@ -39,7 +39,7 @@ If ENCODER_OPTIMIZE_MORE is defined:
 | 32 bit | X1 | 41 | 5 | 112 | 390k steps/s |
 | 32 bit | X2 | 44 | 7 | 122 | 363k half steps/s |
 
-###LGT8XM timmings
+### LGT8XM timmings
 
 - All timmings are given for no jitter (completing execution of the ongoing instruction) and same edge to interrupt delay as edge to IO register (which may be different).
 
@@ -59,7 +59,7 @@ If ENCODER_OPTIMIZE_MORE is defined:
 | 32 bit | X1 | 34 | 5 | 112 | 470k steps/s |
 | 32 bit | X2 | 37 | 7 | 122 | 432k half steps/s |
 
-##Todo
+## Todo
 - something for shared pcint vectors
 - circuits / debouncing
 - memory mapped IO's
