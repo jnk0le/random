@@ -512,9 +512,9 @@
 			#endif
 			
 			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
-				"out   __SREG__ ,  \n\t"
+				"out   __SREG__, %[sreg_save] \n\t"
 			#else
-				"out   __SREG__ , r16 \n\t"
+				"out   __SREG__, r16 \n\t"
 				"pop   r16 \n\t"
 			#endif
 				"reti \n\t"
@@ -729,9 +729,9 @@
 			#endif
 		
 			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
-				"out   __SREG__ ,  \n\t"
+				"out   __SREG__, %[sreg_save] \n\t"
 			#else
-				"out   __SREG__ , r16 \n\t"
+				"out   __SREG__, r16 \n\t"
 				"pop   r16 \n\t"
 			#endif
 				"reti \n\t"
