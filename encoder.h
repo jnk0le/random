@@ -15,6 +15,11 @@
 #define ENCODER_CHANNELB_PORT B // A,B,C,D ... port naming 
 #define ENCODER_CHANNELB_PIN 1 // 1,2,3,4 ... pin naming
 
+#define ENCODER_INTERRUPT_VECT INT1_vect
+// define interrupt vector fired on channel A transitions
+// X1 mode can be used with INTn interrupts only
+// X2 mode can be used with INTn or PCINT interrupts exclusively (no other inputs allowed)
+
 //#define ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE // prematures out 4 cycles from every isr run // requires one globally reserved lower register
 //#define ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE    // prematures out 6 cycles from every isr run // requires pair of globally reserved lower registers
 // use globally reserved register for temporary storage in interrupts, should be combined with other interrupts for best results. 

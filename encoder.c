@@ -10,11 +10,6 @@
 	volatile int16_t EncoderSteps;
 #endif
 
-// define interrupt vector fired on channel A transitions
-// X1 mode can be used with INTn interrupts only
-// X2 mode can be used with INTn or PCINT interrupts exclusively (no other inputs allowed)
-#define ENCODER_INTERRUPT_VECT INT1_vect
-
 	void encoder_init(void)
 	{
 		//___DDR(ENCODER_CHANNELA_PORT) &= ~(1<<ENCODER_CHANNELA_PIN);

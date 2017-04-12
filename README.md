@@ -5,8 +5,8 @@ This "library" is intended to work especially with high speed rotary encoders (t
 ## Setup
 - define all used input pins in header file
 	* channel A input pin have to be used as an interrupt trigger source
-- define used interrupt vector in encoder.c file
-- modify encoder_init() function with init sequence corresponding to used interrupt vector
+- define used counting mode and interrupt vector name in header file
+- modify encoder_init() function with init sequence corresponding to used interrupt vector and AVR reg definitions.
 - define other switches if needed
 
 ### Notes
@@ -16,7 +16,7 @@ This "library" is intended to work especially with high speed rotary encoders (t
 	* x4 -- both edges on both channels
 - The biggest drawback of the X1 mode is that, the counter will "run away" if the encoder is held (therefore bouncing) at the trigger point. 
 - ISR overhead can be further reduced by using globally reserved lower registers or GPIOR's for the counter. 
-- All defined inputs have to be mapped in lower IO address space.
+- All defined inputs have to be mappable in lower IO address space.
 
 ## ISR timmings
 
