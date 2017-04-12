@@ -45,32 +45,58 @@
 		{
 		#if !defined(ENCODER_OPTIMIZE_MORE)
 			asm volatile("\n\t"
+				
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+				"in    %[sreg_save], __SREG__ \n\t"
+			#else
 				"push  r16 \n\t"
+				"in    r16, __SREG__ \n\t"
+			#endif
+				
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r28 \n\t"
+				#else // in this case only 4 cycles are prematured out
+					"mov	%A[z_save], r28 \n\t"
+					"mov	%B[z_save], r29 \n\t"
+				#endif
+			#else
 				"push  r28 \n\t"
 				"push  r29 \n\t"
-		
+			#endif
+				
 				"lds   r28, EncoderSteps \n\t"
 				"lds   r29, EncoderSteps+1 \n\t"
-		
-				"in    r16, __SREG__ \n\t"
-			
+				
 				"sbis	%M[Input_Port], %M[Input_Pin] \n\t"
 				"sbiw	r28, 0x02 \n\t"
 				"adiw	r28, 0x01 \n\t"
-			
-				"out   __SREG__, r16 \n\t"
 				
 				"sts   EncoderSteps+1, r29 \n\t"
 				"sts   EncoderSteps, r28 \n\t"
-		
+			
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	r28, %[z_save] \n\t"
+				#else // in this case only 4 cycles are prematured out
+					"mov	r29, %B[z_save] \n\t"
+					"mov	r28, %A[z_save] \n\t"
+				#endif
+			#else
 				"pop   r29 \n\t"
 				"pop   r28 \n\t"
+			#endif
+			
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+				"out   __SREG__, %[sreg_save] \n\t"
+			#else
+				"out   __SREG__, r16 \n\t"
 				"pop   r16 \n\t"
-
+			#endif
 				"reti \n\t"
 		
 				: // outputs
-		
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
 				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
@@ -81,9 +107,22 @@
 				"sbis	%M[Input_Port], %M[Input_Pin] \n\t"
 				"rjmp	ENC_DEC_%= \n\t" // 7
 		
-				"push  r16 \n\t"
-				"in    r16, __SREG__ \n\t"
-				"push	r17 \n\t" 
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
+				"push	r17 \n\t"
+			#else
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t"
+			#endif
 		
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, -1 \n\t"
@@ -93,15 +132,41 @@
 				"sbci	r17, -1 \n\t"
 				"sts	EncoderSteps+1, r17 \n\t"
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"pop	r17 \n\t"
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
 				"pop	r17 \n\t"
 				"out	__SREG__, r16 \n\t"
 				"pop	r16 \n\t"
+			#endif
 				"reti \n\t"
 		
 			"ENC_DEC_%=:"
-				"push  r16 \n\t"
-				"in    r16, __SREG__ \n\t"
-				"push	r17 \n\t" // 12
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
+				"push	r17 \n\t"
+			#else
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t"
+			#endif
 	
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, 1 \n\t"
@@ -111,13 +176,26 @@
 				"sbci	r17, 0 \n\t"
 				"sts	EncoderSteps+1, r17 \n\t" // 22
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"pop	r17 \n\t"
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
 				"pop	r17 \n\t"
 				"out	__SREG__, r16 \n\t"
 				"pop	r16 \n\t"
+			#endif
 				"reti \n\t" // 31
 	
 				: // outputs
-	
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
 				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
@@ -130,16 +208,32 @@
 		{
 		#if !defined(ENCODER_OPTIMIZE_MORE)
 			asm volatile("\n\t"
+			
+			#ifndef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
 				"push  r16 \n\t"
+			#endif
+			
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r28 \n\t"
+				#else
+					"mov	%A[z_save], r28 \n\t"
+					"mov	%B[z_save], r29 \n\t"
+				#endif
+			#else
 				"push  r28 \n\t"
 				"push  r29 \n\t"
-		
+			#endif
+			
 				"lds   r28, EncoderSteps \n\t"
 				"lds   r29, EncoderSteps+1 \n\t"
 		
-			#if defined(__AVR_ATtiny2313__)||defined(__AVR_ATtiny2313A__)
+			#if defined(__AVR_ATtiny2313__)||defined(__AVR_ATtiny2313A__) // add others ???
+				#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+					"in    %[sreg_save], __SREG__ \n\t"
+				#else
 					"in    r16, __SREG__ \n\t"                    // 1/1/1/1
-			
+				#endif
 					"adiw	r28, 0x01 \n\t"                       // 3/3/3/3
 			
 				#ifdef	ENCODER_REVERSE_DIRECTION
@@ -158,7 +252,11 @@
 					"sbiw	r28, 0x02 \n\t"                       // 9/-/-/-
 				
 				"ENCODER_EXIT_%=:"
+				#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+					"out   __SREG__ , %[sreg_save] \n\t"
+				#else
 					"out   __SREG__ , r16 \n\t"                   // 10/9/11/10
+				#endif
 			#else
 				#ifdef ENCODER_REVERSE_DIRECTION
 					"sbis	%M[InputA_Port], %M[InputA_Pin] \n\t" // 1/1/2/2
@@ -175,24 +273,43 @@
 					"sbic	%M[InputB_Port], %M[InputB_Pin] \n\t" // 4/5/-/-
 					"rjmp	ENCODER_INC_%= \n\t"                  // 6/-/-/-
 				"ENCODER_DEC_%=:"
-					"ld      r16, -Y \n\t"                        // -/7/7/-
+				#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+					"ld      %[sreg_save], -Y \n\t"
+				#else
+					"ld      r16, -Y \n\t"                        // -/7/7/-     // should not hardfault on avr
+				#endif
 					"rjmp	ENCODER_EXIT_%= \n\t"                 // -/9/9/-
 				"ENCODER_INC_%=:"
-					"ld      r16, Y+ \n\t"                        // 8/-/-/8
+				#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+					"ld      %[sreg_save], Y+ \n\t"
+				#else
+					"ld      r16, Y+ \n\t"                        // 8/-/-/8     // should not hardfault on avr
+				#endif
 				"ENCODER_EXIT_%=:"                                // 8/9/9/8
 			#endif
 		
 				"sts   EncoderSteps+1, r29 \n\t"
 				"sts   EncoderSteps, r28 \n\t"
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	r28, %[z_save] \n\t"
+				#else
+					"mov	r29, %B[z_save] \n\t"
+					"mov	r28, %A[z_save] \n\t"
+				#endif
+			#else
 				"pop   r29 \n\t"
 				"pop   r28 \n\t"
+			#endif
+			
+			#ifndef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
 				"pop   r16 \n\t"
-				
+			#endif	
 				"reti \n\t"
 		
 				: // outputs
-		
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[InputA_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELA_PORT))),
 				[InputA_Pin]    "M"    (ENCODER_CHANNELA_PIN),
@@ -219,11 +336,24 @@
 				"sbis	%M[InputB_Port], %M[InputB_Pin] \n\t"
 				"rjmp	ENCODER_INC_%= \n\t"
 			                                                  
-			"ENCODER_DEC_%=:"      
+			"ENCODER_DEC_%=:"
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
+				"push	r17 \n\t"
+			#else
 				"push	r16 \n\t"
 				"in		r16, __SREG__ \n\t"
 				"push	r17 \n\t"
-	
+			#endif
+				
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, 1 \n\t"
 				"sts	EncoderSteps, r17 \n\t"
@@ -232,17 +362,41 @@
 				"sbci	r17, 0 \n\t"
 				"sts	EncoderSteps+1, r17 \n\t"
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
 				"pop	r17 \n\t"
-		
-				"out __SREG__, r16 \n\t"
-				"pop   r16 \n\t"
-
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
+				"pop	r17 \n\t"
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+			#endif
 				"reti \n\t"
 		
 			"ENCODER_INC_%=:"
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
+				"push	r17 \n\t"
+			#else
 				"push	r16 \n\t"
 				"in		r16, __SREG__ \n\t"
-				"push	r17 \n\t" // 15
+				"push	r17 \n\t"
+			#endif
 	
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, -1 \n\t"
@@ -252,15 +406,26 @@
 				"sbci	r17, -1 \n\t"
 				"sts	EncoderSteps+1, r17 \n\t" //25
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
 				"pop	r17 \n\t"
-		
-				"out __SREG__, r16 \n\t" 
-				"pop   r16 \n\t"   
-
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
+				"pop	r17 \n\t"
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+			#endif 
 				"reti \n\t" // 34
 	
 				: // outputs
-	
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[InputA_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELA_PORT))),
 				[InputA_Pin]    "M"    (ENCODER_CHANNELA_PIN),
@@ -279,18 +444,32 @@
 		{
 		#if !defined(ENCODER_OPTIMIZE_MORE)
 			asm volatile("\n\t"
-				"push  r16 \n\t"
-				"in    r16, __SREG__ \n\t"
 			
-				"push  r24 \n\t"
-				"push  r25 \n\t"
-				"push  r26 \n\t"
-				"push  r27 \n\t"
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+				"in		%[sreg_save], __SREG__ \n\t"
+			#else
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+			#endif
+			
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r24 \n\t"
+				#else
+					"mov	%A[z_save], r24 \n\t"
+					"mov	%B[z_save], r25 \n\t"
+				#endif
+			#else
+				"push	r24 \n\t"
+				"push	r25 \n\t"
+			#endif
+				"push	r26 \n\t"
+				"push	r27 \n\t"
 		
-				"lds   r24, EncoderSteps \n\t"
-				"lds   r25, EncoderSteps+1 \n\t"
-				"lds   r26, EncoderSteps+2 \n\t"
-				"lds   r27, EncoderSteps+3 \n\t"
+				"lds	r24, EncoderSteps \n\t"
+				"lds	r25, EncoderSteps+1 \n\t"
+				"lds	r26, EncoderSteps+2 \n\t"
+				"lds	r27, EncoderSteps+3 \n\t"
 		
 				"sbic	%M[Input_Port], %M[Input_Pin] \n\t"
 				"rjmp	ENC_INC_%= \n\t"
@@ -303,7 +482,7 @@
 			#endif
 				"sbci	r26, 0 \n\t"
 				"sbci	r27, 0 \n\t"
-				"rjmp ENC_EXIT_%= \n\t"
+				"rjmp	ENC_EXIT_%= \n\t"
 
 			"ENC_INC_%=: "
 				"subi	r24, -1 \n\t"
@@ -312,23 +491,36 @@
 				"sbci	r27, -1 \n\t"
 
 			"ENC_EXIT_%=: "
-				"sts   EncoderSteps+3, r27\n\t"
-				"sts   EncoderSteps+2, r26\n\t"
-				"sts   EncoderSteps+1, r25\n\t"
-				"sts   EncoderSteps, r24\n\t"
+				"sts	EncoderSteps+3, r27 \n\t"
+				"sts	EncoderSteps+2, r26 \n\t"
+				"sts	EncoderSteps+1, r25 \n\t"
+				"sts	EncoderSteps, r24 \n\t"
 		
-				"pop   r27 \n\t"
-				"pop   r26 \n\t"
-				"pop   r25 \n\t"
-				"pop   r24 \n\t"
-		
+				"pop	r27 \n\t"
+				"pop	r26 \n\t"
+				
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	r24, %[z_save] \n\t"
+				#else
+					"mov	r25, %B[z_save] \n\t"
+					"mov	r24, %A[z_save] \n\t"
+				#endif
+			#else
+				"pop	r25 \n\t"
+				"pop	r24 \n\t"
+			#endif
+			
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+				"out   __SREG__ ,  \n\t"
+			#else
 				"out   __SREG__ , r16 \n\t"
 				"pop   r16 \n\t"
-
+			#endif
 				"reti \n\t"
 		
 				: // outputs
-		
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
 				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
@@ -339,14 +531,27 @@
 				"sbis	%M[Input_Port], %M[Input_Pin] \n\t"
 				"rjmp	ENC_DEC_%= \n\t"
 		
-				"push  r16 \n\t"
-				"in    r16, __SREG__ \n\t"
-				"push	r17 \n\t" 
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
+				"push	r17 \n\t"
+			#else
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t"
+			#endif
 		
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, -1 \n\t"
 				"sts	EncoderSteps, r17 \n\t"
-		
+				
 				"lds	r17, EncoderSteps+1 \n\t"
 				"sbci	r17, -1 \n\t"
 				"sts	EncoderSteps+1, r17 \n\t"
@@ -359,16 +564,41 @@
 				"sbci	r17, -1 \n\t"
 				"sts	EncoderSteps+3, r17 \n\t"
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
 				"pop	r17 \n\t"
-		
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
+				"pop	r17 \n\t"
 				"out	__SREG__, r16 \n\t"
 				"pop	r16 \n\t"
+			#endif
 				"reti \n\t"
 		
 			"ENC_DEC_%=:"
-				"push  r16 \n\t"
-				"in    r16, __SREG__ \n\t"
-				"push	r17 \n\t" //12
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
+				"push	r17 \n\t"
+			#else
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t"
+			#endif
 	
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, 1 \n\t"
@@ -386,14 +616,26 @@
 				"sbci	r17, 0 \n\t"
 				"sts	EncoderSteps+3, r17 \n\t" //32
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
 				"pop	r17 \n\t"
-		
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
+				"pop	r17 \n\t"
 				"out	__SREG__, r16 \n\t"
 				"pop	r16 \n\t"
+			#endif
 				"reti \n\t" //41
 	
 				: // outputs
-	
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
 				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
@@ -406,11 +648,25 @@
 		{
 		#if !defined(ENCODER_OPTIMIZE_MORE)
 			asm volatile("\n\t"
-				"push  r16 \n\t"
-				"in    r16, __SREG__ \n\t"
 			
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+				"in		%[sreg_save], __SREG__ \n\t"
+			#else
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+			#endif
+			
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r24 \n\t"
+				#else
+					"mov	%A[z_save], r24 \n\t"
+					"mov	%B[z_save], r25 \n\t"
+				#endif
+			#else
 				"push  r24 \n\t"
 				"push  r25 \n\t"
+			#endif
 				"push  r26 \n\t"
 				"push  r27 \n\t"
 		
@@ -459,21 +715,34 @@
 		
 				"pop   r27 \n\t"
 				"pop   r26 \n\t"
+				
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	r24, %[z_save] \n\t"
+				#else
+					"mov	r25, %B[z_save] \n\t"
+					"mov	r24, %A[z_save] \n\t"
+				#endif
+			#else
 				"pop   r25 \n\t"
 				"pop   r24 \n\t"
+			#endif
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE
+				"out   __SREG__ ,  \n\t"
+			#else
 				"out   __SREG__ , r16 \n\t"
 				"pop   r16 \n\t"
-
+			#endif
 				"reti \n\t"
 		
 				: // outputs
-		
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[InputA_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELA_PORT))),
 				[InputA_Pin]    "M"    (ENCODER_CHANNELA_PIN),
-				[Input_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
-				[Input_Pin]    "M"    (ENCODER_CHANNELB_PIN)
+				[InputB_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELB_PORT))),
+				[InputB_Pin]    "M"    (ENCODER_CHANNELB_PIN)
 				// no clobbers
 			);
 		#else
@@ -495,9 +764,22 @@
 				"rjmp	ENCODER_INC_%= \n\t" //10
 			                                                  
 			"ENCODER_DEC_%=:"
-				"push	r16 \n\t"
-				"in		r16, __SREG__ \n\t" 
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
 				"push	r17 \n\t"
+			#else
+				"push	r16 \n\t"
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t"
+			#endif
 	
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, 1 \n\t"
@@ -515,16 +797,41 @@
 				"sbci	r17, 0 \n\t"
 				"sts	EncoderSteps+3, r17 \n\t"
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
 				"pop	r17 \n\t"
-				"out __SREG__, r16 \n\t"
-				"pop   r16 \n\t"
-
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
+				"pop	r17 \n\t"
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+			#endif
 				"reti \n\t"
 		
 			"ENCODER_INC_%=:"
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"movw	%[z_save], r16 \n\t"
+					"in		r16, __SREG__ \n\t"
+				#else
+					"in 	%A[z_save], __SREG__ \n\t"
+					"mov	%B[z_save], r17 \n\t"
+				#endif
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
+				"in		%[sreg_save], __SREG__ \n\t"
+				"push	r17 \n\t"
+			#else
 				"push	r16 \n\t"
-				"in		r16, __SREG__ \n\t" 
-				"push	r17 \n\t" //15
+				"in		r16, __SREG__ \n\t"
+				"push	r17 \n\t"
+			#endif
 	
 				"lds	r17, EncoderSteps \n\t"
 				"subi	r17, -1 \n\t"
@@ -542,14 +849,26 @@
 				"sbci	r17, -1 \n\t"
 				"sts	EncoderSteps+3, r17 \n\t" //35
 		
+			#ifdef ENCODER_USE_GLOBALLY_RESERVED_ISR_Z_SAVE
+				#ifdef __AVR_HAVE_MOVW__
+					"out	__SREG__, r16 \n\t"
+					"movw	r16, %[z_save] \n\t"
+				#else
+					"mov	r17, %B[z_save] \n\t"
+					"out	__SREG__, %A[z_save] \n\t"
+				#endif	
+			#elif defined(ENCODER_USE_GLOBALLY_RESERVED_ISR_SREG_SAVE)
 				"pop	r17 \n\t"
-				"out __SREG__, r16 \n\t"
-				"pop   r16 \n\t"  //40
-
+				"out	__SREG__, %[sreg_save] \n\t"
+			#else
+				"pop	r17 \n\t"
+				"out	__SREG__, r16 \n\t"
+				"pop	r16 \n\t"
+			#endif
 				"reti \n\t" //44
 	
 				: // outputs
-	
+				ENCODER_REG_SAVE_LIST
 				: // inputs
 				[InputA_Port]   "M"    (_SFR_IO_ADDR(___PIN(ENCODER_CHANNELA_PORT))),
 				[InputA_Pin]    "M"    (ENCODER_CHANNELA_PIN),

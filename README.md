@@ -41,6 +41,7 @@ If ENCODER_OPTIMIZE_MORE is defined:
 
 ### LGT8XM timmings
 
+- Inputs have to be sampled within 1/4 of the step period (total execution time can be longer).
 - All timmings are given for no jitter (completing execution of the ongoing instruction) and same edge to interrupt delay as edge to IO register (which may be different).
 
 | accumulator  | mode | total cycles (worst case) | cycles to sample | size in bytes | maximum peak rate at 16MHz | 
