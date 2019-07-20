@@ -59,10 +59,3 @@ If ENCODER_OPTIMIZE_MORE is defined:
 | 16 bit | X2 | 27 | 7 | 82 | 592k half steps/s |
 | 32 bit | X1 | 34 | 5 | 112 | 470k steps/s |
 | 32 bit | X2 | 37 | 7 | 122 | 432k half steps/s |
-
-## Todo
-- something for shared pcint vectors
-- circuits / debouncing
-- memory mapped IO's
-- xmega, tiny817
-- optimize interrupts code
