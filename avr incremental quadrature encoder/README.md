@@ -1,4 +1,4 @@
-This is just example of low-level encoder driver (no support for multiple encoders "per-lib" yet).
+This is just example of low-level incremental quadrature encoder driver (no support for multiple encoders "per-lib" yet).
 Code can be extracted and reused to create multiple instances working simultaneously.
 This "library" is intended to work especially with high speed rotary encoders (the ones used in motor applications), and requires already debounced signals on the inputs.
 
@@ -17,6 +17,7 @@ This "library" is intended to work especially with high speed rotary encoders (t
 - The biggest drawback of the X1 mode is that, the counter will "run away" if the encoder is held (therefore bouncing) at the trigger point. 
 - ISR overhead can be further reduced by using globally reserved lower registers or GPIOR's for the counter. 
 - All defined inputs have to be mappable in lower IO address space.
+- No "Z" index signal handling
 
 ## ISR timmings
 
