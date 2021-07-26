@@ -51,7 +51,7 @@ legend:
 
 `-` - cannot dual issue
 
--simple constant - 8bit and 12bit (in add instruction) constants e.g. `add.w r0, r1, #0x1` and `add.w r0, r1, #0xff9` 
+- simple constant - 8bit and 12bit (in add instruction) constants e.g. `add.w r0, r1, #0x1` and `add.w r0, r1, #0xff9` 
 (if 12 bit constant can be created by shifted 8 bits, compiler might use it instead)
 - constant pattern - pattern constructed from 8bit imm as `0x00XY00XY`,`0xXY00XY00` or `0xXYXYXYXY` e.g. `eor.w r6, r7, #0x1b1b1b1b`
 - shifted constant - immediate constructed from shifted 8bit imm e.g. `eor r0, r1, #0x1fc`
