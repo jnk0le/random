@@ -21,7 +21,7 @@ TBD
 
 uses `DWT.CYCCNT`
 
-it is recommended to 
+it is recommended to start with `*.w` opcodes as the short ones (even in fours) can cause half cycle slide (remove one nop before branch to confirm)
 
 findings:
 -
