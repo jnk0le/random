@@ -34,8 +34,8 @@ inline shifted/rotated operand needs to be available one cycle earlier than for 
 ### loads
 
 word loads can be consumed by ALU in next cycle
-byte/half loads can be consumed in secend cycle (1 extra cycle)
 
+byte/half loads can be consumed in secend cycle (1 extra cycle)
 
 
 ### stores
@@ -43,6 +43,7 @@ byte/half loads can be consumed in secend cycle (1 extra cycle)
 cannot dual issue two stores
 
 can store ALU result in same cycle
+
 can store `ldr`,`ldrh`,`ldrb` result in same cycle
 
 
