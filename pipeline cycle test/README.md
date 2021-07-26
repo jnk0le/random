@@ -46,10 +46,10 @@ operand2 dual issuing matrix (except cmp - not tested yet)
 | shift by register  |  +  |  +  |  +  |  +  |  +  |  +  |
 
 legend:
+
 `+` - can dual issue
 
 `-` - cannot dual issue
-
 
 -simple constant - 8bit and 12bit (in add instruction) constants e.g. `add.w r0, r1, #0x1` and `add.w r0, r1, #0xff9` 
 (if 12 bit constant can be created by shifted 8 bits, compiler might use it instead)
