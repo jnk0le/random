@@ -5,7 +5,7 @@
 //uint32_t CM7_pipetest_tmpl(void);
 .global CM7_pipetest_tmpl
 .type   CM7_pipetest_tmpl,%function
-CM7_tst_tmpl:
+CM7_pipetest_tmpl:
 	push {r4-r12,lr} // push r12 to keep stack even for testing use
 
 	// prepare registers here
