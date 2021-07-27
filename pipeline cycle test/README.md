@@ -85,7 +85,7 @@ byte/half loads can be consumed in secend cycle (1 extra cycle)
 
 cannot dual issue two stores
 
-can store ALU result in same cycle
+can store any result in same cycle
 
 can store `ldr`,`ldrh`,`ldrb` result in same cycle
 
