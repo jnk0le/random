@@ -33,10 +33,10 @@ there is no `nop` elimination, they are just not creating execution stalls as th
 
 cannot dual issue wrt each other
 
-if first instruction was placed in younger or older "slot", all folowing instructions also need to be placed in the same 
+if first instruction was placed in younger or older "slot", all folowing bitfield/dsp instructions also need to be placed in the same 
 "slot", distance inbetween occurences doesn't seem to matter
 
-bitfield or DSP (e.g. `uxtb`) result cannot be used as index by load/store instructions in next cycle 
+bitfield/dsp (e.g. `uxtb`) result cannot be used as index by load/store instructions in next cycle 
 
 ### operand2
 
