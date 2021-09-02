@@ -94,6 +94,8 @@ cannot dual issue two stores
 
 can store any result in same cycle
 
+can be dual issued with load
+
 can store `ldr`,`ldrh`,`ldrb` result in same cycle
 
 
