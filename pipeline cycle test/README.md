@@ -85,8 +85,10 @@ byte/half loads can be consumed in secend cycle (1 extra cycle)
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
 simultaneous access to dtcm and dcache at the same (even or odd) bank can be dual issued (but slippery: 2 cycles 
-of loop invariant stalls) if the load pairs are targeting different bank than previous ones (indexed or not doesn't matter)
+of loop invariant stalls) if the load pairs are targeting different bank than previous ones (reg offset or immediate doesn't matter)
 
+pre indexed and post indexed loads can be dual issued if there is no bank conflict and resulting address is not reused 
+in same cycle (can be issued back to back every cycle)
 
 ### stores
 
