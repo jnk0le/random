@@ -7,7 +7,7 @@ Template files by default measure 20 cycles per loop x1000
 
 
 
-## cortex m0
+## cortex m0(+)
 
 can't use `DWT.CYCCNT`
 
@@ -21,6 +21,8 @@ TBD, needs cleanup
 
 uses `DWT.CYCCNT`
 
+tested on stm32h743 rev Y
+
 it is recommended to start with `*.w` opcodes as the short ones (even in fours) can cause half cycle slide (remove one nop before branch to confirm)
 
 findings:
@@ -33,8 +35,8 @@ there is no `nop` elimination, they are just not creating execution stalls as th
 
 cannot dual issue wrt each other
 
-if first instruction was placed in younger or older "slot", all folowing bitfield/dsp instructions also need to be placed in the same 
-"slot", distance inbetween occurences doesn't seem to matter
+if first instruction was placed in "younger" or "older" slot, all folowing bitfield/dsp instructions also need to be placed in the same 
+slot, distance inbetween occurences doesn't seem to matter
 
 bitfield/dsp (e.g. `uxtb`) result cannot be used as index by load/store instructions in next cycle (1 extra cycle latency)
 
@@ -50,7 +52,7 @@ inline shifted/rotated (register) operand needs to be available one cycle earlie
 
 operand2 dual issuing matrix (except cmp - not tested yet)
 
-| op1\op2    | simple constant | constant pattern | shifted constant | shifted reg | shift by constant | shift by register |
+| op1\op2    | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
 | --- | --- | --- | --- | --- | --- | --- |
 | simple constant    |  +  |  +  |  +  |  +  |  +  |  +  |
 | constant pattern   |  +  |  +  |  +  |  +  |  +  |  +  |
@@ -79,6 +81,11 @@ legend:
 word loads can be consumed by ALU in next cycle
 
 byte/half loads can be consumed in secend cycle (1 extra cycle)
+
+two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
+
+simultaneous access to dtcm and dcache at the same (even or odd) bank can be dual issued (but slippery: 2 cycles 
+of loop invariant stalls) if the load pairs are targeting different bank than previous ones (indexed or not doesn't matter)
 
 
 ### stores
