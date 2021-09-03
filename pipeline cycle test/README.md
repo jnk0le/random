@@ -40,15 +40,19 @@ slot, distance inbetween occurences doesn't seem to matter
 
 bitfield/dsp (e.g. `uxtb`) result cannot be used as index by load/store instructions in next cycle (1 extra cycle latency)
 
-`rev` can't source result of another bitfield/dsp instruction from a previous cycle (`uxtb` or `uadd8` and regular ALU can)
-(prob there is more such instructions)
+`bfi`, (bfc is clear),`sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, instructions can't source result of another 
+bitfield/dsp instruction from a previous cycle (`uxtb` or `uadd8` and regular ALU can)
+
+in extract and add instructions (e.g. `uxtab`) the "extracted" register (Rm) can't be sourced from previous 
+cycle of another bitfield/dsp instruction
+
+some cases (incl load to use) might be younger/older op sensitive for bitfield/dsp instructions (TBD)
 
 sometimes slippery dependencies (1 or 2 cycles of loop invariant stalls)
 
 ### operand2
 
 inline shifted/rotated (register) operand needs to be available one cycle earlier than for regular ALU
-
 
 operand2 dual issuing matrix (except cmp - not tested yet)
 
@@ -75,7 +79,6 @@ legend:
 - shift by constant - simple shift reg by constant e.g. `lsr.w r2, r3, #12`
 - shift by register - simple shift reg by register content e.g. `lsr.w r2, r3, r4`
 
-
 ### loads
 
 word loads can be consumed by ALU in next cycle
@@ -90,6 +93,8 @@ of loop invariant stalls) if the load pairs are targeting different bank than pr
 pre indexed and post indexed loads can be dual issued if there is no bank conflict and resulting address is not reused 
 in same cycle (can be issued back to back every cycle)
 
+address dependency might be younger/older op sensitive (TBD)
+
 ### stores
 
 cannot dual issue two stores
@@ -100,6 +105,7 @@ can be dual issued with load
 
 can store `ldr`,`ldrh`,`ldrb` result in same cycle
 
+address dependency might be younger/older op sensitive (TBD)
 
 ### load/store pair/multiple (incl pushpop)
 
