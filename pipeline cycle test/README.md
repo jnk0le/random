@@ -31,7 +31,7 @@ findings:
 
 there is no `nop` elimination, they are just not creating execution stalls as things listed below
 
-`movw` + `movt` pair can dual issue even with mutual dependency
+`movw` + `movt` pair can dual issue with mutual dependency
 
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
 
