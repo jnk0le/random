@@ -31,12 +31,14 @@ findings:
 
 there is no `nop` elimination, they are just not creating execution stalls as things listed below
 
+`movw` + `movt` pair can dual issue even with mutual dependency
+
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
 
 cannot dual issue wrt each other
 
-if first instruction was placed in "younger" or "older" slot, all folowing bitfield/dsp instructions also need to be placed in the same 
-slot, distance inbetween occurences doesn't seem to matter
+if first instruction was placed in "younger" or "older" slot, all folowing bitfield/dsp instructions also need to be placed
+in the same slot, distance inbetween occurences doesn't seem to matter
 
 bitfield/dsp (e.g. `uxtb`) result cannot be used as index by load/store instructions in next cycle (1 extra cycle latency)
 
@@ -46,9 +48,11 @@ bitfield/dsp instruction from a previous cycle (`uxtb` or `uadd8` and regular AL
 in extract and add instructions (e.g. `uxtab`) the "extracted" register (Rm) can't be sourced from previous 
 cycle of another bitfield/dsp instruction
 
-some cases (incl load to use) might be younger/older op sensitive for bitfield/dsp instructions (TBD)
+if the bitfield/dsp instruction is placed in older slot there will be a slippery condition with 2 cycles of loop 
+invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
+stalls when combined with other stall sources (listed above in this chapter)
 
-sometimes slippery dependencies (1 or 2 cycles of loop invariant stalls)
+some cases (incl load to use) might be younger/older op sensitive for bitfield/dsp instructions (TBD)
 
 ### operand2
 
@@ -78,6 +82,10 @@ legend:
 - inline shifted reg - shift/rotate second reg operand e.g. `add.w r3, r4, r5, ror #24`
 - shift by constant - simple shift reg by constant e.g. `lsr.w r2, r3, #12`
 - shift by register - simple shift reg by register content e.g. `lsr.w r2, r3, r4`
+
+### multiplication and DSP mul
+
+TBD
 
 ### loads
 
@@ -118,7 +126,7 @@ TBD
 
 ### fpu
 
-
+TBD
 
 
 
