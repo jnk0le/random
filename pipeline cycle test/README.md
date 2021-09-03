@@ -99,11 +99,9 @@ address dependency might be younger/older op sensitive (TBD)
 
 cannot dual issue two stores
 
-can store any result in same cycle
-
 can be dual issued with load
 
-can store `ldr`,`ldrh`,`ldrb` result in same cycle
+can store any result in same cycle, including `ldr`,`ldrh`,`ldrb`
 
 address dependency might be younger/older op sensitive (TBD)
 
