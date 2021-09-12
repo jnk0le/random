@@ -44,7 +44,7 @@ if the bitfield/dsp instructions are placed in older slot there will be a slippe
 invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
 stalls when combined with other stall sources (listed below in this chapter)
 
-bitfield/dsp instruction (e.g. `uxtb`) result cannot be used as index or address by load/store instructions in 
+bitfield/dsp instruction (e.g. `uxtb`,`uxtab`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
 
 `sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, instructions can't source result of another 
