@@ -44,13 +44,18 @@ if the bitfield/dsp instructions are placed in older slot there will be a slippe
 invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
 stalls when combined with other stall sources (listed below in this chapter)
 
-bitfield/dsp (e.g. `uxtb`) result cannot be used as index by load/store instructions in next cycle (1 extra cycle latency)
+bitfield/dsp instruction (e.g. `uxtb`) result cannot be used as index or address by load/store instructions in 
+next cycle (1 extra cycle latency)
 
-`bfi`, `sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, instructions can't source result of another 
-bitfield/dsp instruction from a previous cycle (`uxtb` or `uadd8` and regular ALU can)
+`sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, instructions can't source result of another 
+bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction from a previous cycle 
+(`uxtb` or `uadd8` and regular ALU can)
 
-in extract and add instructions (e.g. `uxtab`) the "extracted" register (Rm) can't be sourced from previous 
-cycle of another bitfield/dsp instruction
+in `bfi` and `{s,u}xta{b,h,b16}` instructions the "extracted" register can't be sourced from previous 
+cycle of another bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction
+
+`bfi`, `bfc`, `sbfx`, `ubfx`, `rbit`, `rev`, `rev16`, `revsh`, `{s,u}xta{b,h,b16}` instructions can't be dual 
+issued with operand2 inline_shifted_reg/shifted_constant instruction 
 
 some cases (incl load to use) might be younger/older op sensitive for bitfield/dsp instructions (TBD)
 
@@ -85,7 +90,7 @@ legend:
 - shift by constant - simple shift/rotate reg by constant e.g. `lsr.w r2, r3, #12`
 - shift by register - simple shift/rotate reg by register content e.g. `ror.w r2, r3, r4`
 
-### multiplication and DSP mul
+### multiplication, MAC
 
 TBD
 
