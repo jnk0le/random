@@ -40,6 +40,10 @@ cannot dual issue wrt each other
 if first instruction was placed in "younger" or "older" slot, all folowing bitfield/dsp instructions also need to be placed
 in the same slot, distance inbetween occurences doesn't seem to matter
 
+if the bitfield/dsp instructions are placed in older slot there will be a slippery condition with 2 cycles of loop 
+invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
+stalls when combined with other stall sources (listed below in this chapter)
+
 bitfield/dsp (e.g. `uxtb`) result cannot be used as index by load/store instructions in next cycle (1 extra cycle latency)
 
 `bfi`, `sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, instructions can't source result of another 
@@ -47,10 +51,6 @@ bitfield/dsp instruction from a previous cycle (`uxtb` or `uadd8` and regular AL
 
 in extract and add instructions (e.g. `uxtab`) the "extracted" register (Rm) can't be sourced from previous 
 cycle of another bitfield/dsp instruction
-
-if the bitfield/dsp instruction is placed in older slot there will be a slippery condition with 2 cycles of loop 
-invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
-stalls when combined with other stall sources (listed above in this chapter)
 
 some cases (incl load to use) might be younger/older op sensitive for bitfield/dsp instructions (TBD)
 
@@ -60,14 +60,14 @@ inline shifted/rotated (register) operand needs to be available one cycle earlie
 
 operand2 dual issuing matrix (except cmp - not tested yet)
 
-| op1\op2    | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
+| younger\older op | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
 | --- | --- | --- | --- | --- | --- | --- |
 | simple constant    |  +  |  +  |  +  |  +  |  +  |  +  |
 | constant pattern   |  +  |  +  |  +  |  +  |  +  |  +  |
 | shifted constant   |  +  |  +  |  -  |  -  |  +  |  +  |
 | inline shifted reg |  +  |  +  |  -  |  -  |  +  |  +  |
-| shift by constant  |  +  |  +  |  +  |  +  |  +  |  +  |
-| shift by register  |  +  |  +  |  +  |  +  |  +  |  +  |
+| shift by constant  |  +  |  +  |  ?  |  ?  |  +  |  +  |
+| shift by register  |  +  |  +  |  ?  |  ?  |  +  |  +  |
 
 legend:
 
@@ -75,13 +75,15 @@ legend:
 
 `-` - cannot dual issue
 
+`?` - slippery (2 cycles of loop invariant stalls, no matter of repetition)
+
 - simple constant - 8bit and 12bit (in add instruction) constants e.g. `add.w r0, r1, #1` and `add.w r0, r1, #0xff9` 
 (if 12 bit constant can be created by shifted 8 bits, compiler might use it instead)
 - constant pattern - pattern constructed from 8bit imm as `0x00XY00XY`,`0xXY00XY00` or `0xXYXYXYXY` e.g. `eor.w r6, r7, #0x1b1b1b1b`
 - shifted constant - immediate constructed from shifted 8bit imm e.g. `eor r0, r1, #0x1fc`
 - inline shifted reg - shift/rotate second reg operand e.g. `add.w r3, r4, r5, ror #24`
-- shift by constant - simple shift reg by constant e.g. `lsr.w r2, r3, #12`
-- shift by register - simple shift reg by register content e.g. `lsr.w r2, r3, r4`
+- shift by constant - simple shift/rotate reg by constant e.g. `lsr.w r2, r3, #12`
+- shift by register - simple shift/rotate reg by register content e.g. `ror.w r2, r3, r4`
 
 ### multiplication and DSP mul
 
@@ -120,7 +122,13 @@ cannot dual issue with preceeding or folowing instructions
 takes `ceil(regnum/2)` cycles to execute
 
 
-### branching
+### branching/cmp
+
+there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
+instruction generating flags have to be placed at least 3 cycles before branch (there may be a window like in cm3 TBD)
+
+the "slippery condition" seems to not be related to branching (sums with extra cycles of branch misprediction
+when flags are not forwarded)
 
 TBD
 
