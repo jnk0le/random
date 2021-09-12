@@ -33,6 +33,10 @@ there is no `nop` elimination, they are just not creating execution stalls as th
 
 `movw` + `movt` pair can dual issue with mutual dependency
 
+it seems that there is an early and late simple ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
+be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU (e.g. `mov`, or
+simple forms of operand2 instructions) in following cycles, there still needs to be a 1 cycle gap in processing chain to dodge stall from Y
+
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
 
 cannot dual issue wrt each other
@@ -42,7 +46,8 @@ in the same slot, distance inbetween occurences doesn't seem to matter
 
 if the bitfield/dsp instructions are placed in older slot there will be a slippery condition with 2 cycles of loop 
 invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
-stalls when combined with other stall sources (listed below in this chapter)
+stalls when combined with other stall sources (listed below in this chapter), if result is consumed by alu in (expectable) younger slot next 
+cycle then slippery contition turns into regular stall (further rules will assume younger op placement)
 
 bitfield/dsp instruction (e.g. `uxtb`,`uxtab`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
@@ -102,8 +107,8 @@ byte/half loads can be consumed in secend cycle (1 extra cycle)
 
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
-simultaneous access to dtcm and dcache at the same (even or odd) bank can be dual issued (but slippery: 2 cycles 
-of loop invariant stalls) if the load pairs are targeting different bank than previous ones (reg offset or immediate doesn't matter)
+simultaneous access to dtcm and dcache at the same (even or odd) bank is slippery (2 cycles of loop invariant stalls) 
+if the load pairs are targeting different bank than previous ones (reg offset or immediate doesn't matter)
 
 pre indexed and post indexed loads can be dual issued if there is no bank conflict and resulting address is not reused 
 in same cycle (can be issued back to back every cycle)
