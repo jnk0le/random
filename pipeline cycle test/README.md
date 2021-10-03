@@ -25,7 +25,7 @@ tested on stm32h743 rev Y
 
 it is recommended to start with `*.w` opcodes as the short ones (even in fours) can cause half cycle slide (remove one nop before branch to confirm)
 
-findings:
+non obvious findings:
 
 ### overall
 
@@ -36,6 +36,7 @@ there is no `nop` elimination, they are just not creating execution stalls as th
 it seems that there is an early and late simple ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
 be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU (e.g. `mov`, or
 simple forms of operand2 instructions) in following cycles, there still needs to be a 1 cycle gap in processing chain to dodge stall from Y
+(not yet clear if those are symmetric - younger/older op behaviour suggests it's not)
 
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
 
@@ -49,24 +50,29 @@ invariant stalls no matter of the amount or dispersion of bitfield/dsp instructi
 stalls when combined with other stall sources (listed below in this chapter), if result is consumed by alu in (expectable) younger slot next 
 cycle then slippery contition turns into regular stall (further rules will assume younger op placement)
 
-bitfield/dsp instruction (e.g. `uxtb`,`uxtab`) result cannot be used as index or address by load/store instructions in 
+bitfield/dsp instruction (e.g. `uxtb`,`uxtab`,`rev`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
 
 `sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, instructions can't source result of another 
 bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction from a previous cycle 
 (`uxtb` or `uadd8` and regular ALU can)
 
-in `bfi` and `{s,u}xta{b,h,b16}` instructions the "extracted" register can't be sourced from previous 
-cycle of another bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction
+in `bfi`, `pkh{bt,tb}` and `{s,u}xta{b,h,b16}` instructions the "extracted" or shifted (even when no shift in case of `pkhbt`) register 
+can't be sourced from previous cycle of another bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction, 
 
-`bfi`, `bfc`, `sbfx`, `ubfx`, `rbit`, `rev`, `rev16`, `revsh`, `{s,u}xta{b,h,b16}` instructions can't be dual 
+`pkhtb` also can't source result of another bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction from a previous 
+cycle by the first operand (Rn)
+
+`bfi`, `bfc`, `sbfx`, `ubfx`, `rbit`, `rev`, `rev16`, `revsh`, `{s,u}xta{b,h,b16}`, `pkh{bt,tb}` instructions can't be dual 
 issued with operand2 inline_shifted_reg/shifted_constant instruction 
 
 some cases (incl load to use) might be younger/older op sensitive for bitfield/dsp instructions (TBD)
 
 ### operand2
 
-inline shifted/rotated (register) operand needs to be available one cycle earlier than for regular ALU
+inline shifted/rotated (register) operand needs to be available one cycle earlier than for regular ALU 
+(can be sourced from younger op of simple alu, when sourcing from older op of simple alu stalls as a younger, sliperry 
+as an older)
 
 operand2 dual issuing matrix (except cmp - not tested yet)
 
@@ -87,7 +93,7 @@ legend:
 
 `?` - slippery (2 cycles of loop invariant stalls, no matter of repetition)
 
-- simple constant - 8bit and 12bit (in add instruction) constants e.g. `add.w r0, r1, #1` and `add.w r0, r1, #0xff9` 
+- simple constant - 8bit and 12bit (in add instruction) constants e.g. `add.w r0, r1, #1` and `add.w r0, r1, #0xff9`
 (if 12 bit constant can be created by shifted 8 bits, compiler might use it instead)
 - constant pattern - pattern constructed from 8bit imm as `0x00XY00XY`,`0xXY00XY00` or `0xXYXYXYXY` e.g. `eor.w r6, r7, #0x1b1b1b1b`
 - shifted constant - immediate constructed from shifted 8bit imm e.g. `eor r0, r1, #0x1fc`
