@@ -48,7 +48,7 @@ in the same slot, distance inbetween occurences doesn't seem to matter
 if the bitfield/dsp instructions are placed in older slot there will be a slippery condition with 2 cycles of loop 
 invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
 stalls when combined with other stall sources (listed below in this chapter), if result is consumed by alu in (expectable) younger slot next 
-cycle then slippery contition turns into regular stall (further rules will assume younger op placement)
+cycle then slippery condition turns into regular stall (further rules will assume younger op placement)
 
 bitfield/dsp instruction (e.g. `uxtb`,`uxtab`,`rev`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
@@ -118,6 +118,8 @@ if the load pairs are targeting different bank than previous ones (reg offset or
 
 pre indexed and post indexed loads can be dual issued if there is no bank conflict and resulting address is not reused 
 in same cycle (can be issued back to back every cycle)
+
+`pld` instruction can stall due to address dependency (same as normal loads)
 
 address dependency might be younger/older op sensitive (TBD)
 
