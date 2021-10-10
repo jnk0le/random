@@ -6,13 +6,14 @@
 .global CM7_pipetest_tmpl
 .type   CM7_pipetest_tmpl,%function
 CM7_pipetest_tmpl:
-	push {r4-r12,lr} // push r12 to keep stack even for testing use
+	push {r4-r12,lr} // push r12 to keep stack aligned for testing use
 
 	// prepare registers here
 	// r0 to r8, r12 and lr are available for use
 	// r9 is a loop counter
 
 	ldr r11, =0xE0001000 // DWT_BASE
+	cpsid i // disable interrupts
 
 	.align 3
 	dsb
@@ -89,6 +90,8 @@ CM7_pipetest_tmpl:
 	//end
 	nop.w
 	ldr.w r9, [r11, #4] // read DWT.CYCCNT
+	
+	cpsie i // reenable interrupts
 
 	subs r0, r9, r10 // get cycle diff
 	subs r0, #1 // subtract extra overhead outside the loop // extra 6 cycles comes from mispredicted branch
