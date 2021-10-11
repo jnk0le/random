@@ -1,3 +1,12 @@
+/*!
+ * \file CM7_pipetest_tmpl.S
+ * \brief cortex-m7 dedicated template fore pipeline testing
+ *
+ * \author jnk0le <jnk0le@hotmail.com>
+ * \copyright CC0 License
+ * \date 26 Jul 2021
+ */
+
 .syntax unified
 .thumb
 .text

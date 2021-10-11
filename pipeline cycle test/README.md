@@ -1,6 +1,6 @@
 A small set of simple templates to do cycle accurate measurements of in-order pipelines.
 
-For testing various instruction parallelim or dependencies.
+For testing various instruction parallelim or dependency hazards.
 
 
 Template files by default measure 20 cycles per loop x1000
