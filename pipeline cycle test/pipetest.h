@@ -17,6 +17,18 @@
 #endif
 
 	/*!
+	 * \brief cortex-m0 dedicated template fore pipeline testing
+	 * \return number of cycles the code took to run
+	 */
+	uint32_t CM0_pipetest_tmpl(void);
+
+	/*!
+	 * \brief cortex-m0+ dedicated template fore pipeline testing
+	 * \return number of cycles the code took to run
+	 */
+	//uint32_t CM0p_pipetest_tmpl(void);
+
+	/*!
 	 * \brief cortex-m7 dedicated template fore pipeline testing
 	 * \return number of cycles the code took to run
 	 */

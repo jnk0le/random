@@ -9,9 +9,16 @@ Template files by default measure 20 cycles per loop x1000
 
 ## cortex m0(+)
 
-can't use `DWT.CYCCNT`
+cortex m0+ not yet available
 
-TBD
+can't use `DWT.CYCCNT`, instead uses `SysTick`
+
+requires maximum 24bit reload value for correct handling of underflow:
+```
+SysTick->LOAD = 0x00ffffff; // max value
+SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk; // enable SysTick with cpu clock
+```
+
 
 ## cortex m3 and m4
 
