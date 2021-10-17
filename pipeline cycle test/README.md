@@ -25,7 +25,7 @@ there is no load to use latency as stated in some sources
 
 tips:
 
-using rev16 allows to extract middle bytes in one less cycle
+using rev16 allows to extract middle bytes in one less cycle at the cost of higher reg pressure if source register needs to be preserved
 
 ```
 	// 4 instr
