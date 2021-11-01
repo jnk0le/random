@@ -40,7 +40,7 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 	lsrs r2, r2, #24
 ```
 
-`rev16` + `rev` sequence is equivalent to rotate by 16 bits
+`rev16` + `rev` sequence is equivalent to rotate by 16 bits (more flexible and lower reg pressure than `movs`+`rors`)
 
 
 ## cortex m3 and m4
