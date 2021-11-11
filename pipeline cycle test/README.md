@@ -151,6 +151,10 @@ in same cycle (can be issued back to back every cycle)
 
 `pld` instruction can stall due to address dependency (same as normal loads)
 
+unaligned loads are severely underperforming. +3 cycles as younger op, +4 as older op or when both younger and older ops 
+are unaligned loads (banks or unaligment amount doesn't matter), -1 if the other load is aligned and targets the same bank 
+that is accessed first by the unaligned one (part at lower address)
+
 address dependency might be younger/older op sensitive (TBD)
 
 ### stores
