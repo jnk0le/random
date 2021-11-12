@@ -165,6 +165,13 @@ can be dual issued with load
 
 can store any result in same cycle, including `ldr`,`ldrh`,`ldrb`
 
+unaligned stores execute without any stalls until store buffer clogs up (5 consecutive stores). When doing one
+unaligned store every cycle, the throughput is 4 cycles per one store (unalignment amount or address advancement doesn't matter)
+
+store buffer doesn't merge series of consecutive stores, so `strb` and `strh` will clog the store buffer with RMW operations. 
+When doing one byte/half store every cycle, the throughput is 4 cycles per store if targeting one bank, 2 cycles per store 
+if targeting even/odd bank and 2.4 cycles for unit stride advancing `strb`. (`strh` is still 2 cycles)
+
 address dependency might be younger/older op sensitive (TBD)
 
 ### load/store pair/multiple (incl pushpop)
