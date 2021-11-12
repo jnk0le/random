@@ -139,7 +139,7 @@ TBD
 
 word loads can be consumed by ALU in next cycle
 
-byte/half loads can be consumed in secend cycle (1 extra cycle)
+byte/half loads can be consumed in secend cycle (1 extra cycle of result latency)
 
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
