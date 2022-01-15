@@ -45,7 +45,10 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 
 ## cortex m3 and m4
 
-TBD, needs cleanup
+
+
+
+TBD
 
 ## cortex m7
 

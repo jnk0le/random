@@ -7,7 +7,6 @@
  * \date 14 Oct 2021
  */
 
-
 .syntax unified
 .thumb
 .text
@@ -43,8 +42,8 @@ CM0_pipetest_tmpl:
 	mov r9, r2 // save starttime
 	nop // loop alignment
 
-	//replace code below
-1:
+	
+1:  //replace code below
 	nop
 	nop
 	nop
