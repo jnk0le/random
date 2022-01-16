@@ -56,7 +56,7 @@ CM3_pipetest_tmpl:
 	nop.w
 
 	subs.w r9, #1
-	bne.w 1b // 2 cycles taken // not taken will also take 2 cycles if there less than 2 compressed instructions
+	bne.w 1b // 2 cycles taken // not taken will also take 2 cycles if there is less than 2 compressed instructions
 
 	//end
 	nop.w
