@@ -43,16 +43,61 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 `rev16` + `rev` sequence is equivalent to rotate by 16 bits (more flexible and lower reg pressure than `movs`+`rors`)
 
 
-## cortex m3 and m4
+## cortex m3 (and m4)
 
+uses `DWT.CYCCNT`, it must be initialized by application, otherwise randomly doesn't work
+```
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	//DWT->LAR = 0xC5ACCE55; // no on cm3
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+```
 
+cortex m3 as tested on stm32f103 rev X
+(cortex m4 as tested on stm32f407 rev ?)TBD
 
+### overall (cm3 only now)
 
 TBD
 
+### loads (cm3 only now)
+
+base address and offset must be available 1 cycle earlier than normally
+
+32bit opcode loads (`ldr.w`, `ldrb.w`) may fail to pipeline correctly if they are not positioned
+at word aligned boundaries
+
+load instructions can eat following `nop` (`cmp`, `tst` don't work) effectively executing in 1 cycle
+
+post and pre indexed loads cannot be chained back to back at all
+
+only first load in a chain can be pre or post indexed mode
+
+
+### stores (cm3 only now)
+
+base address and offset must be available 1 cycle earlier than normally
+
+register offset store placed after load, removes the stall, making effective execution of 1 IPC
+
+pre and post indexed stores effectively execute in 1 cycle when preceeding instruction is not an load
+
+post and pre indexed stores cannot be chained back to back on same base address (alternating 2 different
+ bases works)
+
+reg offset store execute always in 2 cycles. it can eat following nop (reg + imm or `mov` instructions 
+don't work) effectively executing in 1 cycle
+
+stores cannot be pipelined with following load instructions (adds extra cycle)
+
+
 ## cortex m7
 
-uses `DWT.CYCCNT`
+uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
+```
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	DWT->LAR = 0xC5ACCE55;
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+```
 
 tested on stm32h743 rev Y
 
