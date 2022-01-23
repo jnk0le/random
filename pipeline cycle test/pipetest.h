@@ -29,16 +29,10 @@
 	//uint32_t CM0p_pipetest_tmpl(void);
 
 	/*!
-	 * \brief cortex-m3 dedicated template fore pipeline testing
+	 * \brief cortex-m3 and cortex-m4 dedicated template fore pipeline testing
 	 * \return number of cycles the code took to run
 	 */
 	uint32_t CM3_pipetest_tmpl(void);
-
-	/*!
-	 * \brief cortex-m4 dedicated template fore pipeline testing
-	 * \return number of cycles the code took to run
-	 */
-	//uint32_t CM4_pipetest_tmpl(void);
 
 	/*!
 	 * \brief cortex-m7 dedicated template fore pipeline testing

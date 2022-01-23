@@ -48,13 +48,12 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise randomly doesn't work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-	//DWT->LAR = 0xC5ACCE55; // no on cm3
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 ```
 
 cortex m3 as tested on stm32f103 rev X
 
-(cortex m4 as tested on stm32f407 rev ?)TBD
+(cortex m4 as tested on stm32f407 rev Y)TBD
 
 ### overall (cm3 only now)
 
@@ -96,7 +95,7 @@ stores cannot be pipelined with following load instructions (adds extra cycle)
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-	DWT->LAR = 0xC5ACCE55;
+	DWT->LAR = 0xC5ACCE55; // required on cm7
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 ```
 
