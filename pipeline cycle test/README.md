@@ -43,7 +43,7 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 `rev16` + `rev` sequence is equivalent to rotate by 16 bits (more flexible and lower reg pressure than `movs`+`rors`)
 
 
-## cortex m3 (and m4)
+## cortex m3 and m4
 
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise randomly doesn't work
 ```
