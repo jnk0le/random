@@ -53,42 +53,48 @@ uses `DWT.CYCCNT`, it must be initialized by application, otherwise randomly doe
 
 cortex m3 as tested on stm32f103 rev X
 
-(cortex m4 as tested on stm32f407 rev Y)TBD
+cortex m4 as tested on stm32f407 rev Y
 
-### overall (cm3 only now)
+### overall
 
 TBD
 
-### loads (cm3 only now)
+### loads
 
-base address and offset must be available 1 cycle earlier than normally
+[both] base address and offset must be available 1 cycle earlier than normally
 
-32bit opcode loads (`ldr.w`, `ldrb.w`) may fail to pipeline correctly if they are not positioned
+[both?] load pipelining happens only when targeting the same memory block (bus?) by all loads (e.g. CCM vs SRAM1 on f407)
+
+[both] 32bit opcode loads (`ldr.w`, `ldrb.w`) may fail to pipeline correctly if they are not positioned
 at word aligned boundaries
 
-load instructions can eat following `nop` (`cmp`, `tst` don't work) effectively executing in 1 cycle
+[both] load instructions can eat following `nop` (`cmp`, `tst` don't work) effectively executing in 1 cycle
 
-post and pre indexed loads cannot be chained back to back at all
+[cm3] post and pre indexed loads cannot be chained back to back at all
 
-only first load in a chain can be pre or post indexed mode
-
-
-### stores (cm3 only now)
-
-base address and offset must be available 1 cycle earlier than normally
-
-register offset store placed after load, removes the stall, making effective execution of 1 IPC
-
-pre and post indexed stores effectively execute in 1 cycle when preceeding instruction is not an load
-
-post and pre indexed stores cannot be chained back to back on same base address (alternating 2 different
+[cm4] post and pre indexed loads cannot be chained back to back on same base address (alternating 2 different
  bases works)
 
-reg offset store execute always in 2 cycles. it can eat following nop (reg + imm or `mov` instructions 
-don't work) effectively executing in 1 cycle
+[cm3] only first load in a chain can be pre or post indexed mode
 
-stores cannot be pipelined with following load instructions (adds extra cycle)
+### stores
 
+[both] base address and offset must be available 1 cycle earlier than normally
+
+[both] immediate offset store (+ pre and post indexed on cm4) effectively execute in 1 cycle
+
+[cm3] pre and post indexed stores effectively execute in 1 cycle when preceeding instruction is not an load
+
+[both] immediate offset (+ pre and post indexed on cm4) store placed after load, removes the stall, 
+making effective execution of 1 IPC, no need to forward data from preceding load
+
+[both] post and pre indexed stores cannot be chained back to back on same base address (alternating 2 different
+ bases works)
+
+[both] reg offset store execute in 2 cycles. it can eat following nop (reg + imm or `mov` instructions 
+don't work) effectively executing in 1 cycle (even though cm4 has 4 read ports for MAC)
+
+[both] stores cannot be pipelined with following load instructions (adds extra cycle to store)
 
 ## cortex m7
 
