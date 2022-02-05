@@ -63,7 +63,7 @@ TBD
 
 [both] base address and offset must be available 1 cycle earlier than normally
 
-[both?] load pipelining happens only when targeting the same memory block (bus?) by all loads (e.g. CCM vs SRAM1 on f407)
+[both] load pipelining happens only when targeting the same memory block (bus?) by all loads (e.g. CCM vs SRAM1 on f407)
 
 [both] 32bit opcode loads (`ldr.w`, `ldrb.w`) may fail to pipeline correctly if they are not positioned
 at word aligned boundaries
@@ -80,6 +80,9 @@ at word aligned boundaries
 ### stores
 
 [both] base address and offset must be available 1 cycle earlier than normally
+
+[both?] stores can pipeline with preceding load (incl data forwarding) only when targeting the same 
+memory block (bus?) (e.g. CCM vs SRAM1 on f407)
 
 [both] immediate offset store (+ pre and post indexed on cm4) effectively execute in 1 cycle
 
