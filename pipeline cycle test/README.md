@@ -250,7 +250,7 @@ takes `ceil(regnum/2)` cycles to execute
 
 ### branching/cmp
 
-branch can be dual issued with preceeding instruction only
+[] 
 
 there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
 instruction generating flags have to be placed at least 3 cycles before branch (there may be a window like in cm3 TBD)
