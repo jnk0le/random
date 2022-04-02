@@ -122,10 +122,19 @@ there is no `nop` elimination, they are just not creating execution stalls as th
 
 `movw` + `movt` pair can dual issue with mutual dependency
 
-it seems that there is an early and late simple ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
-be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU (e.g. `mov`, or
-simple forms of operand2 instructions) in following cycles, there still needs to be a 1 cycle gap in processing chain to dodge stall from Y
+there is an early and late ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
+be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU 
+(e.g. `mov`) in following cycles, there still needs to be a 1 cycle gap in processing chain to dodge stall from Y
 (not yet clear if those are symmetric - younger/older op behaviour suggests it's not)
+
+result of early alu can be forwarded to late alu in 0 cycles
+
+ops whose result is forwardable from early to late alu are:
+`add`, `sub` with simple and constructed constants
+`mov` with simple and constructed constants + simple shifts and rotations (aliased to mov) except rrx
+`rev` + probably other bitmanip ops TBD
+
+
 
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
 
