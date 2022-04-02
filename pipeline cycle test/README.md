@@ -130,9 +130,9 @@ be consumed by instruction Y in next cycle, it most likely means that if instruc
 result of early alu can be forwarded to late alu in 0 cycles
 
 ops whose result is forwardable from early to late alu are:
-`add`, `sub` with simple and constructed constants
-`mov` with simple and constructed constants + simple shifts and rotations (aliased to mov) except rrx
-`rev` + probably other bitmanip ops TBD
+- `add`, `sub` with simple and constructed constants
+- `mov` with simple and constructed constants + simple shifts and rotations (aliased to mov) except rrx
+- `rev` + probably other bitmanip ops TBD
 
 
 
