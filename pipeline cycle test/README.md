@@ -103,6 +103,8 @@ don't work) effectively executing in 1 cycle (even though cm4 has 4 read ports f
 
 ## cortex m7
 
+there is another independent cm7 pipeline analysis: https://www.quinapalus.com/cm7cycles.html
+
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
@@ -125,15 +127,26 @@ there is no `nop` elimination, they are just not creating execution stalls as th
 there is an early and late ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
 be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU 
 (e.g. `mov`) in following cycles, there still needs to be a 1 cycle gap in processing chain to dodge stall from Y
-(not yet clear if those are symmetric - younger/older op behaviour suggests it's not)
+
+only younger op can be executed by early ALU (in non slippery case)
+
+earlu ALU is not clobbered by inline shifted operand of the older op
+
+e.g. following snippet doesn't stall:
+```
+	add.w r0, r2
+	eor.w r6, r7, r6, ror #22
+
+	ldr.w r4, [r14, r0]
+	ldr.w r5, [r14, r1]
+```
 
 result of early alu can be forwarded to late alu in 0 cycles
 
 ops whose result is forwardable from early to late alu are:
-- `add`, `sub` with simple and constructed constants
-- `mov` with simple and constructed constants + simple shifts and rotations (aliased to mov) except rrx
+- `add`, `sub` with simple and constructed constants (not shifted ones)
+- `mov` with simple and constructed constants (not shifted ones) + simple shifts and rotations (aliased to mov) except rrx
 - `rev` + probably other bitmanip ops TBD
-
 
 
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
