@@ -128,26 +128,29 @@ there is an early and late ALU (similarly to SweRV or Sifive E7) one cycle apart
 be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU 
 (e.g. `mov`) in following cycles, there still needs to be a 1 cycle gap in processing chain to dodge stall from Y
 
-only younger op can be executed by early ALU (in non slippery case)
-
-earlu ALU is not clobbered by inline shifted operand of the older op
-
-e.g. following snippet doesn't stall:
-```
-	add.w r0, r2
-	eor.w r6, r7, r6, ror #22
-
-	ldr.w r4, [r14, r0]
-	ldr.w r5, [r14, r1]
-```
-
 result of early alu can be forwarded to late alu in 0 cycles
 
 ops whose result is forwardable from early to late alu are:
 - `add`, `sub` with simple and constructed constants (not shifted ones)
 - `mov` with simple and constructed constants (not shifted ones) + simple shifts and rotations (aliased to mov) except rrx
-- `rev` + probably other bitmanip ops TBD
+- `rev` + probably other bitmanip ops (`rev` result can't be used by load/inline shift next cycle, can be `mov'd` in ealu, ????, TBD)
 
+`add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the older op
+
+e.g. following snippet doesn't stall:
+```
+	add.w r0, r2
+	eor.w r6, r0, r6, ror #22
+
+	ldr.w r4, [r14, r0]
+	ldr.w r5, [r14, r1] // r1 is r0 + 4
+```
+
+shifts and rotations (aliased to mov) can enter early alu from younger or older op provided that the 
+other instruction is not inine shifted operand one or bitmanip (e.g. `rev`) or other instr that use early shifter (?, TBD)
+
+the only case when both instructions can be forwarded from early alu is `add`, `sub` or non shifting 
+`mov` in younger slot and simple shift or rotation in older slot
 
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
 
