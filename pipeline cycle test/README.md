@@ -131,7 +131,7 @@ be consumed by instruction Y in next cycle, it most likely means that if instruc
 result of early alu can be forwarded to late alu in 0 cycles, or early alu next cycle:
 - `add`, `sub` with simple and constructed constants (not shifted ones)
 - `mov` with simple and constructed constants (not shifted ones) + simple shifts and rotations (aliased to mov) except rrx
-- `rev`, `rev16`, `revsh`, `rbit` (can't be used by AGU or as inline shifted operand next cycle)
+- `rev`, `rev16`, `revsh`, `rbit` (result can't be used by AGU, another `rev*`,`rbit` instruction or as inline shifted operand next cycle)
 
 `add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the older op
 
