@@ -145,7 +145,7 @@ e.g. following snippet doesn't stall:
 ```
 
 shifts and rotations (aliased to mov) can enter early alu from younger or older op provided that the 
-other instruction is not inine shifted operand one or bitmanip (e.g. `rev`, `bfi`, `uxtab`) op using early alu shifter
+other instruction is not inline shifted operand one or bitmanip (e.g. `rev`, `bfi`, `uxtab`) op using early alu shifter
 
 the only case when both instructions can be forwarded from early alu (to early alu next cycle) is `add`, `sub` or non shifting 
 `mov` in younger slot and simple shift or rotation in older slot
