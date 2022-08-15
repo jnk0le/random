@@ -227,9 +227,10 @@ inline_shifted_reg/shifted_constant instructions as well as execute in any opcod
 
 ### loads
 
-word loads can be consumed by ALU in next cycle
+word loads can be consumed by late ALU in next cycle, except instructions that consume one of the operands in early ALU,
+even when ldr result is consumed as a late ALU operand (in e.g. inline shifted op2 or uxtab)
 
-byte/half loads can be consumed in secend cycle (1 extra cycle of result latency)
+byte/half loads can be consumed in secend cycle in late ALU (1 extra cycle of result latency), or third in early ALU
 
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
