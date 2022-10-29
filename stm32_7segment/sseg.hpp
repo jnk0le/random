@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.1.0
+ * \version 0.2.0
  * \brief
  *
  *
@@ -27,7 +27,7 @@ namespace sseg
 	class PinConfig
 	{
 	public:
-		static inline constexpr GPIO_TypeDef* getSegHwReg() { //naming ??
+		static inline constexpr GPIO_TypeDef* getSegGPIO() {
 			return reinterpret_cast<GPIO_TypeDef*>(gpio_addr);
 		}
 
@@ -269,7 +269,7 @@ namespace sseg
 
 			//delay here in case of ghosting
 
-			seg_config::getSegHwReg()->BSRR = disp_cache[cnt];
+			seg_config::getSegGPIO()->BSRR = disp_cache[cnt];
 
 			common_config::turnOn(cnt);
 		}
