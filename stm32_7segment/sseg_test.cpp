@@ -15,7 +15,7 @@
 
 //common cathode
 
-// common - drive by emitter follower pnp
+// common - active low (drive by emitter follower pnp)
 // CA1 - PF1
 // CA2 - PF0
 // CA3 - PA9
