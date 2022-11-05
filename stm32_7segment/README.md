@@ -32,5 +32,5 @@ The constructor doesn't handle the initialization of clocks, gpio dir, timer and
 Doing initialization of those is too unportable and unflexible nor efficient so it has to be done separately. (see sseg_test.cpp)
 
 
-use emitter follower config to prevent ghosting, alternatively a small mosfet or a baker clamp for common emitter should also work
-putting the delay in isr is too unreliable for portable code
+use emitter follower config to prevent ghosting, alternatively a small mosfet or a baker clamp for common emitter should also work.
+Putting the delay in isr is too unreliable for portable code.
