@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.2.0
+ * \version 0.3.0
  * \brief
  *
  *
@@ -142,7 +142,7 @@ namespace sseg
 		}
 
 		//all seems more efficient than another switch
-		static inline constexpr void turnOffAll()
+		static inline constexpr void turnOff([[maybe_unused]] unsigned int idx)
 		{
 			if constexpr(invert_polarity)
 				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = selectAllPinsMask();
@@ -153,9 +153,9 @@ namespace sseg
 		static inline constexpr void turnOn(unsigned int idx)
 		{
 			if constexpr(invert_polarity)
-				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = (1 << parseArgs<args...>(idx));
+				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = (1 << parseArgs<args...>(idx)); // lut?
 			else
-				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = (1 << parseArgs<args...>(idx));
+				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = (1 << parseArgs<args...>(idx)); // lut?
 		}
 
 	private:
@@ -192,7 +192,6 @@ namespace sseg
 		static_assert((getColumnAmount() > 0), "wrong number of parameters - provide pin position for each column");
 	};
 
-	//cache the column base/mask ????, then lookup by i
 	template <bool invert_polarity, /*uintptr_t gpio_addr, int Cpos,*/ uint32_t... args>
 	class CommonConfigScattered
 	{
@@ -201,22 +200,20 @@ namespace sseg
 			return (sizeof...(args))/2;
 		}
 
-		//all seems more efficient than another switch
-		static inline constexpr void turnOffAll() {
-			for(unsigned int i = 0; i < getColumnAmount(); i++) {
-				if constexpr(invert_polarity)
-					reinterpret_cast<GPIO_TypeDef*>(parseArgs<true, args...>(i))->BSRR = (1 << parseArgs<false, args...>(i));
-				else
-					reinterpret_cast<GPIO_TypeDef*>(parseArgs<true, args...>(i))->BRR = (1 << parseArgs<false, args...>(i));
-			}
+		static inline constexpr void turnOff(unsigned int idx) {
+			if constexpr(invert_polarity)
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BSRR = column_pin_mask_lut[idx];
+			else
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = column_pin_mask_lut[idx];
 		}
+
 
 		static inline constexpr void turnOn(unsigned int idx)
 		{
 			if constexpr(invert_polarity)
-				reinterpret_cast<GPIO_TypeDef*>(parseArgs<true, args...>(idx))->BRR = (1 << parseArgs<false, args...>(idx));
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = column_pin_mask_lut[idx];
 			else
-				reinterpret_cast<GPIO_TypeDef*>(parseArgs<true, args...>(idx))->BSRR = (1 << parseArgs<false, args...>(idx));
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BSRR = column_pin_mask_lut[idx];
 		}
 
 	private:
@@ -243,6 +240,27 @@ namespace sseg
 			}
 		}
 
+		static inline constexpr std::array<uint32_t, getColumnAmount()> column_gpio_addr_lut = []()
+		{
+			std::array<uint32_t, getColumnAmount()> arr;
+			for (uint32_t i = 0; i < arr.size(); i++) {
+				arr[i] = parseArgs<true, args...>(i);
+			}
+
+			return arr;
+		}();
+
+		//can be uint16_t but armv6m does extra shifting
+		static inline constexpr std::array<uint32_t, getColumnAmount()> column_pin_mask_lut = []()
+		{
+			std::array<uint32_t, getColumnAmount()> arr;
+			for (uint32_t i = 0; i < arr.size(); i++) {
+				arr[i] = (1 << parseArgs<false, args...>(i));
+			}
+
+			return arr;
+		}();
+
 		static_assert((getColumnAmount()%2 == 0), "wrong number of parameters - provide GPIO_BASE and pin position for each column");
 		static_assert((getColumnAmount() > 0), "wrong number of parameters - provide GPIO_BASE and pin position for each column");
 	};
@@ -260,10 +278,10 @@ namespace sseg
 
 		void defaultIrqHandler()
 		{
-			common_config::turnOffAll();
+			common_config::turnOff(cnt);
 
 			if(cnt == 0)
-				cnt = common_config::getColumnAmount();
+				cnt = common_config::getColumnAmount(); // 1 more than effective indexing
 
 			cnt--;
 
@@ -317,7 +335,6 @@ namespace sseg
 		int cnt = 0;
 		volatile uint32_t disp_cache[common_config::getColumnAmount()];
 
-		//requires c++20, otherwise gets messy
 		static inline constexpr std::array<uint32_t, 10> segment_lut_decimal = []()
 		{
 			std::array<uint32_t, 10> arr;
