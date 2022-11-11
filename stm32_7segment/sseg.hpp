@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.3.0
+ * \version 0.4.0
  * \brief
  *
  *
@@ -23,7 +23,7 @@ namespace jnk0le
 {
 namespace sseg
 {
-	template <uintptr_t gpio_addr, bool invert_polarity, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 0xffff>
+	template <bool invert_polarity, uintptr_t gpio_addr, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 0xffff>
 	class PinConfig
 	{
 	public:
@@ -206,7 +206,6 @@ namespace sseg
 			else
 				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = column_pin_mask_lut[idx];
 		}
-
 
 		static inline constexpr void turnOn(unsigned int idx)
 		{

@@ -12,7 +12,7 @@
 use as:
 
 ```
-using segment_config = jnk0le::sseg::PinConfig<GPIOA_BASE, false, 4, 2, 6, 5, 1, 3, 7, 0>;
+using segment_config = jnk0le::sseg::PinConfig<false, GPIOA_BASE, 4, 2, 6, 5, 1, 3, 7, 0>;
 using common_config = jnk0le::sseg::CommonConfigScattered<true, GPIOF_BASE,1, GPIOF_BASE,0, GPIOA_BASE,9, GPIOB_BASE,1>;
 
 //use this one if common outputs belong to a single port (more efficient)
