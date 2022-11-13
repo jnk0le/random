@@ -93,7 +93,7 @@ CM7_pipetest_tmpl:
 	nop.w
 
 	nop.w
-	bne.w 1b // branch can only be the old op
+	bne.w 1b
 
 	//end
 	nop.w
