@@ -104,8 +104,8 @@ don't work) effectively executing in 1 cycle (even though cm4 has 4 read ports f
 ## cortex m7
 
 there are another independent cm7 pipeline analysis: 
-https://www.quinapalus.com/cm7cycles.html
-https://www.researchgate.net/publication/355865610_Exploring_Cortex-M_Microarchitectural_Side_Channel_Information_Leakage
+- https://www.quinapalus.com/cm7cycles.html
+- https://www.researchgate.net/publication/355865610_Exploring_Cortex-M_Microarchitectural_Side_Channel_Information_Leakage
 
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
 ```
