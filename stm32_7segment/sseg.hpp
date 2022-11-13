@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.4.0
+ * \version 0.5.0
  * \brief
  *
  *
@@ -141,7 +141,6 @@ namespace sseg
 			return (sizeof...(args));
 		}
 
-		//all seems more efficient than another switch
 		static inline constexpr void turnOff([[maybe_unused]] unsigned int idx)
 		{
 			if constexpr(invert_polarity)
@@ -153,22 +152,12 @@ namespace sseg
 		static inline constexpr void turnOn(unsigned int idx)
 		{
 			if constexpr(invert_polarity)
-				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = (1 << parseArgs<args...>(idx)); // lut?
+				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = column_pin_mask_lut[idx];
 			else
-				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = (1 << parseArgs<args...>(idx)); // lut?
+				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = column_pin_mask_lut[idx];
 		}
 
 	private:
-
-		static inline constexpr uint32_t selectAllPinsMask()
-		{
-			uint32_t tmp = 0;
-
-			for(unsigned int i = 0; i<getColumnAmount(); i++)
-				tmp |= (1 << parseArgs<args...>(i));
-
-			return tmp;
-		}
 
 		//0 is first instead of 1
 		template<uint32_t Cpos, uint32_t... tail>
@@ -188,6 +177,26 @@ namespace sseg
 				}
 			}
 		}
+
+		static inline constexpr uint32_t selectAllPinsMask()
+		{
+			uint32_t tmp = 0;
+
+			for(unsigned int i = 0; i<getColumnAmount(); i++)
+				tmp |= (1 << parseArgs<args...>(i));
+
+			return tmp;
+		}
+
+		static inline constexpr std::array<uint32_t, getColumnAmount()> column_pin_mask_lut = []()
+		{
+			std::array<uint32_t, getColumnAmount()> arr;
+			for (uint32_t i = 0; i < arr.size(); i++) {
+				arr[i] = (1 << parseArgs<args...>(i));
+			}
+
+			return arr;
+		}();
 
 		static_assert((getColumnAmount() > 0), "wrong number of parameters - provide pin position for each column");
 	};

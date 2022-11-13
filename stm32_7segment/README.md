@@ -4,6 +4,7 @@
 - templated port and pin definition mapped to single bsrr write at compile time
 - templated digit columns number
 - requires c++20 compiler
+- optimized for ISR execution performance
 
 ![example circuit](example_circuit.png "example emiter follower config")
 
