@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.5.0
+ * \version 0.6.0
  * \brief
  *
  *
@@ -152,9 +152,9 @@ namespace sseg
 		static inline constexpr void turnOn(unsigned int idx)
 		{
 			if constexpr(invert_polarity)
-				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = column_pin_mask_lut[idx];
+				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 			else
-				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = column_pin_mask_lut[idx];
+				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 		}
 
 	private:
@@ -188,9 +188,15 @@ namespace sseg
 			return tmp;
 		}
 
-		static inline constexpr std::array<uint32_t, getColumnAmount()> column_pin_mask_lut = []()
+	#if __ARM_ARCH_7M__ || __ARM_ARCH_7EM__ || __riscv_zba
+		typedef uint16_t pinlut_T;
+	#else
+		typedef uint32_t pinlut_T;
+	#endif
+
+		static inline constexpr std::array<pinlut_T, getColumnAmount()> column_pin_mask_lut = []()
 		{
-			std::array<uint32_t, getColumnAmount()> arr;
+			std::array<pinlut_T, getColumnAmount()> arr;
 			for (uint32_t i = 0; i < arr.size(); i++) {
 				arr[i] = (1 << parseArgs<args...>(i));
 			}
@@ -211,17 +217,17 @@ namespace sseg
 
 		static inline constexpr void turnOff(unsigned int idx) {
 			if constexpr(invert_polarity)
-				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BSRR = column_pin_mask_lut[idx];
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BSRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 			else
-				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = column_pin_mask_lut[idx];
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 		}
 
 		static inline constexpr void turnOn(unsigned int idx)
 		{
 			if constexpr(invert_polarity)
-				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = column_pin_mask_lut[idx];
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 			else
-				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BSRR = column_pin_mask_lut[idx];
+				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BSRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 		}
 
 	private:
@@ -258,10 +264,15 @@ namespace sseg
 			return arr;
 		}();
 
-		//can be uint16_t but armv6m does extra shifting
-		static inline constexpr std::array<uint32_t, getColumnAmount()> column_pin_mask_lut = []()
+	#if __ARM_ARCH_7M__ || __ARM_ARCH_7EM__ || __riscv_zba
+		typedef uint16_t pinlut_T;
+	#else
+		typedef uint32_t pinlut_T;
+	#endif
+
+		static inline constexpr std::array<pinlut_T, getColumnAmount()> column_pin_mask_lut = []()
 		{
-			std::array<uint32_t, getColumnAmount()> arr;
+			std::array<pinlut_T, getColumnAmount()> arr;
 			for (uint32_t i = 0; i < arr.size(); i++) {
 				arr[i] = (1 << parseArgs<false, args...>(i));
 			}
