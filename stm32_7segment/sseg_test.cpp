@@ -42,12 +42,15 @@ void sseg_init_all()
 {
 	RCC->AHBENR |= RCC_AHBENR_GPIOAEN | RCC_AHBENR_GPIOBEN | RCC_AHBENR_GPIOFEN;
 
-	//initialize to disabled state ??
-
 	//common
 	GPIOB->MODER |= (0b01 << GPIO_MODER_MODER1_Pos);
 	GPIOF->MODER |= (0b01 << GPIO_MODER_MODER0_Pos) | (0b01 << GPIO_MODER_MODER1_Pos);
 	GPIOA->MODER |= (0b01 << GPIO_MODER_MODER9_Pos);
+
+	//initialize to disabled state (common scattered will blink first digit on all columns on startup otherwise)
+	GPIOB->BSRR = GPIO_BSRR_BS_1;
+	GPIOF->BSRR = GPIO_BSRR_BS_0 | GPIO_BSRR_BS_1;
+	GPIOA->BSRR = GPIO_BSRR_BS_9;
 
 	//segment
 	GPIOA->MODER |= (0b01 << GPIO_MODER_MODER4_Pos)
