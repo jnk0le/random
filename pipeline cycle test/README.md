@@ -74,8 +74,8 @@ at word aligned boundaries
 
 [cm3] post and pre indexed loads cannot be chained back to back at all
 
-[cm4] post and pre indexed loads cannot be chained back to back on same base address (alternating 2 different
- bases works)
+[cm4] post and pre indexed loads cannot be chained back to back on same register base address (alternating 2 different
+ registers works)
 
 [cm3] only first load in a chain can be pre or post indexed mode
 
@@ -93,8 +93,8 @@ memory block (e.g. SRAM1 vs SRAM2 (and CCM) on f407)
 [both] immediate offset (+ pre and post indexed on cm4) store placed after load, removes the stall, 
 making effective execution of 1 IPC, no need to forward data from preceding load
 
-[both] post and pre indexed stores cannot be chained back to back on same base address (alternating 2 different
- bases works)
+[both] post and pre indexed stores cannot be chained back to back on same register base address (alternating 2 different
+ registers works)
 
 [both] reg offset store execute in 2 cycles. it can eat following nop (reg + imm or `mov` instructions 
 don't work) effectively executing in 1 cycle (even though cm4 has 4 read ports for MAC)
