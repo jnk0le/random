@@ -148,6 +148,8 @@ e.g. following snippet doesn't stall:
 	ldr.w r5, [r14, r1] // r1 is r0 + 4
 ```
 
+`add`, `sub` and non shifting `mov` can enter early alu from younger op only.
+
 shifts and rotations (aliased to mov) can enter early alu from younger or older op provided that the 
 other instruction is not inline shifted operand one or bitmanip (e.g. `rev`, `bfi`, `uxtab`) op using early alu shifter
 
