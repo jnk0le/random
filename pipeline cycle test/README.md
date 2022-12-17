@@ -238,6 +238,10 @@ even when ldr result is consumed as a late ALU operand (in e.g. inline shifted o
 
 byte/half loads can be consumed in secend cycle in late ALU (1 extra cycle of result latency), or third in early ALU
 
+result of a word load cannot be consumed next cycle by instruction that consumes one of the operands
+in early ALU (e.g. operand2 shift or `uxtab`) even though this result is consumed in late ALU
+(byte and half loads are not affected, probably related to how load trapping is implemented)
+
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
 simultaneous access to dtcm and dcache at the same (even or odd) bank is slippery (2 cycles of loop invariant stalls) 
