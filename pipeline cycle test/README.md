@@ -221,7 +221,7 @@ legend:
 
 ### multiplication, MAC
 
-can't dual issue wrt each other(when preceding instruction pair cantains any multiply/MAC instruction, slippery otherwise)
+can't dual issue wrt each other (when preceding instruction pair cantains any multiply/MAC instruction, slippery otherwise)
 
 can't dual issue with stores when preceding instruction pair contains any multiply/MAC instruction. (slippery otherwise)
 Theoretically long MAC (4R due to separately adresses RdLo and RdHi) combined with reg offset store (3R) can exceed 
