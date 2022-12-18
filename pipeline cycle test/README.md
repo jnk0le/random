@@ -274,6 +274,8 @@ cannot dual issue with preceeding or folowing instructions
 
 takes `ceil(regnum/2)` cycles to execute
 
+store multiple requires 8 byte memory alignment otherwise storing even number of registers will add 1 extra cycle to execution
+
 ### branching/cmp
 
 flag setting seems to happen in late alu even when instruction executes early
