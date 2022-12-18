@@ -189,7 +189,7 @@ issued with operand2 inline_shifted_reg/shifted_constant instruction
 
 inline shifted/rotated (register) operand is consumed in early ALU (source must be available a cycle earlier than normally)
 
-operand2 dual issuing matrix (except cmp - not tested yet)
+operand2 dual issuing matrix
 
 | younger\older op | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -274,9 +274,11 @@ cannot dual issue with preceeding or folowing instructions
 
 takes `ceil(regnum/2)` cycles to execute
 
-
 ### branching/cmp
 
+flag setting seems to happen in late alu even when instruction executes early
+
+cmp instruction executes similarly to regular (operand2) ALU instructions (not possible to check if it goes through early alu)
 
 there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
 instruction generating flags have to be placed at least 3 cycles before branch (there may be a window like in cm3 TBD)
