@@ -173,26 +173,20 @@ cycle then slippery condition turns into regular stall (further rules will assum
 bitfield/dsp instruction (e.g. `uxtb`,`uxtab`,`rev`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
 
-`sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, instructions can't source result of another 
-bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction from a previous cycle 
-(`uxtb` or `uadd8` and regular ALU can)
+`sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, execute in early alu and can't source from late ALU of previous 
+cycle (source must be available a cycle earlier than normally)
 
-in `bfi`, `pkh{bt,tb}` and `{s,u}xta{b,h,b16}` instructions the "extracted" or shifted (even when no shift in case of `pkhbt`) register 
-can't be sourced from previous cycle of another bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction, 
+in `bfi`, `pkh{bt,tb}` and `{s,u}xta{b,h,b16}` instructions the "extracted" or shifted (even when no shift in case of `pkhbt`) 
+register consume its operand in early ALU (source must be available a cycle earlier than normally)
 
-`pkhtb` also can't source result of another bitfield/dsp or operand2 inline_shifted_reg/shifted_constant instruction from a previous 
-cycle by the first operand (Rn)
+`pkhtb` also the first operand (Rn) needs to be available for early ALU (source must be available a cycle earlier than normally)
 
 `bfi`, `bfc`, `sbfx`, `ubfx`, `rbit`, `rev`, `rev16`, `revsh`, `{s,u}xta{b,h,b16}`, `pkh{bt,tb}` instructions can't be dual 
 issued with operand2 inline_shifted_reg/shifted_constant instruction 
 
-some cases (incl load to use) might be younger/older op sensitive for bitfield/dsp instructions (TBD)
-
 ### operand2
 
-inline shifted/rotated (register) operand needs to be available one cycle earlier than for regular ALU 
-(can be sourced from younger op of simple alu, when sourcing from older op of simple alu stalls as a younger, sliperry 
-as an older)
+inline shifted/rotated (register) operand is consumed in early ALU (source must be available a cycle earlier than normally)
 
 operand2 dual issuing matrix (except cmp - not tested yet)
 
@@ -258,8 +252,6 @@ unaligned loads are severely underperforming. +3 cycles as younger op, +4 as old
 are unaligned loads (banks or unaligment amount doesn't matter), -1 if the other load is aligned and targets the same bank 
 that is accessed first by the unaligned one (part at lower address)
 
-address dependency might be younger/older op sensitive (TBD)
-
 ### stores
 
 cannot dual issue two stores
@@ -274,8 +266,6 @@ unaligned store every cycle, the throughput is 4 cycles per one store (unalignme
 store buffer doesn't merge series of consecutive stores, so `strb` and `strh` will clog the store buffer with RMW operations. 
 When doing one byte/half store every cycle, the throughput is 4 cycles per store if targeting one bank, 2 cycles per store 
 if targeting even/odd bank and 2.4 cycles for unit stride advancing `strb`. (`strh` is still 2 cycles)
-
-address dependency might be younger/older op sensitive (TBD)
 
 ### load/store pair/multiple (incl pushpop)
 
