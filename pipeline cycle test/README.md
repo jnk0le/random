@@ -156,6 +156,8 @@ other instruction is not inline shifted operand one or bitmanip (e.g. `rev`, `bf
 the only case when both instructions can be forwarded from early alu (to early alu next cycle) is `add`, `sub` or non shifting 
 `mov` in younger slot and simple shift or rotation in older slot
 
+flags generated in early ALU cannot be forwarded to late ALU in 0 cycles (slippery)
+
 ### bitfield and DSP instructions except multiplication (e.g. `uxtb`,`uxtab`,`ubfi`,`pkhbt`,`uadd8`,`qadd`,`clz`,`rev`)
 
 cannot dual issue wrt each other
@@ -221,9 +223,9 @@ legend:
 
 ### multiplication, MAC
 
-can't dual issue wrt each other (when preceding instruction pair cantains any multiply/MAC instruction, slippery otherwise)
+can't dual issue wrt each other (slippery)
 
-can't dual issue with stores when preceding instruction pair contains any multiply/MAC instruction. (slippery otherwise)
+can't dual issue with stores (slippery)
 Theoretically long MAC (4R due to separately adresses RdLo and RdHi) combined with reg offset store (3R) can exceed 
 total number of RF read ports (6), but regular `mul` with imm offset store behaves exactly the same.
 
@@ -244,8 +246,8 @@ in early ALU (e.g. operand2 shift or `uxtab`) even though this result is consume
 
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
-simultaneous access to dtcm and dcache at the same (even or odd) bank is slippery (2 cycles of loop invariant stalls) 
-if the load pairs are targeting different bank than previous ones (reg offset or immediate doesn't matter)
+xan't do simultaneous access to dtcm and dcache at the same (even or odd) bank (slippery if the load 
+pairs are targeting different bank than previous ones (reg offset or immediate doesn't matter))
 
 pre indexed and post indexed loads can be dual issued if there is no bank conflict and resulting address is not reused 
 in same cycle (can be issued back to back every cycle)
