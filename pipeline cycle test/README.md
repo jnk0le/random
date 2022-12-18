@@ -124,9 +124,16 @@ non obvious findings:
 
 ### overall
 
-there is no `nop` elimination, they are just not creating execution stalls as things listed below
+there is no `nop` elimination, they are just not creating execution stalls as things listed below 
+It is recommended to align loop entries by enlarging instructions with `.w` suffix rather than using straight `nop` alignment (`.align n`)
 
 `movw` + `movt` pair can dual issue with mutual dependency
+
+"slippery condition" in my observations seems to be sliding execution by a half cycle without taking stall at branch point.
+i.e 20 instructions of which one is a branch, execute in exactly 10 cycles with 2 cycles of loop invariant stalls
+(as measured in CM7_pipetest_tmpl.S) That is most probably an optimization for typical 
+code from compilers (aka workaround for a lot of bs listed below).
+It could also be a source of false-positives in micro benchmarking of assembly implementations.
 
 there is an early and late ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
 be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU 
@@ -162,13 +169,7 @@ flags generated in early ALU cannot be forwarded to late ALU in 0 cycles (slippe
 
 cannot dual issue wrt each other
 
-if first instruction was placed in "younger" or "older" slot, all folowing bitfield/dsp instructions also need to be placed
-in the same slot, distance inbetween occurences doesn't seem to matter
-
-if the bitfield/dsp instructions are placed in older slot there will be a slippery condition with 2 cycles of loop 
-invariant stalls no matter of the amount or dispersion of bitfield/dsp instructions. Due to this there may be extra 
-stalls when combined with other stall sources (listed below in this chapter), if result is consumed by alu in (expectable) younger slot next 
-cycle then slippery condition turns into regular stall (further rules will assume younger op placement)
+the bitfield/dsp instructions must be placed in younger op (slippery otherwise)
 
 bitfield/dsp instruction (e.g. `uxtb`,`uxtab`,`rev`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
@@ -276,13 +277,11 @@ takes `ceil(regnum/2)` cycles to execute
 
 ### branching/cmp
 
-[] 
 
 there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
 instruction generating flags have to be placed at least 3 cycles before branch (there may be a window like in cm3 TBD)
 
-the "slippery condition" seems to not be related to branching (sums with extra cycles of branch misprediction
-when flags are not forwarded)
+the slippery condition seems to not be related to branch mispredictions (sums with misprediction cycles)
 
 TBD
 
