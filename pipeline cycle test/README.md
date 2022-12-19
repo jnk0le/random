@@ -283,7 +283,7 @@ flag setting seems to happen in late alu even when instruction executes early
 cmp instruction executes similarly to regular (operand2) ALU instructions (not possible to check if it goes through early alu)
 
 there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
-instruction generating flags have to be placed at least 3 cycles before branch (there may be a window like in cm3 TBD)
+instruction generating flags have to be placed at least 3 cycles before branch
 
 the slippery condition seems to not be related to branch mispredictions (sums with misprediction cycles)
 
