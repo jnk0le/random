@@ -125,7 +125,7 @@ non obvious findings:
 ### overall
 
 there is no `nop` elimination, they are just not creating execution stalls as things listed below 
-It is recommended to align loop entries by enlarging instructions with `.w` suffix rather than using straight `nop` alignment (`.align n`)
+It is recommended to align loop entries by enlarging instructions with `.w` suffix rather than using straight `nop` alignment (e.g. `.align 3`)
 
 `movw` + `movt` pair can dual issue with mutual dependency
 
@@ -133,7 +133,15 @@ It is recommended to align loop entries by enlarging instructions with `.w` suff
 i.e 20 instructions of which one is a branch, execute in exactly 10 cycles with 2 cycles of loop invariant stalls
 (as measured in CM7_pipetest_tmpl.S) That is most probably an optimization for typical 
 code from compilers (aka workaround for a lot of bs listed below).
+It is observable as a swap of the young and old opcode slot.
 It could also be a source of false-positives in micro benchmarking of assembly implementations.
+
+The "post loop entry" alignment seems to be necessary to avoid stalls. 
+e.g. sometimes four `.n` instructions (alternatively multi cycle `.w` instr + 2 `.n` ones) need to just be in close proximity to each other
+and sometimes there is a hard wall (relative to absolute number of instructions from loop start, not the cache lines etc.)
+that no .n instruction can't cross even though all 4 instructions are paired next to each other (across the wall).
+Putting new compressed instruction depends on if the previous instructions were compressed, i.e. 4 `.n` instructions at 
+beggining of the loop will make further compression easier (effect seems to carry forward and far, but not into the next itersation)
 
 there is an early and late ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
 be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU 
