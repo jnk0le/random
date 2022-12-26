@@ -137,7 +137,7 @@ It is observable as a swap of the young and old opcode slot.
 It could also be a source of false-positives in micro benchmarking of assembly implementations.
 
 The "post loop entry" alignment seems to be necessary to avoid stalls. 
-e.g. sometimes four `.n` instructions (alternatively multi cycle `.w` instr + 2 `.n` ones) need to just be in close proximity to each other
+e.g. sometimes four `.n` instructions need to just be in close proximity to each other
 and sometimes there is a hard wall (relative to absolute number of instructions from loop start, not the cache lines etc.)
 that no .n instruction can't cross even though all 4 instructions are paired next to each other (across the wall).
 Putting new compressed instruction depends on if the previous instructions were compressed, i.e. 4 `.n` instructions at 
