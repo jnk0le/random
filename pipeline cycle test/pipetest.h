@@ -40,6 +40,12 @@
 	 */
 	uint32_t CM7_pipetest_tmpl(void);
 
+	/*!
+	 * \brief ch32v (riscv) dedicated template fore pipeline testing
+	 * \return number of cycles the code took to run
+	 */
+	uint32_t ch32v_pipetest_tmpl(void);
+
 
 #ifdef __cplusplus
 	}

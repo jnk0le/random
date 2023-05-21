@@ -305,3 +305,7 @@ TBD
 ## RI5CY
 
 TBD
+
+## ch32v003
+
+TBD
