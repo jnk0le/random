@@ -13,7 +13,7 @@ cortex m0+ not yet available
 
 can't use `DWT.CYCCNT`, instead uses `SysTick`
 
-requires maximum 24bit reload value for correct handling of underflow:
+requires maximum 24bit reload value for correct handling of arithmetic underflow:
 ```
 SysTick->LOAD = 0x00ffffff; // max value
 SysTick->CTRL = SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk; // enable SysTick with cpu clock
@@ -307,5 +307,13 @@ TBD
 TBD
 
 ## ch32v003
+
+Uses proprietary WCH systick.
+
+Requires HCLK/1 and full 32bit reload value for proper handling of arithmetic underflow
+```
+	SysTick->CMP = 0xffffffff;
+	SysTick->CTLR = 0b1101; // of course there are no bit definitions in headers
+```
 
 TBD
