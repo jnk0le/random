@@ -310,7 +310,7 @@ TBD
 
 Uses proprietary WCH systick.
 
-Requires HCLK/1 and full 32bit reload value for proper handling of arithmetic underflow
+Requires HCLK/1 and full 32bit reload value for proper handling of arithmetic underflow:
 ```
 	SysTick->CMP = 0xffffffff;
 	SysTick->CTLR = 0b1101; // of course there are no bit definitions in headers
