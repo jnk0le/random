@@ -125,7 +125,7 @@ non obvious findings:
 ### overall
 
 there is no `nop` elimination, they are just not creating execution stalls as things listed below 
-It is recommended to align loop entries by enlarging instructions with `.w` suffix rather than using straight `nop` alignment (e.g. `.align 3`)
+It is recommended to align loop entries by enlarging instructions with `.w` suffix rather than using straight `nop` alignment (e.g. `.balign 8`)
 
 `movw` + `movt` pair can dual issue with mutual dependency
 
@@ -316,4 +316,33 @@ Requires HCLK/1 and full 32bit reload value for proper handling of arithmetic un
 	SysTick->CTLR = 0b1101; // of course there are no bit definitions in headers
 ```
 
-TBD
+findings:
+
+unaligned long instructions seem to sometimes have initial 1 cycle penalty
+
+loads stores are 2 cycle
+
+unaligned (word/half) loads/stores trigger an unaligned load/store exception.
+(there is no `mtval` csr register)
+
+taken branch/jump is 
+- at 0ws
+- - 3 cycles
+- - +1 cycle when jumping to unaligned 32bit instruction
+- at 1ws:
+- - 4 cycles from an earlier op
+- - 5 cycles from an later op
+- - +1 cycle when jumping to unaligned location 
+
+to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts 
+(there is no `mie` csr register)
+
+
+uncore findings:
+
+FLASH is organized in 32 bit (4byte) lines
+
+2 waitstate option in `FLASH->ACTLR` (aka `FLASH->ACR`), which is defined in headers but stated as 
+invalid in RM, seems to enable 3 waitstates. The corresponding 3ws cofig (not in headers) is also 
+doing same 3 waitstates.
+

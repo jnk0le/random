@@ -68,6 +68,7 @@ ch32v_pipetest_tmpl:
 	sub a0, a0, t1 // get cycle diff
 	addi a0, a0, (2-2) // adjust the baseline
 	// -2 cycles from systick load 2 from taken branch at 0ws
+	// for 1ws you need to comment out 2 nops and add 2 extra cycles from taken branch (2+2-2)
 
 	lw s0, 0(sp)
 	lw s1, 4(sp)
