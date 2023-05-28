@@ -337,6 +337,7 @@ taken branch/jump is
 to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts 
 (there is no `mie` csr register)
 
+bits [9:2] of `mtvec` are hardwired to zero, leading to 1KiB bootloader granularity.
 
 uncore findings:
 
