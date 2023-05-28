@@ -338,6 +338,7 @@ to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x8
 (there is no `mie` csr register)
 
 bits [9:2] of `mtvec` are hardwired to zero, leading to 1KiB bootloader granularity.
+Entry in unvectored mode also needs to be 1KiB aligned.
 
 uncore findings:
 
