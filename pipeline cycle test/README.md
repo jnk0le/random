@@ -152,7 +152,7 @@ result of early alu can be forwarded to late alu in 0 cycles, or early alu next 
 - `mov` with simple and constructed constants (not shifted ones) + simple shifts and rotations (aliased to mov) except rrx
 - `rev`, `rev16`, `revsh`, `rbit` (result can't be used by AGU, another `rev*`,`rbit` instruction or as inline shifted operand next cycle)
 
-`add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the older op
+`add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the later op
 
 e.g. following snippet doesn't stall:
 ```
@@ -163,13 +163,13 @@ e.g. following snippet doesn't stall:
 	ldr.w r5, [r14, r1] // r1 is r0 + 4
 ```
 
-`add`, `sub` and non shifting `mov` can enter early alu from younger op only.
+`add`, `sub` and non shifting `mov` can enter early alu from earlier op only.
 
-shifts and rotations (aliased to mov) can enter early alu from younger or older op provided that the 
+shifts and rotations (aliased to mov) can enter early alu from earlier or later op provided that the 
 other instruction is not inline shifted operand one or bitmanip (e.g. `rev`, `bfi`, `uxtab`) op using early alu shifter
 
 the only case when both instructions can be forwarded from early alu (to early alu next cycle) is `add`, `sub` or non shifting 
-`mov` in younger slot and simple shift or rotation in older slot
+`mov` in earlier slot and simple shift or rotation in later slot
 
 flags generated in early ALU cannot be forwarded to late ALU in 0 cycles (slippery)
 
@@ -177,7 +177,7 @@ flags generated in early ALU cannot be forwarded to late ALU in 0 cycles (slippe
 
 cannot dual issue wrt each other
 
-the bitfield/dsp instructions must be placed in younger op (slippery otherwise)
+the bitfield/dsp instructions must be placed in earlier op (slippery otherwise)
 
 bitfield/dsp instruction (e.g. `uxtb`,`uxtab`,`rev`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
@@ -199,7 +199,7 @@ inline shifted/rotated (register) operand is consumed in early ALU (source must 
 
 operand2 dual issuing matrix
 
-| younger\older op | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
+| earlier\later op | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
 | --- | --- | --- | --- | --- | --- | --- |
 | simple constant    |  +  |  +  |  +  |  +  |  +  |  +  |
 | constant pattern   |  +  |  +  |  +  |  +  |  +  |  +  |
@@ -257,7 +257,7 @@ in same cycle (can be issued back to back every cycle)
 
 `pld` instruction can stall due to address dependency (same as normal loads)
 
-unaligned loads are severely underperforming. +3 cycles as younger op, +4 as older op or when both younger and older ops 
+unaligned loads are severely underperforming. +3 cycles as earlier op, +4 as later op or when both earlier and later ops 
 are unaligned loads (banks or unaligment amount doesn't matter), -1 if the other load is aligned and targets the same bank 
 that is accessed first by the unaligned one (part at lower address)
 
