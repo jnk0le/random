@@ -318,7 +318,7 @@ Requires HCLK/1 and full 32bit reload value for proper handling of arithmetic un
 
 findings:
 
-unaligned long instructions seem to sometimes have initial 1 cycle penalty
+unaligned long instructions seem to sometimes have 1 cycle penalty (mostly loop invariant)
 
 loads stores are 2 cycle
 
@@ -330,9 +330,11 @@ taken branch/jump is
 - - 3 cycles
 - - +1 cycle when jumping to unaligned 32bit instruction
 - at 1ws:
-- - 4 cycles from an earlier op
-- - 5 cycles from an later op
+- - 4 cycles from an earlier op (in synthetic scenario)
+- - 5 cycles from an later op (in synthetic scenario)
 - - +1 cycle when jumping to unaligned location 
+- - executing 2 cycle instructions might cause a swap of the earlier/later op timmings, 
+addition of long instruction might further affect it (ie. return to "normal")
 
 to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts 
 (there is no `mie` csr register)
@@ -345,6 +347,6 @@ uncore findings:
 FLASH is organized in 32 bit (4byte) lines
 
 2 waitstate option in `FLASH->ACTLR` (aka `FLASH->ACR`), which is defined in headers but stated as 
-invalid in RM, seems to enable 3 waitstates. The corresponding 3ws cofig (not in headers) is also 
-doing same 3 waitstates.
+invalid in RM, seems to enable 3 or 4 waitstates. The corresponding 3ws cofig (not in headers) is also 
+doing same 3 or 4 waitstates.
 
