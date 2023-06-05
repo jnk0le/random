@@ -339,7 +339,7 @@ addition of long instruction might further affect it (ie. return to "normal")
 to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts 
 (there is no `mie` csr register)
 
-bits [9:2] of `mtvec` are hardwired to zero, leading to 1KiB bootloader granularity.
+bits [9:2] of `mtvec` are hardwired to zero (minimum 1KiB granularity).
 Entry in unvectored mode also needs to be 1KiB aligned.
 
 uncore findings:
@@ -349,4 +349,7 @@ FLASH is organized in 32 bit (4byte) lines
 2 waitstate option in `FLASH->ACTLR` (aka `FLASH->ACR`), which is defined in headers but stated as 
 invalid in RM, seems to enable 3 or 4 waitstates. The corresponding 3ws cofig (not in headers) is also 
 doing same 3 or 4 waitstates.
+
+1920 byte area at 0x1ffff000 can be reprogrammed with custom bootloaders.
+It's expected to be entered by performing system reset with `MODE` bit set in `FLASH_STATR` register.
 
