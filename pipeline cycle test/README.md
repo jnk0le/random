@@ -394,7 +394,7 @@ Using wavedrom.
  { bits: 2, name: `uimm[2:1]` },
  { bits: 3, name: 'rs1\'' },
  { bits: 3, name: `uimm[0|4:3]` },
- { bits: 3, name: 0x1, attr: ['xw.c.sb'] },
+ { bits: 3, name: 0x5, attr: ['xw.c.sb'] },
 ]}
 ```
 
