@@ -353,3 +353,60 @@ doing same 3 or 4 waitstates.
 1920 byte area at 0x1ffff000 can be reprogrammed with custom bootloaders.
 It's expected to be entered by performing system reset with `MODE` bit set in `FLASH_STATR` register.
 
+### encodings of custom instructions (aka "xw" extension)
+
+Of course there is no wch documentation of those instructions
+
+Using wavedrom.
+
+#### xw.c.lbu
+
+```
+{reg:[
+ { bits: 2, name: 0x0, attr: ['xw.c.lbu'] },
+ { bits: 3, name: 'rd\'' },
+ { bits: 2, name: `uimm[2:1]` },
+ { bits: 3, name: 'rs1\'' },
+ { bits: 3, name: `uimm[0|4:3]` },
+ { bits: 3, name: 0x1, attr: ['xw.c.lbu'] },
+]}
+```
+
+#### xw.c.lhu
+
+```
+{reg:[
+ { bits: 2, name: 0x2, attr: ['xw.c.lhu'] },
+ { bits: 3, name: 'rd\'' },
+ { bits: 2, name: `uimm[2:1]` },
+ { bits: 3, name: 'rs1\'' },
+ { bits: 3, name: `uimm[5:3]` },
+ { bits: 3, name: 0x1, attr: ['xw.c.lhu'] },
+]}
+```
+
+#### xw.c.sb
+
+```
+{reg:[
+ { bits: 2, name: 0x0, attr: ['xw.c.sb'] },
+ { bits: 3, name: 'rd\'' },
+ { bits: 2, name: `uimm[2:1]` },
+ { bits: 3, name: 'rs1\'' },
+ { bits: 3, name: `uimm[0|4:3]` },
+ { bits: 3, name: 0x1, attr: ['xw.c.sb'] },
+]}
+```
+
+#### xw.c.sh
+
+```
+{reg:[
+ { bits: 2, name: 0x2, attr: ['xw.c.sh'] },
+ { bits: 3, name: 'rd\'' },
+ { bits: 2, name: `uimm[2:1]` },
+ { bits: 3, name: 'rs1\'' },
+ { bits: 3, name: `uimm[5:3]` },
+ { bits: 3, name: 0x5, attr: ['xw.c.sh'] },
+]}
+```
