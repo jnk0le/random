@@ -352,6 +352,7 @@ doing same 3 or 4 waitstates.
 
 1920 byte area at 0x1ffff000 can be reprogrammed with custom bootloaders.
 It's expected to be entered by performing system reset with `MODE` bit set in `FLASH_STATR` register.
+This will cause remap to 0x00000000.
 
 ### encodings of custom instructions (aka "xw" extension)
 
