@@ -333,7 +333,7 @@ taken branch/jump is
 - - 4 cycles from an earlier op (in synthetic scenario)
 - - 5 cycles from an later op (in synthetic scenario)
 - - +1 cycle when jumping to unaligned location 
-- - executing 2 cycle instructions might cause a swap of the earlier/later op timmings, 
+- - prior execution of 2 cycle instructions might cause a swap of the earlier/later op timmings, 
 addition of long instruction might further affect it (ie. return to "normal")
 
 to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts 
