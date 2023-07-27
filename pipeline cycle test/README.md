@@ -239,17 +239,14 @@ inline_shifted_reg/shifted_constant instructions as well as execute in any opcod
 ### loads
 
 word loads can be consumed by late ALU in next cycle, except instructions that consume one of the operands in early ALU,
-even when ldr result is consumed as a late ALU operand (in e.g. inline shifted op2 or uxtab)
+(e.g. inline shifted operand2 shift or `uxtab`), even though this result is consumed in late ALU
+(byte and half loads are not affected, probably related to how load bus-fault trapping is implemented)
 
 byte/half loads can be consumed in secend cycle in late ALU (1 extra cycle of result latency), or third in early ALU
 
-result of a word load cannot be consumed next cycle by instruction that consumes one of the operands
-in early ALU (e.g. operand2 shift or `uxtab`) even though this result is consumed in late ALU
-(byte and half loads are not affected, probably related to how load trapping is implemented)
-
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
-xan't do simultaneous access to dtcm and dcache at the same (even or odd) bank (slippery if the load 
+can't do simultaneous access to dtcm and dcache at the same (even or odd) bank (slippery if the load 
 pairs are targeting different bank than previous ones (reg offset or immediate doesn't matter))
 
 pre indexed and post indexed loads can be dual issued if there is no bank conflict and resulting address is not reused 
