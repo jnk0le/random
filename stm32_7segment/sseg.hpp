@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.6.0
+ * \version 0.7.0
  * \brief
  *
  *
@@ -23,7 +23,7 @@ namespace jnk0le
 {
 namespace sseg
 {
-	template <bool invert_polarity, uintptr_t gpio_addr, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 0xffff>
+	template <bool invert_polarity, uintptr_t gpio_addr, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 17>
 	class PinConfig
 	{
 	public:
@@ -35,11 +35,28 @@ namespace sseg
 		{
 			uint32_t tmp = (A | B | C | D | E | F | G) << 16;
 
+			if constexpr(DPpos < 16) // only 16 IOs per port
+				tmp |= DP << 16;
+
 			if constexpr(invert_polarity)
 				tmp = (tmp >> 16) | (tmp << 16);
 
 			return tmp;
 		}
+
+		static inline constexpr uint32_t mapToBsrrDotOn()
+		{
+			static_assert(DPpos < 16, "dot position is not specified");
+
+			uint32_t tmp = DP;
+
+			if constexpr(invert_polarity)
+				tmp = (tmp >> 16) | (tmp << 16);
+
+			return tmp;
+		}
+
+		//dot off pattern???
 
 		static inline constexpr uint32_t mapToBsrrPatternDigit(uint32_t i)
 		{
@@ -95,7 +112,7 @@ namespace sseg
 				tmp |= (A | B) << 16;
 				break;
 			case 12:
-				tmp = A | D | E | F ;
+				tmp = A | D | E | F;
 				tmp |=  (B | C | G) << 16;
 				break;
 			case 13:
@@ -114,6 +131,10 @@ namespace sseg
 				tmp = (A | B | C | D | E | F | G) << 16;
 			}
 
+			// always turn off dot ??
+			if constexpr(DPpos < 16) // only 16 IOs per port
+				tmp |= DP << 16;
+
 			if constexpr(invert_polarity)
 				tmp = (tmp >> 16) | (tmp << 16);
 
@@ -130,18 +151,18 @@ namespace sseg
 		static constexpr int E = 1 << Epos;
 		static constexpr int F = 1 << Fpos;
 		static constexpr int G = 1 << Gpos;
-		static constexpr int DP = 1 << DPpos; //???
+		static constexpr int DP = 1 << DPpos;
 	};
 
 	template <bool invert_polarity, uintptr_t gpio_addr, uint32_t... args>
 	class CommonConfig
 	{
 	public:
-		static inline constexpr unsigned int getColumnAmount() {
+		static inline constexpr uint32_t getColumnAmount() {
 			return (sizeof...(args));
 		}
 
-		static inline constexpr void turnOff([[maybe_unused]] unsigned int idx)
+		static inline constexpr void turnOff([[maybe_unused]] uint32_t idx)
 		{
 			if constexpr(invert_polarity)
 				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BSRR = selectAllPinsMask();
@@ -149,7 +170,7 @@ namespace sseg
 				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = selectAllPinsMask();
 		}
 
-		static inline constexpr void turnOn(unsigned int idx)
+		static inline constexpr void turnOn(uint32_t idx)
 		{
 			if constexpr(invert_polarity)
 				reinterpret_cast<GPIO_TypeDef*>(gpio_addr)->BRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
@@ -161,7 +182,7 @@ namespace sseg
 
 		//0 is first instead of 1
 		template<uint32_t Cpos, uint32_t... tail>
-		[[gnu::always_inline]] static inline constexpr uint32_t parseArgs(unsigned int finish_cond)
+		[[gnu::always_inline]] static inline constexpr uint32_t parseArgs(uint32_t finish_cond)
 		{
 			if(finish_cond > getColumnAmount()) {
 				__builtin_unreachable();
@@ -182,7 +203,7 @@ namespace sseg
 		{
 			uint32_t tmp = 0;
 
-			for(unsigned int i = 0; i<getColumnAmount(); i++)
+			for(uint32_t i = 0; i<getColumnAmount(); i++)
 				tmp |= (1 << parseArgs<args...>(i));
 
 			return tmp;
@@ -211,18 +232,18 @@ namespace sseg
 	class CommonConfigScattered
 	{
 	public:
-		static inline constexpr unsigned int getColumnAmount() {
+		static inline constexpr uint32_t getColumnAmount() {
 			return (sizeof...(args))/2;
 		}
 
-		static inline constexpr void turnOff(unsigned int idx) {
+		static inline constexpr void turnOff(uint32_t idx) {
 			if constexpr(invert_polarity)
 				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BSRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 			else
 				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
 		}
 
-		static inline constexpr void turnOn(unsigned int idx)
+		static inline constexpr void turnOn(uint32_t idx)
 		{
 			if constexpr(invert_polarity)
 				reinterpret_cast<GPIO_TypeDef*>(column_gpio_addr_lut[idx])->BRR = static_cast<uint32_t>(column_pin_mask_lut[idx]);
@@ -234,7 +255,7 @@ namespace sseg
 
 		//0 is first instead of 1
 		template<bool parse_addr, uint32_t gpio_addr, uint32_t Cpos, uint32_t... tail>
-		[[gnu::always_inline]] static inline constexpr uint32_t parseArgs(unsigned int finish_cond)
+		[[gnu::always_inline]] static inline constexpr uint32_t parseArgs(uint32_t finish_cond)
 		{
 			if(finish_cond > getColumnAmount()) {
 				__builtin_unreachable();
@@ -291,7 +312,7 @@ namespace sseg
 
 		Display()
 		{
-			for(unsigned int i = 0; i < common_config::getColumnAmount(); i++)
+			for(uint32_t i = 0; i < common_config::getColumnAmount(); i++)
 				disp_cache[i] = seg_config::mapToBsrrPatternOff(); // clear all to avoid ruining gpio state
 		}
 
@@ -304,25 +325,27 @@ namespace sseg
 
 			cnt--;
 
-			//delay here in case of ghosting
+			// put delay here in case of ghosting
 
 			seg_config::getSegGPIO()->BSRR = disp_cache[cnt];
 
 			common_config::turnOn(cnt);
 		}
 
+		//doesn't handle negative
 		template<bool mask_leading_zero = true, typename T>
-		void write(T num)
+		void writeNumber(T num)
 		{
 			static_assert(std::is_integral_v<T>, "integers only");
 
-			for(unsigned int i = common_config::getColumnAmount(); i>0; i--) {
+			for(uint32_t i = common_config::getColumnAmount(); i>0; i--) {
 				if(i < common_config::getColumnAmount() && num == 0 && mask_leading_zero)
 					disp_cache[i-1] = seg_config::mapToBsrrPatternOff();
 				else
 					disp_cache[i-1] = segment_lut_decimal[num % 10];
 
-				num /= 10;
+				num /= 10; // mod/div emit large builtin function without hw div
+				// can do fixed point arith + hw mul to get it more efficient
 			}
 
 		}
@@ -332,16 +355,23 @@ namespace sseg
 		{
 			static_assert(std::is_integral_v<T>, "integers only");
 
-			for(unsigned int i = common_config::getColumnAmount(); i>0; i--) {
+			for(uint32_t i = common_config::getColumnAmount(); i>0; i--) {
 				if(i < common_config::getColumnAmount() && num == 0 && mask_leading_zero)
 					disp_cache[i-1] = seg_config::mapToBsrrPatternOff();
 				else
-					disp_cache[i-1] = segment_lut_hex[num & 15];
+					disp_cache[i-1] = segment_lut_hex[num & 0xf];
 
 				num >>= 4;
 			}
 
 		}
+
+		void insertDot(uint32_t n)
+		{
+			if(n < common_config::getColumnAmount()) // sanitize input
+				disp_cache[n] |= seg_config::mapToBsrrDotOn();
+		}
+
 
 		//write asci
 
@@ -350,9 +380,8 @@ namespace sseg
 		//single update ????
 
 	private:
-
-		int cnt = 0;
 		volatile uint32_t disp_cache[common_config::getColumnAmount()];
+		uint32_t cnt = 0; // should be accessible with short offset as the cache is usually small
 
 		static inline constexpr std::array<uint32_t, 10> segment_lut_decimal = []()
 		{

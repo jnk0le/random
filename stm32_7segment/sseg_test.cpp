@@ -1,7 +1,6 @@
 /*!
- * \file sseg_test.hpp
+ * \file sseg_test.cpp
  * \brief
- *
  *
  * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \license SPDX-License-Identifier: MIT
@@ -12,6 +11,7 @@
 #include <stm32f0xx.h>
 
 #include "sseg.hpp"
+#include "sseg_test.hpp"
 
 //common cathode
 
@@ -86,7 +86,9 @@ void sseg_init_all()
 void sseg_test_loop()
 {
 	static int n = 0;
-	displ.write(n++);
+	
+	displ.writeNumber(n++);
+	displ.insertDot(3);
 
 	for(volatile int i = 0; i<500000; i++);
 }
