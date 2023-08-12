@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.7.0
+ * \version 0.7.1
  * \brief
  *
  *
@@ -44,7 +44,7 @@ namespace sseg
 			return tmp;
 		}
 
-		static inline constexpr uint32_t mapToBsrrDotOn()
+		static inline constexpr uint32_t mapToBsrrDotOnInsert()
 		{
 			static_assert(DPpos < 16, "dot position is not specified");
 
@@ -369,7 +369,7 @@ namespace sseg
 		void insertDot(uint32_t n)
 		{
 			if(n < common_config::getColumnAmount()) // sanitize input
-				disp_cache[n] |= seg_config::mapToBsrrDotOn();
+				disp_cache[n] |= seg_config::mapToBsrrDotOnInsert();
 		}
 
 
