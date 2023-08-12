@@ -33,7 +33,8 @@ The constructor doesn't handle the initialization of clocks, gpio dir, timer and
 Doing initialization of those is too unportable and unflexible nor efficient so it has to be done separately. (see sseg_test.cpp)
 
 
-use emitter follower config to prevent ghosting, alternatively a small mosfet or a baker clamp for common emitter should also work.
+Use emitter follower config to prevent ghosting, alternatively a small mosfet or a baker clamp for common emitter should also work.
 Putting the delay in isr is too unreliable for portable code.
 
-common drivers can be omitted if total current doesn't exceed GPIO rating (ususally 20mA per pin)
+Common drivers can be omitted if total current doesn't exceed GPIO rating (ususally 20mA per pin).
+Polarity will be tha same as with emitter follower config.
