@@ -85,12 +85,13 @@ void sseg_init_all()
 
 void sseg_test_loop()
 {
-	static int n = 0;
-	
-	displ.writeNumber(n++);
+	static int n = -150;
+	displ.writeNumber(n++, 0);
+
 	displ.insertDot(3);
 
 	for(volatile int i = 0; i<500000; i++);
+
 }
 
 extern "C" void TIM16_IRQHandler()

@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.7.1
+ * \version 0.8.0
  * \brief
  *
  *
@@ -56,7 +56,20 @@ namespace sseg
 			return tmp;
 		}
 
-		//dot off pattern???
+		static inline constexpr uint32_t mapToBsrrPatternMinus()
+		{
+			uint32_t tmp = G;
+			tmp |= (A | B | C | D | E | F) << 16;
+
+			// always turn off dot
+			if constexpr(DPpos < 16) // only 16 IOs per port
+				tmp |= DP << 16;
+
+			if constexpr(invert_polarity)
+				tmp = (tmp >> 16) | (tmp << 16);
+
+			return tmp;
+		}
 
 		static inline constexpr uint32_t mapToBsrrPatternDigit(uint32_t i)
 		{
@@ -131,7 +144,7 @@ namespace sseg
 				tmp = (A | B | C | D | E | F | G) << 16;
 			}
 
-			// always turn off dot ??
+			// always turn off dot
 			if constexpr(DPpos < 16) // only 16 IOs per port
 				tmp |= DP << 16;
 
@@ -332,14 +345,16 @@ namespace sseg
 			common_config::turnOn(cnt);
 		}
 
-		//doesn't handle negative
 		template<bool mask_leading_zero = true, typename T>
-		void writeNumber(T num)
+		typename std::enable_if<std::is_unsigned<T>::value, void>::type writeNumber(T num, uint16_t right_offset = 0)
 		{
 			static_assert(std::is_integral_v<T>, "integers only");
 
-			for(uint32_t i = common_config::getColumnAmount(); i>0; i--) {
-				if(i < common_config::getColumnAmount() && num == 0 && mask_leading_zero)
+			int start_idx = common_config::getColumnAmount() - right_offset;
+
+			for(int i = start_idx; i>0; i--)
+			{
+				if((num == 0 && mask_leading_zero) && i != start_idx)
 					disp_cache[i-1] = seg_config::mapToBsrrPatternOff();
 				else
 					disp_cache[i-1] = segment_lut_decimal[num % 10];
@@ -348,6 +363,41 @@ namespace sseg
 				// can do fixed point arith + hw mul to get it more efficient
 			}
 
+		}
+
+		template<bool mask_leading_zero = true, typename T>
+		typename std::enable_if<std::is_signed<T>::value, void>::type writeNumber(T num, uint16_t right_offset = 0)
+		{
+			static_assert(std::is_integral_v<T>, "integers only");
+			static_assert(mask_leading_zero == true, "zeros before sign? use unsigned version instead");
+
+			bool negative = false;
+
+			if(num < 0) {
+				num = -num;
+				negative = true;
+			}
+
+			typename std::make_unsigned<T>::type unum = num; // unsigned division is smaller
+
+			int start_idx = common_config::getColumnAmount() - right_offset;
+
+			for(int i = start_idx; i>0; i--)
+			{
+				if(unum == 0 && i != start_idx)
+				{
+					if (negative) {
+						disp_cache[i-1] = seg_config::mapToBsrrPatternMinus();
+						negative = false;
+					} else
+						disp_cache[i-1] = seg_config::mapToBsrrPatternOff();
+				}
+				else
+					disp_cache[i-1] = segment_lut_decimal[unum % 10];
+
+				unum /= 10; // mod/div emit large builtin function without hw div
+				// can do fixed point arith + hw mul to get it more efficient
+			}
 		}
 
 		template<bool mask_leading_zero = false, typename T>
