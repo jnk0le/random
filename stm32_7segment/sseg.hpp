@@ -1,8 +1,9 @@
 /*!
  * \file sseg.hpp
  * \version 0.8.0
- * \brief
+ * \brief Driver for directly connected 7 segment displays
  *
+ * Initialization of clocks, gpio dir, timer and interrupt handler has to be handled separately.
  *
  * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \license SPDX-License-Identifier: MIT
@@ -23,6 +24,20 @@ namespace jnk0le
 {
 namespace sseg
 {
+
+	/*!
+	 *
+	 * @tparam invert_polarity
+	 * @tparam gpio_addr
+	 * @tparam Apos
+	 * @tparam Bpos
+	 * @tparam Cpos
+	 * @tparam Dpos
+	 * @tparam Epos
+	 * @tparam Fpos
+	 * @tparam Gpos
+	 * @tparam DPpos
+	 */
 	template <bool invert_polarity, uintptr_t gpio_addr, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 17>
 	class PinConfig
 	{
@@ -241,6 +256,11 @@ namespace sseg
 		static_assert((getColumnAmount() > 0), "wrong number of parameters - provide pin position for each column");
 	};
 
+	/*!
+	 *
+	 * @tparam invert_polarity
+	 * @tparam args
+	 */
 	template <bool invert_polarity, /*uintptr_t gpio_addr, int Cpos,*/ uint32_t... args>
 	class CommonConfigScattered
 	{
@@ -318,7 +338,13 @@ namespace sseg
 		static_assert((getColumnAmount() > 0), "wrong number of parameters - provide GPIO_BASE and pin position for each column");
 	};
 
-	template<class seg_config, class common_config, bool use_dot>
+	/*!
+	 * \brief
+	 *
+	 * @tparam seg_config Pin mapping template
+	 * @tparam common_config common mapping template
+	 */
+	template<class seg_config, class common_config>
 	class Display
 	{
 	public:
@@ -329,6 +355,12 @@ namespace sseg
 				disp_cache[i] = seg_config::mapToBsrrPatternOff(); // clear all to avoid ruining gpio state
 		}
 
+		/*!
+		 * \brief column scan routine, must be called periodically
+		 *
+		 * It is recommended to use evenly spaced timer interrupt to keep
+		 * all digits at the same brightness.
+		 */
 		void defaultIrqHandler()
 		{
 			common_config::turnOff(cnt);
@@ -345,7 +377,16 @@ namespace sseg
 			common_config::turnOn(cnt);
 		}
 
-		template<bool mask_leading_zero = true, typename T>
+		/*!
+		 * \brief prints unsigned number on display
+		 *
+		 * template specialization for unsigned numbers
+		 *
+		 * @tparam T type of the number, deduced automatically
+		 * @param num number to print on display
+		 * @param right_offset offset from the right side of display, columns to the right are not blanked
+		 */
+		template<typename T>
 		typename std::enable_if<std::is_unsigned<T>::value, void>::type writeNumber(T num, uint16_t right_offset = 0)
 		{
 			static_assert(std::is_integral_v<T>, "integers only");
@@ -354,7 +395,7 @@ namespace sseg
 
 			for(int i = start_idx; i>0; i--)
 			{
-				if((num == 0 && mask_leading_zero) && i != start_idx)
+				if(num == 0 && i != start_idx)
 					disp_cache[i-1] = seg_config::mapToBsrrPatternOff();
 				else
 					disp_cache[i-1] = segment_lut_decimal[num % 10];
@@ -365,11 +406,19 @@ namespace sseg
 
 		}
 
-		template<bool mask_leading_zero = true, typename T>
+		/*!
+		 * \brief prints signed number on display
+		 *
+		 * template specialization for signed numbers
+		 *
+		 * @tparam T type of the number, deduced automatically
+		 * @param num number to print on display
+		 * @param right_offset offset from the right side of display, columns to the right are not blanked
+		 */
+		template<typename T>
 		typename std::enable_if<std::is_signed<T>::value, void>::type writeNumber(T num, uint16_t right_offset = 0)
 		{
 			static_assert(std::is_integral_v<T>, "integers only");
-			static_assert(mask_leading_zero == true, "zeros before sign? use unsigned version instead");
 
 			bool negative = false;
 
@@ -400,13 +449,21 @@ namespace sseg
 			}
 		}
 
-		template<bool mask_leading_zero = false, typename T>
+
+		/*!
+		 * \brief prints hexadecimal number
+		 *
+		 * @tparam print_leading_zero
+		 * @tparam T type of the number, deduced automatically
+		 * @param num number to print on display
+		 */
+		template<bool print_leading_zero = true, typename T>
 		void writeHex(T num)
 		{
 			static_assert(std::is_integral_v<T>, "integers only");
 
 			for(uint32_t i = common_config::getColumnAmount(); i>0; i--) {
-				if(i < common_config::getColumnAmount() && num == 0 && mask_leading_zero)
+				if(i < common_config::getColumnAmount() && num == 0 && !print_leading_zero)
 					disp_cache[i-1] = seg_config::mapToBsrrPatternOff();
 				else
 					disp_cache[i-1] = segment_lut_hex[num & 0xf];
@@ -416,6 +473,13 @@ namespace sseg
 
 		}
 
+		/*!
+		 * \brief inserts dot into column
+		 *
+		 * Doesn't blank out currently displayed digit.
+		 *
+		 * @param n position to insert from left (indexed from zero)
+		 */
 		void insertDot(uint32_t n)
 		{
 			if(n < common_config::getColumnAmount()) // sanitize input

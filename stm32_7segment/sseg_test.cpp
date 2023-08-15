@@ -36,7 +36,7 @@ using segment_config = jnk0le::sseg::PinConfig<false, GPIOA_BASE, 4, 2, 6, 5, 1,
 using common_config = jnk0le::sseg::CommonConfigScattered<true, GPIOF_BASE,1, GPIOF_BASE,0, GPIOA_BASE,9, GPIOB_BASE,1>;
 //using common_simple = jnk0le::sseg::CommonConfig<true, GPIOB_BASE, 2, 3, 4, 5>;
 
-jnk0le::sseg::Display<segment_config, common_config, true> displ;
+jnk0le::sseg::Display<segment_config, common_config> displ;
 
 void sseg_init_all()
 {
