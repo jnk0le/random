@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.8.0
+ * \version 0.8.1
  * \brief Driver for directly connected 7 segment displays
  *
  * Initialization of clocks, gpio dir, timer and interrupt handler has to be handled separately.
@@ -36,7 +36,7 @@ namespace sseg
 	 * @tparam Epos
 	 * @tparam Fpos
 	 * @tparam Gpos
-	 * @tparam DPpos
+	 * @tparam DPpos if ommited, then dot line is not used
 	 */
 	template <bool invert_polarity, uintptr_t gpio_addr, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 17>
 	class PinConfig
@@ -50,25 +50,25 @@ namespace sseg
 		{
 			uint32_t tmp = (A | B | C | D | E | F | G) << 16;
 
-			if constexpr(DPpos < 16) // only 16 IOs per port
-				tmp |= DP << 16;
-
 			if constexpr(invert_polarity)
 				tmp = (tmp >> 16) | (tmp << 16);
+
+			// always turn off dot
+			tmp |= dotOffPattern();
 
 			return tmp;
 		}
 
-		static inline constexpr uint32_t mapToBsrrDotOnInsert()
+		static inline constexpr uint32_t insertDotPattern(uint32_t bsrr_pattern)
 		{
 			static_assert(DPpos < 16, "dot position is not specified");
 
-			uint32_t tmp = DP;
-
 			if constexpr(invert_polarity)
-				tmp = (tmp >> 16) | (tmp << 16);
+				bsrr_pattern &= ~DP; // clear BS bit, BR is set
+			else
+				bsrr_pattern |= DP;
 
-			return tmp;
+			return bsrr_pattern;
 		}
 
 		static inline constexpr uint32_t mapToBsrrPatternMinus()
@@ -76,12 +76,11 @@ namespace sseg
 			uint32_t tmp = G;
 			tmp |= (A | B | C | D | E | F) << 16;
 
-			// always turn off dot
-			if constexpr(DPpos < 16) // only 16 IOs per port
-				tmp |= DP << 16;
-
 			if constexpr(invert_polarity)
 				tmp = (tmp >> 16) | (tmp << 16);
+
+			// always turn off dot
+			tmp |= dotOffPattern();
 
 			return tmp;
 		}
@@ -159,12 +158,11 @@ namespace sseg
 				tmp = (A | B | C | D | E | F | G) << 16;
 			}
 
-			// always turn off dot
-			if constexpr(DPpos < 16) // only 16 IOs per port
-				tmp |= DP << 16;
-
 			if constexpr(invert_polarity)
 				tmp = (tmp >> 16) | (tmp << 16);
+
+			// always turn off dot
+			tmp |= dotOffPattern();
 
 			return tmp;
 		}
@@ -172,6 +170,26 @@ namespace sseg
 		//map to asci character/glyph????
 
 	private:
+		static inline constexpr uint32_t dotOffPattern()
+		{
+			uint32_t tmp;
+
+			if constexpr(DPpos < 16) // only 16 IOs per port
+			{
+				if constexpr(invert_polarity) {
+					// in BSRR the set function takes priority if both positions are set
+					// use BR + BS combination so dot can be inserted by single masking operation
+					tmp = DP | (DP << 16);
+				} else {
+					tmp = DP << 16;
+				}
+			} else {
+				tmp = 0; //no dot
+			}
+
+			return tmp;
+		}
+
 		static constexpr int A = 1 << Apos;
 		static constexpr int B = 1 << Bpos;
 		static constexpr int C = 1 << Cpos;
@@ -207,7 +225,6 @@ namespace sseg
 		}
 
 	private:
-
 		//0 is first instead of 1
 		template<uint32_t Cpos, uint32_t... tail>
 		[[gnu::always_inline]] static inline constexpr uint32_t parseArgs(uint32_t finish_cond)
@@ -483,9 +500,8 @@ namespace sseg
 		void insertDot(uint32_t n)
 		{
 			if(n < common_config::getColumnAmount()) // sanitize input
-				disp_cache[n] |= seg_config::mapToBsrrDotOnInsert();
+				disp_cache[n] = seg_config::insertDotPattern(disp_cache[n]);
 		}
-
 
 		//write asci
 
