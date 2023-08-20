@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.8.2
+ * \version 0.9.0
  * \brief Driver for directly connected 7 segment displays
  *
  * Initialization of clocks, gpio dir, timer and interrupt handler has to be handled separately.
@@ -379,6 +379,8 @@ namespace sseg
 	/*!
 	 * \brief main class handling 7segment displays
 	 *
+	 * Display buffer is not atomically cached, no dimming
+	 *
 	 * @tparam seg_config Pin mapping template
 	 * @tparam common_config common mapping template
 	 */
@@ -515,7 +517,7 @@ namespace sseg
 		 *
 		 * Doesn't blank out currently displayed digit.
 		 *
-		 * @param n position to insert from left (indexed from zero)
+		 * @param n position to insert (from left, indexed from zero)
 		 */
 		void insertDot(uint32_t n)
 		{
@@ -523,11 +525,31 @@ namespace sseg
 				disp_cache[n] = seg_config::insertDotPattern(disp_cache[n]);
 		}
 
+		/*!
+		 * \brief sets a single digit on display
+		 *
+		 * @tparam T type of the number, deduced automatically
+		 * @param n position to set (from left, indexed from zero)
+		 * @param num digit to set
+		 */
+		template<typename T>
+		void setDigit(uint32_t n, T num)
+		{
+			// instead of sanitizing negative numbers
+			typename std::make_unsigned<T>::type unum = num;
+
+			if(n < common_config::getColumnAmount()) // sanitize input
+			{
+				if(unum < 10) // sanitize again...
+					disp_cache[n] = segment_lut_decimal[unum];
+				else
+					disp_cache[n] = seg_config::mapToBsrrPatternOff();
+			}
+		}
+
 		//write asci
 
-		//glyphs ????
-
-		//single update ????
+		//glyphs ???
 
 	private:
 		volatile uint32_t disp_cache[common_config::getColumnAmount()];
