@@ -36,5 +36,5 @@ Doing initialization of those is too unportable and unflexible nor efficient so 
 Use emitter follower config to prevent ghosting, alternatively a small mosfet or a baker clamp for common emitter should also work.
 Putting the delay in isr is too unreliable for portable code.
 
-Common drivers can be omitted if total current doesn't exceed GPIO rating (ususally 20mA per pin).
-Polarity will be tha same as with emitter follower config.
+Common drivers can be omitted if total current doesn't exceed GPIO rating (usually 20mA per pin).
+Polarity will be the same as with emitter follower config.

@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.8.1
+ * \version 0.8.2
  * \brief Driver for directly connected 7 segment displays
  *
  * Initialization of clocks, gpio dir, timer and interrupt handler has to be handled separately.
@@ -26,17 +26,21 @@ namespace sseg
 {
 
 	/*!
+	 * \brief maps pin mapping to 7segment patterns, shall be used to instantiate Display class
 	 *
-	 * @tparam invert_polarity
-	 * @tparam gpio_addr
-	 * @tparam Apos
-	 * @tparam Bpos
-	 * @tparam Cpos
-	 * @tparam Dpos
-	 * @tparam Epos
-	 * @tparam Fpos
-	 * @tparam Gpos
-	 * @tparam DPpos if ommited, then dot line is not used
+	 * Default polarity (ie. `invert_polarity == false`) is active high, suitable for e.g. common
+	 * cathode displays.
+	 *
+	 * @tparam invert_polarity invert polarity to active low
+	 * @tparam gpio_addr address of GPIO peripheral
+	 * @tparam Apos pin position of A segment
+	 * @tparam Bpos pin position of B segment
+	 * @tparam Cpos pin position of C segment
+	 * @tparam Dpos pin position of D segment
+	 * @tparam Epos pin position of E segment
+	 * @tparam Fpos pin position of F segment
+	 * @tparam Gpos pin position of G segment
+	 * @tparam DPpos pin position of DP segment, if omitted, then dot line is not used
 	 */
 	template <bool invert_polarity, uintptr_t gpio_addr, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 17>
 	class PinConfig
@@ -200,6 +204,16 @@ namespace sseg
 		static constexpr int DP = 1 << DPpos;
 	};
 
+	/*!
+	 * \brief maps pin mappings to column drivers, shall be used to instantiate Display class
+	 *
+	 * Default polarity (`invert_polarity == false`) is active high, suitable for e.g. common
+	 * cathode displays with inverting driver (e.g. mosfet or common emitter bjt).
+	 *
+	 * @tparam invert_polarity invert polarity to active low
+	 * @tparam gpio_addr address of GPIO peripheral
+	 * @tparam args pin positions for each column, starting from the most left
+	 */
 	template <bool invert_polarity, uintptr_t gpio_addr, uint32_t... args>
 	class CommonConfig
 	{
@@ -274,9 +288,16 @@ namespace sseg
 	};
 
 	/*!
+	 * \brief maps pin mappings to column drivers, shall be used to instantiate Display class
 	 *
-	 * @tparam invert_polarity
-	 * @tparam args
+	 * Default polarity (`invert_polarity == false`) is active high, suitable for e.g. common
+	 * cathode displays with inverting driver (e.g. mosfet or common emitter bjt).
+	 *
+	 * It is a bit less efficient than CommonConfig.
+	 *
+	 * @tparam invert_polarity invert polarity to active low
+	 * @tparam args paired address of GPIO peripheral and pin positions for
+	 * each column, starting from the most left
 	 */
 	template <bool invert_polarity, /*uintptr_t gpio_addr, int Cpos,*/ uint32_t... args>
 	class CommonConfigScattered
@@ -356,7 +377,7 @@ namespace sseg
 	};
 
 	/*!
-	 * \brief
+	 * \brief main class handling 7segment displays
 	 *
 	 * @tparam seg_config Pin mapping template
 	 * @tparam common_config common mapping template
@@ -365,7 +386,6 @@ namespace sseg
 	class Display
 	{
 	public:
-
 		Display()
 		{
 			for(uint32_t i = 0; i < common_config::getColumnAmount(); i++)
