@@ -229,7 +229,7 @@ legend:
 can't dual issue wrt each other (slippery)
 
 can't dual issue with stores (slippery)
-Theoretically long MAC (4R due to separately adresses RdLo and RdHi) combined with reg offset store (3R) can exceed 
+Theoretically long MAC (4R due to separately adressed RdLo and RdHi) combined with reg offset store (3R) can exceed 
 total number of RF read ports (6), but regular `mul` with imm offset store behaves exactly the same.
 
 `smlaxy`,`smlalxy`,`smulxy` (where xy={bt,tb,tt,bb,wb,wt,d,dx}) instructions can be dual issued with dsp/bitmanip and operand2 
