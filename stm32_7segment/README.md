@@ -2,7 +2,7 @@
 
 - simple driver for directly connected 7 segment displays
 - templated port and pin definition mapped to single bsrr write at compile time
-- templated digit columns number
+- templated digit columns port and pin mappings
 - requires c++20 compiler
 - optimized for ISR execution performance
 
@@ -31,7 +31,6 @@ extern "C" void TIM16_IRQHandler()
 
 The constructor doesn't handle the initialization of clocks, gpio dir, timer and interrupt handler.
 Doing initialization of those is too unportable and unflexible nor efficient so it has to be done separately. (see sseg_test.cpp)
-
 
 Use emitter follower config to prevent ghosting, alternatively a small mosfet or a baker clamp for common emitter should also work.
 Putting the delay in isr is too unreliable for portable code.
