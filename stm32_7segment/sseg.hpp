@@ -1,6 +1,6 @@
 /*!
  * \file sseg.hpp
- * \version 0.9.0
+ * \version 0.9.1
  * \brief Driver for directly connected 7 segment displays
  *
  * Initialization of clocks, gpio dir, timer and interrupt handler has to be handled separately.
@@ -402,18 +402,23 @@ namespace sseg
 		 */
 		void defaultIrqHandler()
 		{
-			common_config::turnOff(cnt);
+			// cnt is not volatile but gcc emits some garbage otherwise
+			uint32_t cnt_tmp = cnt;
 
-			if(cnt == 0)
-				cnt = common_config::getColumnAmount(); // 1 more than effective indexing
+			common_config::turnOff(cnt_tmp);
 
-			cnt--;
+			if(cnt_tmp == 0)
+				cnt_tmp = common_config::getColumnAmount(); // 1 more than effective indexing
+
+			cnt_tmp--;
 
 			// put delay here in case of ghosting
 
-			seg_config::getSegGPIO()->BSRR = disp_cache[cnt];
+			seg_config::getSegGPIO()->BSRR = disp_cache[cnt_tmp];
 
-			common_config::turnOn(cnt);
+			common_config::turnOn(cnt_tmp);
+
+			cnt = cnt_tmp;
 		}
 
 		/*!
