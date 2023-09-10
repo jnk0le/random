@@ -333,8 +333,7 @@ taken branch/jump is
 - - prior execution of 2 cycle instructions might cause a swap of the earlier/later op timmings, 
 addition of long instruction might further affect it (ie. return to "normal")
 
-to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts 
-(there is no `mie` csr register)
+to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts
 
 bits [9:2] of `mtvec` are hardwired to zero (minimum 1KiB granularity).
 Entry in unvectored mode also needs to be 1KiB aligned.
