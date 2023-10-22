@@ -31,16 +31,16 @@ namespace sseg
 	 * Default polarity (ie. `invert_polarity == false`) is active high, suitable for e.g. common
 	 * cathode displays.
 	 *
-	 * @tparam invert_polarity invert polarity to active low
-	 * @tparam gpio_addr address of GPIO peripheral
-	 * @tparam Apos pin position of A segment
-	 * @tparam Bpos pin position of B segment
-	 * @tparam Cpos pin position of C segment
-	 * @tparam Dpos pin position of D segment
-	 * @tparam Epos pin position of E segment
-	 * @tparam Fpos pin position of F segment
-	 * @tparam Gpos pin position of G segment
-	 * @tparam DPpos pin position of DP segment, if omitted, then dot line is not used
+	 * \tparam invert_polarity invert polarity to active low
+	 * \tparam gpio_addr address of GPIO peripheral
+	 * \tparam Apos pin position of A segment
+	 * \tparam Bpos pin position of B segment
+	 * \tparam Cpos pin position of C segment
+	 * \tparam Dpos pin position of D segment
+	 * \tparam Epos pin position of E segment
+	 * \tparam Fpos pin position of F segment
+	 * \tparam Gpos pin position of G segment
+	 * \tparam DPpos pin position of DP segment, if omitted, then dot line is not used
 	 */
 	template <bool invert_polarity, uintptr_t gpio_addr, int Apos, int Bpos, int Cpos, int Dpos, int Epos, int Fpos, int Gpos, int DPpos = 17>
 	class PinConfig
@@ -210,9 +210,9 @@ namespace sseg
 	 * Default polarity (`invert_polarity == false`) is active high, suitable for e.g. common
 	 * cathode displays with inverting driver (e.g. mosfet or common emitter bjt).
 	 *
-	 * @tparam invert_polarity invert polarity to active low
-	 * @tparam gpio_addr address of GPIO peripheral
-	 * @tparam args pin positions for each column, starting from the most left
+	 * \tparam invert_polarity invert polarity to active low
+	 * \tparam gpio_addr address of GPIO peripheral
+	 * \tparam args pin positions for each column, starting from the most left
 	 */
 	template <bool invert_polarity, uintptr_t gpio_addr, uint32_t... args>
 	class CommonConfig
@@ -295,8 +295,8 @@ namespace sseg
 	 *
 	 * It is a bit less efficient than CommonConfig.
 	 *
-	 * @tparam invert_polarity invert polarity to active low
-	 * @tparam args paired address of GPIO peripheral and pin positions for
+	 * \tparam invert_polarity invert polarity to active low
+	 * \tparam args paired address of GPIO peripheral and pin positions for
 	 * each column, starting from the most left
 	 */
 	template <bool invert_polarity, /*uintptr_t gpio_addr, int Cpos,*/ uint32_t... args>
@@ -381,8 +381,8 @@ namespace sseg
 	 *
 	 * Display buffer is not atomically cached, no dimming
 	 *
-	 * @tparam seg_config Pin mapping template
-	 * @tparam common_config common mapping template
+	 * \tparam seg_config Pin mapping template
+	 * \tparam common_config common mapping template
 	 */
 	template<class seg_config, class common_config>
 	class Display
@@ -427,9 +427,9 @@ namespace sseg
 		 *
 		 * template specialization for unsigned numbers
 		 *
-		 * @tparam T type of the number, deduced automatically
-		 * @param num number to print on display
-		 * @param right_offset offset from the right side of display, columns to the right are not blanked
+		 * \tparam T type of the number, deduced automatically
+		 * \param num number to print on display
+		 * \param right_offset offset from the right side of display, columns to the right are not blanked
 		 */
 		template<typename T>
 		typename std::enable_if<std::is_unsigned<T>::value, void>::type writeNumber(T num, uint16_t right_offset = 0)
@@ -456,9 +456,9 @@ namespace sseg
 		 *
 		 * template specialization for signed numbers
 		 *
-		 * @tparam T type of the number, deduced automatically
-		 * @param num number to print on display
-		 * @param right_offset offset from the right side of display, columns to the right are not blanked
+		 * \tparam T type of the number, deduced automatically
+		 * \param num number to print on display
+		 * \param right_offset offset from the right side of display, columns to the right are not blanked
 		 */
 		template<typename T>
 		typename std::enable_if<std::is_signed<T>::value, void>::type writeNumber(T num, uint16_t right_offset = 0)
@@ -498,9 +498,9 @@ namespace sseg
 		/*!
 		 * \brief prints hexadecimal number
 		 *
-		 * @tparam print_leading_zero
-		 * @tparam T type of the number, deduced automatically
-		 * @param num number to print on display
+		 * \tparam print_leading_zero
+		 * \tparam T type of the number, deduced automatically
+		 * \param num number to print on display
 		 */
 		template<bool print_leading_zero = true, typename T>
 		void writeHex(T num)
@@ -523,7 +523,7 @@ namespace sseg
 		 *
 		 * Doesn't blank out currently displayed digit.
 		 *
-		 * @param n position to insert (from left, indexed from zero)
+		 * \param n position to insert (from left, indexed from zero)
 		 */
 		void insertDot(uint32_t n)
 		{
@@ -534,9 +534,9 @@ namespace sseg
 		/*!
 		 * \brief sets a single digit on display
 		 *
-		 * @tparam T type of the number, deduced automatically
-		 * @param n position to set (from left, indexed from zero)
-		 * @param num digit to set
+		 * \tparam T type of the number, deduced automatically
+		 * \param n position to set (from left, indexed from zero)
+		 * \param num digit to set
 		 */
 		template<typename T>
 		void setDigit(uint32_t n, T num)
