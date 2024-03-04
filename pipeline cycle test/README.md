@@ -140,7 +140,7 @@ It could also be a source of false-positives in micro benchmarking of assembly i
 The "post loop entry" alignment seems to be necessary to avoid stalls. 
 e.g. sometimes four `.n` instructions need to just be in close proximity to each other
 and sometimes there is a hard wall (relative to absolute number of instructions from loop start, not the cache lines etc.)
-that no .n instruction can't cross even though all 4 instructions are paired next to each other (across the wall).
+that no `.n` instruction can't cross even though all 4 instructions are paired next to each other (across the wall).
 Putting new compressed instruction depends on if the previous instructions were compressed, i.e. 4 `.n` instructions at 
 beggining of the loop will make further compression easier (effect seems to carry forward and far, but not into the next iteration)
 
@@ -291,18 +291,22 @@ cmp instruction executes similarly to regular (operand2) ALU instructions (not p
 there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
 instruction generating flags have to be placed at least 3 cycles before branch
 
-the slippery condition seems to not be related to branch mispredictions (sums with misprediction cycles)
+not-taken branch can dual issue with following instruction
 
-TBD
+(the slippery condition seems to not be related to branch mispredictions (sums with misprediction cycles))
+
+Predicted (any direction and length) taken branch is capable of dual issuing with one instruction at destination address.
+It is highly sensitive to alignment and compression of surrounding instructions, requires at 
+least 2 `.n` instructions executed prior to branch.
+
+`it` instruction behaves similar to predicted not-taken branch (including scenarios of 0.67 cycles of averaged penalty)
+
+
 
 ### fpu
 
-TBD
 
 
-## RI5CY
-
-TBD
 
 ## ch32v003
 
