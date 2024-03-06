@@ -121,6 +121,13 @@ tested on stm32h743 rev Y
 
 it is recommended to start with `*.w` opcodes as the short ones (even in fours) can cause half cycle slide (remove one nop before branch to confirm)
 
+little glossary:
+```
+// for a given dual issued instruction bundle:
+080004a0:   add.w r10, r11, r12 // this is "older op"
+080004a4:   nop.w               // this is "younger op"
+```
+
 non obvious findings:
 
 ### overall
@@ -153,7 +160,7 @@ result of early alu can be forwarded to late alu in 0 cycles, or early alu next 
 - `mov` with simple and constructed constants (not shifted ones) + simple shifts and rotations (aliased to mov) except rrx
 - `rev`, `rev16`, `revsh`, `rbit` (result can't be used by AGU, another `rev*`,`rbit` instruction or as inline shifted operand next cycle)
 
-`add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the later op
+`add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the younger op
 
 e.g. following snippet doesn't stall:
 ```
@@ -164,13 +171,13 @@ e.g. following snippet doesn't stall:
 	ldr.w r5, [r14, r1] // r1 is r0 + 4
 ```
 
-`add`, `sub` and non shifting `mov` can enter early alu from earlier op only.
+`add`, `sub` and non shifting `mov` can enter early alu from older op only.
 
-shifts and rotations (aliased to mov) can enter early alu from earlier or later op provided that the 
+shifts and rotations (aliased to mov) can enter early alu from older or younger op provided that the 
 other instruction is not inline shifted operand one or bitmanip (e.g. `rev`, `bfi`, `uxtab`) op using early alu shifter
 
 the only case when both instructions can be forwarded from early alu (to early alu next cycle) is `add`, `sub` or non shifting 
-`mov` in earlier slot and simple shift or rotation in later slot
+`mov` in older slot and simple shift or rotation in younger slot
 
 flags generated in early ALU cannot be forwarded to late ALU in 0 cycles (slippery)
 
@@ -178,29 +185,29 @@ flags generated in early ALU cannot be forwarded to late ALU in 0 cycles (slippe
 
 cannot dual issue wrt each other
 
-the bitfield/dsp instructions must be placed in earlier op (slippery otherwise)
+the bitfield/dsp instructions must be placed in older op (slippery otherwise)
 
 bitfield/dsp instruction (e.g. `uxtb`,`uxtab`,`rev`) result cannot be used as index or address by load/store instructions in 
 next cycle (1 extra cycle latency)
 
 `sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, execute in early alu and can't source from late ALU of previous 
-cycle (source must be available a cycle earlier than normally)
+cycle (source must be available a cycle older than normally)
 
 in `bfi`, `pkh{bt,tb}` and `{s,u}xta{b,h,b16}` instructions the "extracted" or shifted (even when no shift in case of `pkhbt`) 
-register consume its operand in early ALU (source must be available a cycle earlier than normally)
+register consume its operand in early ALU (source must be available a cycle older than normally)
 
-`pkhtb` also the first operand (Rn) needs to be available for early ALU (source must be available a cycle earlier than normally)
+`pkhtb` also the first operand (Rn) needs to be available for early ALU (source must be available a cycle older than normally)
 
 `bfi`, `bfc`, `sbfx`, `ubfx`, `rbit`, `rev`, `rev16`, `revsh`, `{s,u}xta{b,h,b16}`, `pkh{bt,tb}` instructions can't be dual 
 issued with operand2 inline_shifted_reg/shifted_constant instruction 
 
 ### operand2
 
-inline shifted/rotated (register) operand is consumed in early ALU (source must be available a cycle earlier than normally)
+inline shifted/rotated (register) operand is consumed in early ALU (source must be available a cycle older than normally)
 
 operand2 dual issuing matrix
 
-| earlier\later op | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
+| older\younger op | simple constant | constant pattern | shifted constant | inline shifted reg | shift by constant | shift by register |
 | --- | --- | --- | --- | --- | --- | --- |
 | simple constant    |  +  |  +  |  +  |  +  |  +  |  +  |
 | constant pattern   |  +  |  +  |  +  |  +  |  +  |  +  |
@@ -255,7 +262,7 @@ in same cycle (can be issued back to back every cycle)
 
 `pld` instruction can stall due to address dependency (same as normal loads)
 
-unaligned loads are severely underperforming. +3 cycles as earlier op, +4 as later op or when both earlier and later ops 
+unaligned loads are severely underperforming. +3 cycles as older op, +4 as younger op or when both older and younger ops 
 are unaligned loads (banks or unaligment amount doesn't matter), -1 if the other load is aligned and targets the same bank 
 that is accessed first by the unaligned one (part at lower address)
 
@@ -332,10 +339,10 @@ taken branch/jump is
 - - 3 cycles
 - - +1 cycle when jumping to unaligned 32bit instruction
 - at 1ws:
-- - 4 cycles from an earlier op (in synthetic scenario)
-- - 5 cycles from an later op (in synthetic scenario)
+- - 4 cycles from an older op (in synthetic scenario)
+- - 5 cycles from an younger op (in synthetic scenario)
 - - +1 cycle when jumping to unaligned location 
-- - prior execution of 2 cycle instructions might cause a swap of the earlier/later op timmings, 
+- - prior execution of 2 cycle instructions might cause a swap of the older/younger op timmings, 
 addition of long instruction might further affect it (ie. return to "normal")
 
 to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x88 to enable interrupts
