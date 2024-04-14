@@ -328,6 +328,9 @@ Requires HCLK/1 and full 32bit reload value for proper handling of arithmetic un
 
 findings:
 
+The core will reset when experiencing fault while in exception handler. 
+(`ebreak` without debugger also causes this)
+
 unaligned long instructions seem to sometimes have 1 cycle penalty (mostly loop invariant)
 
 loads stores are 2 cycle
