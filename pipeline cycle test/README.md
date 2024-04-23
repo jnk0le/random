@@ -328,9 +328,6 @@ Requires HCLK/1 and full 32bit reload value for proper handling of arithmetic un
 
 findings:
 
-The core will reset when experiencing fault while in exception handler. 
-(`ebreak` without debugger also causes this)
-
 unaligned long instructions seem to sometimes have 1 cycle penalty (mostly loop invariant)
 
 loads stores are 2 cycle
@@ -353,6 +350,9 @@ to set `MIE` in `mstatus` it must be written together with `MPIE`. ie. write 0x8
 
 bits [9:2] of `mtvec` are hardwired to zero (minimum 1KiB granularity).
 Entry in unvectored mode also needs to be 1KiB aligned.
+
+The core will reset when experiencing fault while in exception handler. 
+(`ebreak` without debugger also causes this)
 
 uncore findings:
 
