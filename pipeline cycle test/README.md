@@ -139,8 +139,7 @@ It is recommended to align loop entries by enlarging instructions with `.w` suff
 
 "slippery condition" in my observations seems to be sliding execution by a half cycle without taking stall at branch point.
 i.e 20 instructions of which one is a branch, execute in exactly 10 cycles with 2 cycles of loop invariant stalls
-(as measured in CM7_pipetest_tmpl.S) That is most probably an optimization for typical 
-code from compilers (aka workaround for a lot of bs listed below).
+(as measured in CM7_pipetest_tmpl.S) Most likely it's dual issue across branch. See [branching/cmp](#branching/cmp)
 It is observable as a swap of the young and old opcode slot.
 It could also be a source of false-positives in micro benchmarking of assembly implementations.
 
