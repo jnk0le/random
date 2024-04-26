@@ -73,4 +73,5 @@ ch32v_pipetest_tmpl:
 	lw s0, 0(sp)
 	lw s1, 4(sp)
 	lw ra, 8(sp)
+	addi sp, sp, 12
 	ret
