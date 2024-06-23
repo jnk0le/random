@@ -109,6 +109,8 @@ there are another independent cm7 pipeline analysis:
 - https://www.quinapalus.com/cm7cycles.html
 - https://www.researchgate.net/publication/355865610_Exploring_Cortex-M_Microarchitectural_Side_Channel_Information_Leakage
 - https://web.archive.org/web/20220710195033id_/https://eprint.iacr.org/2022/405.pdf (DP is not constant time)
+- https://community.arm.com/support-forums/f/architectures-and-processors-forum/9930/cortex-m7-vfma-usage (VFMA canot dual issue with VLDR)
+- https://community.arm.com/support-forums/f/architectures-and-processors-forum/5567/what-is-the-advantage-of-floating-point-of-cm7-versus-cm4 (VFMA canot dual issue with VLDR)
 
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
 ```
