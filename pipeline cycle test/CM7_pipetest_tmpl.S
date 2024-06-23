@@ -16,6 +16,7 @@
 .type   CM7_pipetest_tmpl,%function
 CM7_pipetest_tmpl:
 	push {r4-r12,lr} // push r12 to keep stack aligned for testing use
+	vpush {s16-s31}
 
 	// prepare registers here
 	// r0 to r8, r12 and lr are available for use
@@ -104,4 +105,5 @@ CM7_pipetest_tmpl:
 	subs r0, r9, r10 // get cycle diff
 	subs r0, #1 // subtract extra overhead outside the loop // extra 6 cycles comes from mispredicted branch
 
+	vpop {s16-s31}
 	pop {r4-r12,pc}
