@@ -312,17 +312,36 @@ not-taken branch (including scenarios of 0.67 cycles of averaged penalty)
 
 
 
-### fpu
+### fpu (single precision)
+
+arithmetic instructions cannot be dual issued (e.g `vadd.f` + `vadd.f` or `vmul.f` + `vadd.f`)
 
 multiply accumulate instructions cannot be dual issued with vldr, vstr or any vmov
 
-vfma and vmla cannot be interleaved wrt each other (even as fully independent)
+(independent) `vfma.f` cannot be pipelined within next cycle after `vmla.f` (due to additional cycle
+for mid result rounding in `vmla.f`)
 
-| result latency | `vfma` | `vmla` | `vadd` | `vmul` |
+`vadd.f` can be executed only 4 cycles after last `vfma.f`/`vmla.f`
+
+multiply accumulates can be pipelined every cycle but at least 3 independent accumulations must be
+interleaved
+
+| result latency | `vfma.f` | `vmla.f` | `vadd.f` | `vmul.f` |
 | --- | --- | --- | --- | --- |
-| as accumulate | 3 | 3 | 3 | - |
-| as multiplicand | 5 | 6 | - | 3 |
-| as `vstr` source | 3 | 4 | 1 | 1 |
+| as `vadd.f` operand     | x   | x   | 3   | 1 |
+| as `vmul.f` operand     | 5   | 6   | 3   | 3 |
+| as fma/mla accumulate   | 3/2 | x/3 | 3/2 | 3/2 |
+| as fma/mla multiplicand | 5/5 | x/6 | 3   | 3 |
+| as `vstr` operand       | 3   | 4   | 1   | 1 |
+
+
+cannot dual issue two `vmov sd, #fimm`
+
+moving two registers (fpu to integer and integer to fpu) cannot be dual issued with anything
+
+
+
+### fpu (double precision)
 
 ## ch32v003
 
