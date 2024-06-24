@@ -314,8 +314,15 @@ not-taken branch (including scenarios of 0.67 cycles of averaged penalty)
 
 ### fpu
 
+multiply accumulate instructions cannot be dual issued with vldr, vstr or any vmov
 
+vfma and vmla cannot be interleaved wrt each other (even as fully independent)
 
+| result latency | `vfma` | `vmla` | `vadd` | `vmul` |
+| --- | --- | --- | --- | --- |
+| as accumulate | 3 | 3 | 3 | - |
+| as multiplicand | 5 | 6 | - | 3 |
+| as `vstr` source | 3 | 4 | 1 | 1 |
 
 ## ch32v003
 
