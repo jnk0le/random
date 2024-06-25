@@ -328,7 +328,7 @@ interleaved
 
 | result latency | `vfma.f` | `vmla.f` | `vadd.f` | `vmul.f` |
 | --- | --- | --- | --- | --- |
-| as `vadd.f` operand     | x   | x   | 3   | 1 |
+| as `vadd.f` operand     | x   | x   | 3   | 3 |
 | as `vmul.f` operand     | 5   | 6   | 3   | 3 |
 | as fma/mla accumulate   | 3/2 | x/3 | 3/2 | 3/2 |
 | as fma/mla multiplicand | 5/5 | x/6 | 3   | 3 |
