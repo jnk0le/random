@@ -339,7 +339,8 @@ cannot dual issue two `vmov sd, #fimm` instructions
 
 moving two registers (fpu to integer and integer to fpu) cannot be dual issued with anything
 
-
+`vdiv.f`/`vsqrt.f` execute in 16/14 cycles, dual issues with one integer instruction and
+locks pipeline for the rest of the duration
 
 ### fpu (double precision)
 
