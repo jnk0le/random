@@ -340,7 +340,7 @@ cannot dual issue two `vmov sd, #fimm` instructions
 moving two registers (fpu to integer and integer to fpu) cannot be dual issued with anything
 
 `vdiv.f`/`vsqrt.f` execute in 16/14 cycles, dual issues with one integer instruction and
-locks pipeline for the rest of the duration
+locks pipeline for the rest of the duration (doesn't retire "out of order")
 
 `vldm` takes `ceil(regnum/2)+1` cycles to execute, dual issues with integer or fpu instruction.
 The last loaded registers have up to 2 cycle latency as `vfma.f` accumulate operand and none to anything else
