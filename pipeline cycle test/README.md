@@ -342,6 +342,9 @@ moving two registers (fpu to integer and integer to fpu) cannot be dual issued w
 `vdiv.f`/`vsqrt.f` execute in 16/14 cycles, dual issues with one integer instruction and
 locks pipeline for the rest of the duration
 
+`vldm` takes `ceil(regnum/2)+1` cycles to execute, dual issues with integer or fpu instruction.
+The last loaded (2) registers have 2 cycle latency as `vfma.f` accumulate operand and none to anything else (??????)  
+
 ### fpu (double precision)
 
 ## ch32v003
