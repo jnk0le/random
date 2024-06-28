@@ -343,10 +343,13 @@ moving two registers (fpu to integer and integer to fpu) cannot be dual issued w
 locks pipeline for the rest of the duration (doesn't retire "out of order")
 
 `vldm` takes `ceil(regnum/2)+1` cycles to execute, dual issues with integer or fpu instruction.
-The last loaded registers have up to 2 cycle latency as `vfma.f` accumulate operand and none to anything else
+The last loaded registers have up to 2 cycles of latency as `vfma.f` accumulate operand and 0 cycles to anything else
 (can be dual issued with e.g. multiplicand dependent `vfma.f`)
 
+`vldr.f` can be dual issed.
 
+`vldr.f` has 1 cycle of result latency, except as the `vfma.f` accumulate dependency where it is 3 cycles
+(2 for `vmla.f`)
 
 ### fpu (double precision)
 
