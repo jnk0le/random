@@ -192,19 +192,19 @@ bitfield/dsp instruction (e.g. `uxtb`,`uxtab`,`rev`) result cannot be used as in
 next cycle (1 extra cycle latency)
 
 `sbfx`, `ubfx`, `rbit`,`rev`, `rev16`, `revsh`, execute in early alu and can't source from late ALU of previous 
-cycle (source must be available a cycle older than normally)
+cycle (source must be available a cycle earlier than normally)
 
 in `bfi`, `pkh{bt,tb}` and `{s,u}xta{b,h,b16}` instructions the "extracted" or shifted (even when no shift in case of `pkhbt`) 
-register consume its operand in early ALU (source must be available a cycle older than normally)
+register consume its operand in early ALU (source must be available a cycle earlier than normally)
 
-`pkhtb` also the first operand (Rn) needs to be available for early ALU (source must be available a cycle older than normally)
+`pkhtb` also the first operand (Rn) needs to be available for early ALU (source must be available a cycle earlier than normally)
 
 `bfi`, `bfc`, `sbfx`, `ubfx`, `rbit`, `rev`, `rev16`, `revsh`, `{s,u}xta{b,h,b16}`, `pkh{bt,tb}` instructions can't be dual 
 issued with operand2 inline_shifted_reg/shifted_constant instruction 
 
 ### operand2
 
-inline shifted/rotated (register) operand is consumed in early ALU (source must be available a cycle older than normally)
+inline shifted/rotated (register) operand is consumed in early ALU (source must be available a cycle earlier than normally)
 
 operand2 dual issuing matrix
 
