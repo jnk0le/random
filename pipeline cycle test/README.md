@@ -316,10 +316,14 @@ not-taken branch (including scenarios of 0.67 cycles of averaged penalty)
 
 arithmetic instructions cannot be dual issued (e.g `vadd.f` + `vadd.f` or `vmul.f` + `vadd.f`)
 
-multiply accumulate instructions cannot be dual issued with vldr, vstr or any vmov
+multiply accumulate instructions cannot be dual issued with vldr, vstr or any vmov, with the 
+exception of first instructin
 
-after executing multiply accumulate instructions `vadd.f`, `vldr.f`, `vldm`, `vstm`, `vstr.d` instructions
-cannot be executed for 3 next cycles. (`vstr.f` can)
+after executing multiply accumulate instructions `vadd.f`, `vldm`, `vstm`, `vldr.d`, `vstr.d`, `vmov sd, #fimm` instructions
+cannot be executed for 3 next cycles. 
+
+after executing multiply accumulate instructions `vldr.f`,`vstr.f`,`vmov`instructions
+cannot be executed from younger opcode slot for 3 next cycles.
 
 (independent) `vfma.f` cannot be pipelined within next cycle after `vmla.f` (due to use of additional stage
 for mid result rounding in `vmla.f`)
@@ -343,7 +347,7 @@ moving two registers (fpu to integer and integer to fpu) cannot be dual issued w
 `vdiv.f`/`vsqrt.f` execute in 16/14 cycles, dual issues with one integer instruction and
 locks pipeline for the rest of the duration (doesn't retire "out of order")
 
-`vldm` behaves as regular `ldm`.
+`vldm` behaves as regular `ldm`. (`vstm` similarly)
 The last loaded registers have up to 3 cycles of latency as `vfma.f` accumulate operand and 1 cycle to anything else
 
 `vldr.f` can be dual issed.
