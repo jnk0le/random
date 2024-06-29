@@ -78,14 +78,14 @@ CM7_pipetest_tmpl:
 	nop.w
 	nop.w
 
+	nop.w
+	nop.w
+
+	nop.w
+	nop.w
+
+	nop.w
 	subs.w r9, #1 // generate branch condition few cycles ahead of branch // 2 extra cycles to branch mispredict if placed next to branch
-	nop.w
-
-	nop.w
-	nop.w
-
-	nop.w
-	nop.w
 
 	nop.w
 	nop.w
