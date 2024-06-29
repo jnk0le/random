@@ -290,6 +290,8 @@ takes `ceil(regnum/2)` cycles to execute
 
 store multiple requires 8 byte memory alignment otherwise storing even number of registers will add 1 extra cycle to execution
 
+require instruction stream compression by 4bytes (2x .n instr) before (any amount) or up to 7 cycles after, otherwise incurs additional stall
+
 ### branching/cmp
 
 flag setting seems to happen in late alu even when instruction executes early
@@ -316,8 +318,8 @@ arithmetic instructions cannot be dual issued (e.g `vadd.f` + `vadd.f` or `vmul.
 
 multiply accumulate instructions cannot be dual issued with vldr, vstr or any vmov
 
-after executing multiply accumulate instructions `vadd.f`, `vldr.f`, `vldm`, `vstm` instructions cannot be executed
-for 3 next cycles. (`vstr.f` can)
+after executing multiply accumulate instructions `vadd.f`, `vldr.f`, `vldm`, `vstm`, `vstr.d` instructions
+cannot be executed for 3 next cycles. (`vstr.f` can)
 
 (independent) `vfma.f` cannot be pipelined within next cycle after `vmla.f` (due to use of additional stage
 for mid result rounding in `vmla.f`)
@@ -341,14 +343,17 @@ moving two registers (fpu to integer and integer to fpu) cannot be dual issued w
 `vdiv.f`/`vsqrt.f` execute in 16/14 cycles, dual issues with one integer instruction and
 locks pipeline for the rest of the duration (doesn't retire "out of order")
 
-`vldm` takes `ceil(regnum/2)+1` cycles to execute, dual issues with integer or fpu instruction.
-The last loaded registers have up to 2 cycles of latency as `vfma.f` accumulate operand and 0 cycles to anything else
-(can be dual issued with e.g. multiplicand dependent `vfma.f`)
+`vldm` behaves as regular `ldm`.
+The last loaded registers have up to 3 cycles of latency as `vfma.f` accumulate operand and 1 cycle to anything else
 
 `vldr.f` can be dual issed.
 
 `vldr.f` has 1 cycle of result latency, except as the `vfma.f` accumulate dependency where it is 3 cycles
 (2 for `vmla.f`)
+
+`vstr.d`, `vldr.d` can't dual issue with anything
+
+ 
 
 ### fpu (double precision)
 
