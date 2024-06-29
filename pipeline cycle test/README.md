@@ -315,6 +315,8 @@ not-taken branch (including scenarios of 0.67 cycles of averaged penalty)
 
 ### fpu (single precision)
 
+not affected by denormals
+
 arithmetic instructions cannot be dual issued (e.g `vadd.f` + `vadd.f` or `vmul.f` + `vadd.f`)
 
 multiply accumulate instructions cannot be dual issued with vldr, vstr or any vmov, with the 
