@@ -310,18 +310,17 @@ least 2 `.n` instructions executed prior to branch. (this is most likely the cau
 `it` instruction (over one instruction) behaves similar to predicted
 not-taken branch (including scenarios of 0.67 cycles of averaged penalty)
 
-
-
 ### fpu (single precision)
 
 arithmetic instructions cannot be dual issued (e.g `vadd.f` + `vadd.f` or `vmul.f` + `vadd.f`)
 
 multiply accumulate instructions cannot be dual issued with vldr, vstr or any vmov
 
+after executing multiply accumulate instructions `vadd.f`, `vldr.f`, `vldm`, `vstm` instructions cannot be executed
+for 3 next cycles. (`vstr.f` can)
+
 (independent) `vfma.f` cannot be pipelined within next cycle after `vmla.f` (due to use of additional stage
 for mid result rounding in `vmla.f`)
-
-`vadd.f` can be executed 4 cycles after last `vfma.f`/`vmla.f`
 
 multiply accumulates can be pipelined every cycle but at least 3 independent accumulations must be
 interleaved
