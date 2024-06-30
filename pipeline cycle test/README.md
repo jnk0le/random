@@ -381,9 +381,11 @@ first `vmul.d` chained after `vfma.d`/`vmla.d` executes in 4 cycles
 
 after executing multiply accumulate instructions, `vadd.d` cannot be executed for 1 following cycle
 
+`vfma.d` seems to require interleaving 4 independent FMA accumulations or have 3 cycle result latency (not extended by
+multi cycle floating point instructions)
 
-
-latency/dependencies:
+result latency of `vmul.d`, `vadd.d` 3 cycles or interleaved at least 2 fp instructions (not extended by
+multi cycle floating point instructions)
 
 ## ch32v003
 
