@@ -377,6 +377,12 @@ Instructin CPI table (no dependency, all registers initialized to 1.0, "differen
 | `vfma.d` (first/each additional chained) | 8/7 | 8/7 | 10/9 | offending number as multiplicand, different exponent accumulator (31.0) |
 | `vfma.d` (first/each additional chained) | 10/9 | 10/9 | 7/5 | denormal as accumulator |
 
+first `vmul.d` chained after `vfma.d`/`vmla.d` executes in 4 cycles
+
+after executing multiply accumulate instructions, `vadd.d` cannot be executed for 1 following cycle
+
+
+
 latency/dependencies:
 
 ## ch32v003
