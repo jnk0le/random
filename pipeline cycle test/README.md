@@ -360,9 +360,24 @@ The last loaded registers have up to 3 cycles of latency as `vfma.f` accumulate 
 
 `vstr.d`, `vldr.d` can't dual issue with anything
 
- 
-
 ### fpu (double precision)
+
+all arithmetic instructions can dual issue with integer instructions (except FMA which can't dual issue with int loads/stores)
+from older opcode slot (sometimes it is capable from younger slot but that's very inconsistent)
+
+Instructin CPI table (no dependency, all registers initialized to 1.0 "different exponent" to 0.25):
+
+| instruction execution cycles per scenario | same exponent | different exponents | one denormal | notes |
+| --- | --- | --- | --- | --- |
+| `vadd.d` | 1 | 2 | 3 | |
+| `vmul.d` | 5 | 5 | 5 | |
+| `vdiv.d` | 30 | 30 | 30 | |
+| `vfma.d` (first/each additional chained) | 7/6 | 8/7 | 10/9 | offending number as multiplicand, accumulator restored every round |
+| `vmla.d` (first/each additional chained) | 8/5 | 9/7 | 10/8 | offending number as multiplicand, accumulator restored every round |
+| `vfma.d` (first/each additional chained) | 8/7 | 8/7 | 10/9 | offending number as multiplicand, different exponent accumulator (31.0) |
+| `vfma.d` (first/each additional chained) | 10/9 | 10/9 | 7/5 | denormal as accumulator |
+
+latency/dependencies:
 
 ## ch32v003
 
