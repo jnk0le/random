@@ -365,7 +365,7 @@ The last loaded registers have up to 3 cycles of latency as `vfma.f` accumulate 
 all arithmetic instructions can dual issue with integer instructions (except FMA which can't dual issue with int loads/stores)
 from older opcode slot (sometimes it is capable from younger slot but that's very inconsistent)
 
-Instructin CPI table (no dependency, all registers initialized to 1.0 "different exponent" to 0.25):
+Instructin CPI table (no dependency, all registers initialized to 1.0, "different exponent" to 0.25):
 
 | instruction execution cycles per scenario | same exponent | different exponents | one denormal | notes |
 | --- | --- | --- | --- | --- |
