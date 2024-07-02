@@ -367,7 +367,7 @@ from older opcode slot (sometimes it is capable from younger slot but that's ver
 Instructin CPI table (no dependency, all registers initialized to 1.0, "different exponent" to 0.25):
 
 | instruction execution cycles per scenario | same exponent | different exponents | one denormal | one zero | notes |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- |
 | `vadd.d` | 1 | 2 | 3 | 3 | |
 | `vmul.d` | 5 | 5 | 5 | 4 | |
 | `vdiv.d` | 30 | 30 | 30 | 2 | |
