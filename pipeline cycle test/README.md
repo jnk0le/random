@@ -383,7 +383,7 @@ after executing multiply accumulate instructions, `vadd.d` cannot be executed fo
 `vfma.d` seems to require interleaving 4 independent FMA accumulations or have 3 cycle result latency (not extended by
 multi cycle floating point instructions)
 
-result latency of `vmul.d`, `vadd.d` 3 cycles or interleaved at least 2 fp instructions (not extended by
+result latency of `vmul.d`, `vadd.d` is 3 cycles or interleaved with at least 2 fp instructions (not extended by
 multi cycle floating point instructions)
 
 ## ch32v003
