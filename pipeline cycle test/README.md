@@ -59,7 +59,6 @@ cortex m4 as tested on stm32f407 rev Y
 
 ### overall
 
-TBD
 
 ### loads
 
