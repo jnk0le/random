@@ -366,15 +366,15 @@ from older opcode slot (sometimes it is capable from younger slot but that's ver
 
 Instructin CPI table (no dependency, all registers initialized to 1.0, "different exponent" to 0.25):
 
-| instruction execution cycles per scenario | same exponent | different exponents | one denormal | notes |
+| instruction execution cycles per scenario | same exponent | different exponents | one denormal | one zero | notes |
 | --- | --- | --- | --- | --- |
-| `vadd.d` | 1 | 2 | 3 | |
-| `vmul.d` | 5 | 5 | 5 | |
-| `vdiv.d` | 30 | 30 | 30 | |
-| `vfma.d` (first/each additional chained) | 7/6 | 8/7 | 10/9 | offending number as multiplicand, accumulator restored every round |
-| `vmla.d` (first/each additional chained) | 8/5 | 9/7 | 10/8 | offending number as multiplicand, accumulator restored every round |
-| `vfma.d` (first/each additional chained) | 8/7 | 8/7 | 10/9 | offending number as multiplicand, different exponent accumulator (31.0) |
-| `vfma.d` (first/each additional chained) | 10/9 | 10/9 | 7/5 | denormal as accumulator |
+| `vadd.d` | 1 | 2 | 3 | 3 | |
+| `vmul.d` | 5 | 5 | 5 | 4 | |
+| `vdiv.d` | 30 | 30 | 30 | 2 | |
+| `vfma.d` (first/each additional chained) | 7/6 | 8/7 | 10/9 | 6/5 | offending number as multiplicand, accumulator restored every round |
+| `vmla.d` (first/each additional chained) | 8/5 | 9/7 | 10/8 | 7/5 | offending number as multiplicand, accumulator restored every round |
+| `vfma.d` (first/each additional chained) | 8/7 | 8/7 | 10/9 | 6/5 | offending number as multiplicand, different exponent accumulator (31.0) |
+| `vfma.d` (first/each additional chained) | 10/9 | 10/9 | 7/5 | 6/5 | denormal as accumulator |
 
 first `vmul.d` chained after `vfma.d`/`vmla.d` executes in 4 cycles
 
