@@ -247,6 +247,8 @@ inline_shifted_reg/shifted_constant instructions as well as execute in any opcod
 
 all multiply accumulates can be chained on accumulator dependency each cycle
 
+all multiplications and multiply accumulates have 1 additional cycle of result latency
+
 ### loads
 
 word loads can be consumed by late ALU in next cycle, except instructions that consume one of the operands in early ALU,
