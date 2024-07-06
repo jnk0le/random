@@ -253,7 +253,7 @@ all multiplications and multiply accumulates can't consume `ldr` result from pre
 (everything else works normally as late alu consumption)
 
 accumulate dependency is consumed cycle later in another stage after the late alu
-(so it can consume `ldrb` result from previous cycle)
+(so it can consume `ldrb` result from previous cycle, or late ALU from the same cycle)
 
 ### loads
 
