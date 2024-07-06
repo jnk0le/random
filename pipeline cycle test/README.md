@@ -255,7 +255,7 @@ word loads can be consumed by late ALU in next cycle, except instructions that c
 (e.g. inline shifted operand2 shift or `uxtab`), even though this result is consumed in late ALU
 (byte and half loads are not affected, probably related to how load bus-fault trapping is implemented)
 
-byte/half loads can be consumed in secend cycle in late ALU (1 extra cycle of result latency), or third in early ALU
+byte/half loads can be consumed in secend cycle by late ALU (1 extra cycle of result latency), or third in early ALU
 
 two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
 
