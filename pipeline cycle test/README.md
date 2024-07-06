@@ -245,6 +245,8 @@ total number of RF read ports (6), but regular `mul` with imm offset store behav
 inline_shifted_reg/shifted_constant instructions as well as execute in any opcode slot, even though few sources 
 (e.g. gcc cortex-m7.md file) suggest otherwise
 
+all multiply accumulates can be chained on accumulator dependency each cycle
+
 ### loads
 
 word loads can be consumed by late ALU in next cycle, except instructions that consume one of the operands in early ALU,
