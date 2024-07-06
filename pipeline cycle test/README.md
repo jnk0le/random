@@ -249,6 +249,12 @@ all multiply accumulates can be chained on accumulator dependency each cycle
 
 all multiplications and multiply accumulates have 1 additional cycle of result latency
 
+all multiplications and multiply accumulates can't consume `ldr` result from previous cycle
+(everything else works normally as late alu consumption)
+
+accumulate dependency is consumed cycle later in another stage after the late alu
+(so it can consume `ldrb` result from previous cycle)
+
 ### loads
 
 word loads can be consumed by late ALU in next cycle, except instructions that consume one of the operands in early ALU,
