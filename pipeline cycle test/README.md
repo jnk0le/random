@@ -110,7 +110,7 @@ there are another independent cm7 pipeline analysis:
 - https://web.archive.org/web/20220710195033id_/https://eprint.iacr.org/2022/405.pdf (DP is not constant time)
 - https://community.arm.com/support-forums/f/architectures-and-processors-forum/9930/cortex-m7-vfma-usage (VFMA canot dual issue with VLDR)
 - https://community.arm.com/support-forums/f/architectures-and-processors-forum/5567/what-is-the-advantage-of-floating-point-of-cm7-versus-cm4 (VFMA canot dual issue with VLDR)
-- https://semiaccurate.com/2015/04/30/arm-goes-great-detail-m7-core/ (some hints about fpu weirdness)
+- https://web.archive.org/web/20240224123717/https://semiaccurate.com/2015/04/30/arm-goes-great-detail-m7-core/ (some hints about fpu weirdness)
 
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
 ```
