@@ -69,8 +69,6 @@ cortex m4 as tested on stm32f407 rev Y
 [both] 32bit opcode loads (`ldr.w`, `ldrb.w`) may fail to pipeline correctly if they are not positioned
 at word aligned boundaries
 
-[both] 16 bit opcode load after aligned 32bit one could also cause a stall (couldn't reproduce as minimal scenario) 
-
 [both] load instructions can eat following `nop` (`cmp`, `tst` don't work) effectively executing in 1 cycle
 
 [cm3] post and pre indexed loads cannot be chained back to back at all
@@ -101,6 +99,8 @@ making effective execution of 1 IPC, no need to forward data from preceding load
 don't work) effectively executing in 1 cycle (even though cm4 has 4 read ports for MAC)
 
 [both] stores cannot be pipelined with following load instructions (adds extra cycle to store)
+
+[both] stores can't be pipelined with following load multiple (but can with `stm`)
 
 ## cortex m7
 
