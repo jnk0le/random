@@ -360,7 +360,7 @@ moving two registers (fpu to integer and integer to fpu) cannot be dual issued w
 locks pipeline for the rest of the duration (doesn't retire "out of order")
 
 `vldm` behaves as regular `ldm`. (`vstm` similarly)
-The last loaded registers have up to 3 cycles of latency as `vfma.f` accumulate operand and 1 cycle to anything else
+The last loaded registers have up to 3 cycles of latency as `vfma.f` accumulate (!) operand and 1 cycle to anything else
 
 `vldr.f` can be dual issed.
 
