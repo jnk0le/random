@@ -396,6 +396,29 @@ multi cycle floating point instructions)
 result latency of `vmul.d`, `vadd.d` is 3 cycles or interleaved with at least 2 fp instructions (not extended by
 multi cycle floating point instructions)
 
+## cortex-m85
+
+There is an official optimization manual for cortex-m85: https://developer.arm.com/documentation/107950/0100 \
+
+I'll note only things that are not montioned, wrong or unclear in the official manual.
+
+uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
+```
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+	DWT->LAR = 0xC5ACCE55; // required on cm7
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+```
+
+tested on RA8D1 (cm85 r0p2)
+
+
+### overall
+
+
+### MVE
+
+
+
 ## ch32v003
 
 Uses proprietary WCH systick.
