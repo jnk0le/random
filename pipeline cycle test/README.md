@@ -405,7 +405,6 @@ I'll note only things that are not montioned, wrong or unclear in the official m
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
-	DWT->LAR = 0xC5ACCE55; // required on cm7
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 ```
 
