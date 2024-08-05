@@ -399,7 +399,7 @@ multi cycle floating point instructions)
 
 ## cortex-m85
 
-There is an official optimization manual for cortex-m85: https://developer.arm.com/documentation/107950/0100 \
+There is an official optimization manual for cortex-m85: https://developer.arm.com/documentation/107950/0100
 
 I'll note only things that are not montioned, wrong or unclear in the official manual.
 
