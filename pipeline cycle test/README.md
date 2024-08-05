@@ -365,7 +365,7 @@ The last loaded registers have up to 3 cycles of latency as `vfma.f` accumulate 
 
 `vldr.f` can be dual issed.
 
-`vldr.f` has 1 cycle of result latency, except as the `vfma.f` accumulate dependency where it is 3 cycles
+`vldr.f` has 1 cycle of result latency, except as the `vfma.f` accumulate (!) dependency where it is 3 cycles
 (2 for `vmla.f`)
 
 `vstr.d`, `vldr.d` can't dual issue with anything
