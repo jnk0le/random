@@ -309,7 +309,8 @@ flag setting seems to happen in late alu even when instruction executes early
 cmp instruction executes similarly to regular (operand2) ALU instructions (not possible to check if it goes through early alu)
 
 there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
-instruction generating flags have to be placed at least 3 cycles before branch
+instruction generating flags have to be placed at least 3 cycles before branch. Effect is not gradual 
+meaning that setting flags within 4-5 instruction slots prior to branch cause a worst case penalty. 
 
 not-taken branch can dual issue with following instruction
 
@@ -412,6 +413,28 @@ tested on RA8D1 (cm85 r0p2)
 
 
 ### overall
+
+`nop` instructions can be tripple issued even as `.w` opcode with 2 ALU instructions provided that there is
+sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
+
+
+### branching
+
+branch mispredict penalty as in provided template is 7 to 11 cycles.
+The penalty is gradual depending on distance from branch and is sensitive to early/late op placement.
+
+```
+	nop.w // 7 cycles
+	nop.w // 7 cycles
+
+	nop.w // 9 cycles
+	nop.w // 11 cycles
+
+	nop.w // 11 cycles
+	bne.w 1b
+```
+
+(probably additional 1-2 cycles of mispredict penalty when compressed instructions are involved in the loop)
 
 
 ### MVE

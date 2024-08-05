@@ -13,7 +13,7 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-	extern "C"{
+	extern "C" {
 #endif
 
 	/*!
@@ -21,12 +21,6 @@
 	 * \return number of cycles the code took to run
 	 */
 	uint32_t CM0_pipetest_tmpl(void);
-
-	/*!
-	 * \brief cortex-m0+ dedicated template fore pipeline testing
-	 * \return number of cycles the code took to run
-	 */
-	//uint32_t CM0p_pipetest_tmpl(void);
 
 	/*!
 	 * \brief cortex-m3 and cortex-m4 dedicated template fore pipeline testing
@@ -39,6 +33,13 @@
 	 * \return number of cycles the code took to run
 	 */
 	uint32_t CM7_pipetest_tmpl(void);
+
+	/*!
+	 * \brief cortex-m85 dedicated template fore pipeline testing
+	 * \return number of cycles the code took to run
+	 */
+	uint32_t CM85_pipetest_tmpl(void);
+
 
 	/*!
 	 * \brief ch32v (riscv) dedicated template fore pipeline testing
