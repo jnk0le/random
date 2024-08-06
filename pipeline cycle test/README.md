@@ -310,7 +310,7 @@ cmp instruction executes similarly to regular (operand2) ALU instructions (not p
 
 there is flag forwarding that can reduce branch misprediction penalty from 8 to 6 cycles (in case of subs + bne), 
 instruction generating flags have to be placed at least 3 cycles before branch. Effect is not gradual 
-meaning that setting flags within 4-5 instruction slots prior to branch cause a worst case penalty. 
+meaning that setting flags within 4-5 instruction slots prior to branch will cause a worst case penalty. 
 
 not-taken branch can dual issue with following instruction
 
@@ -417,25 +417,45 @@ tested on RA8D1 (cm85 r0p2)
 `nop` instructions can be tripple issued even as `.w` opcode with 2 ALU instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
+### load/store
 
 ### branching
+
+predicted taken branch can tripple issue with instruction at destination address, provided that there is enough
+fetch bandwidth (at least 4 (when close) or 8 (when far) `.n` instructions prior to branch (including branch opcode))\
+It is observable as one pair taking 0.5 cycle to execute
 
 branch mispredict penalty as in provided template is 7 to 11 cycles.
 The penalty is gradual depending on distance from branch and is sensitive to oledr/younger op placement.
 
 ```
-	nop.w // 7 cycles   || 7 cycles
-	nop.w // 7 cycles   || 9 cycles
+	subs r1, #1 // 7 cycles   || 7 cycles
+	nop.w       // 7 cycles   || 9 cycles
 
-	nop.w // 9 cycles   || 11 cycles
-	nop.w // 11 cycles  || 11 cycels
+	nop.w       // 9 cycles   || 11 cycles
+	nop.w       // 11 cycles  || 11 cycels
 
-	nop.w // 11 cycles  || bne.w 1b
-	bne.w 1b            || nop.w
+	nop.w       // 11 cycles  || bne.w 1b
+	bne.w 1b                  || nop.w
 ```
 
-(probably additional 1-2 cycles of mispredict penalty when compressed instructions are involved in the loop)
+when compressed instructions are involved, misprediction penalty ranges from 8 to 13 cycles\
+6 cycle penalty is observed only when branch fails to tripple issue due to instruction dependency
 
+```
+	// all instructions compressed
+	subs r1, #1  // 8 cycles
+	mov r11, r11 // 8 cycles
+
+	mov r10, r10 // 12 cycles
+	mov r11, r11 // 12 cycles
+
+	mov r9, r9   // 12 cycles
+	bne 1b
+```
+
+
+### HW loop
 
 ### MVE
 

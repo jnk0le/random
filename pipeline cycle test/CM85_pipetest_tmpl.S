@@ -34,69 +34,69 @@ CM85_pipetest_tmpl:
 	ldr.w r10, [r11, #4] // read DWT.CYCCNT
 	nop.w
 
-1:  //replace code below
-	nop.w
-	nop.w
+1:  //replace code below // don't use nops as those tripple issue after stall
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
-	nop.w
-
-	nop.w
+	mov.w r10, r10
 	subs.w r9, #1 // generate branch condition few cycles ahead of branch // 7 cycles
 
-	nop.w
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
 
-	nop.w
+	mov.w r10, r10
+	mov.w r11, r11
+
+	mov.w r9, r9 // tripple issues with first instruction
 	bne.w 1b
 
 	//end
-	nop.w
+	mov.w r10, r10
 	ldr.w r9, [r11, #4] // read DWT.CYCCNT
 
 	cpsie i // reenable interrupts
