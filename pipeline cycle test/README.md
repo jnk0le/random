@@ -424,14 +424,14 @@ branch mispredict penalty as in provided template is 7 to 11 cycles.
 The penalty is gradual depending on distance from branch and is sensitive to oledr/younger op placement.
 
 ```
-	nop.w // 7 cycles
-	nop.w // 7 cycles
+	nop.w // 7 cycles   || 7 cycles
+	nop.w // 7 cycles   || 9 cycles
 
-	nop.w // 9 cycles
-	nop.w // 11 cycles
+	nop.w // 9 cycles   || 11 cycles
+	nop.w // 11 cycles  || 11 cycels
 
-	nop.w // 11 cycles
-	bne.w 1b
+	nop.w // 11 cycles  || bne.w 1b
+	bne.w 1b            || nop.w
 ```
 
 (probably additional 1-2 cycles of mispredict penalty when compressed instructions are involved in the loop)
