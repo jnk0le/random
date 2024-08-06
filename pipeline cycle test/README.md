@@ -421,7 +421,7 @@ sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used f
 ### branching
 
 branch mispredict penalty as in provided template is 7 to 11 cycles.
-The penalty is gradual depending on distance from branch and is sensitive to early/late op placement.
+The penalty is gradual depending on distance from branch and is sensitive to oledr/younger op placement.
 
 ```
 	nop.w // 7 cycles
