@@ -92,7 +92,7 @@ CM85_pipetest_tmpl:
 	mov.w r10, r10
 	mov.w r11, r11
 
-	mov.w r9, r9 // tripple issues with first instruction
+	mov.w r9, r9 // tripple issues with first instruction (when using compressed instructions)
 	bne.w 1b
 
 	//end
