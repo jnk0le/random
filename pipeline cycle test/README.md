@@ -414,7 +414,7 @@ tested on RA8D1 (cm85 r0p2)
 
 ### overall
 
-`nop` instructions can be tripple issued even as `.w` opcode with 2 ALU instructions provided that there is
+`nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
 ### load/store
@@ -455,7 +455,11 @@ when compressed instructions are involved, misprediction penalty ranges from 8 t
 ```
 
 
-### HW loop
+### HW loop (WLS/LE)
+
+`LE` instruction behaves like regular branch instruction with 4-5 cycles of "misprediction penalty".
+Meaning that it is executed every round.\
+Net gain is however positive due to one less instruction (e.g. `cmp`) in inner loops.
 
 ### MVE
 
