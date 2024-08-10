@@ -134,7 +134,7 @@ non obvious findings:
 
 ### overall
 
-there is no `nop` elimination, they are just not creating execution stalls as things listed below 
+there is no `nop` elimination, they are just not creating execution stalls as things listed below.\
 It is recommended to align loop entries by enlarging instructions with `.w` suffix rather than using straight `nop` alignment (e.g. `.balign 8`)
 
 `movw` + `movt` pair can dual issue with mutual dependency
