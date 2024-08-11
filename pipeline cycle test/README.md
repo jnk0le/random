@@ -385,7 +385,7 @@ Instructin CPI table (no dependency, all registers initialized to 1.0, "differen
 | `vfma.d` (first/each additional chained) | 7/6 | 8/7 | 10/9 | 6/5 | offending number as multiplicand, accumulator restored every round |
 | `vmla.d` (first/each additional chained) | 8/5 | 9/7 | 10/8 | 7/5 | offending number as multiplicand, accumulator restored every round |
 | `vfma.d` (first/each additional chained) | 8/7 | 8/7 | 10/9 | 6/5 | offending number as multiplicand, different exponent accumulator (31.0) |
-| `vfma.d` (first/each additional chained) | 10/9 | 10/9 | 7/5 | 6/5 | denormal as accumulator |
+| `vfma.d` (first/each additional chained) | 10/9 | 10/9 | 7/5 | 6/5 | denormal as accumulator, restored every round |
 
 first `vmul.d` chained after `vfma.d`/`vmla.d` executes in 4 cycles
 
