@@ -389,7 +389,7 @@ Instructin CPI table (no dependency, all registers initialized to 1.0, "differen
 
 first `vmul.d` chained after `vfma.d`/`vmla.d` executes in 4 cycles
 
-after executing multiply accumulate instructions, `vadd.d` cannot be executed for 1 following cycle
+after executing multiply accumulate instructions, `vadd.d` cannot be executed in first following cycle
 
 `vfma.d` seems to require interleaving 4 independent FMA accumulations or have 3 cycle result latency (not extended by
 multi cycle floating point instructions)
