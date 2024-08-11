@@ -421,7 +421,7 @@ sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used f
 
 ### branching
 
-predicted taken branch can tripple issue with instruction at destination address, provided that there is enough
+predicted taken branch can tripple issue with 2 prior instructions or 1 prior and 1 at destination address, provided that there is enough
 fetch bandwidth (at least 4 (when close) or 8 (when far) `.n` instructions prior to branch (including branch opcode))\
 It is observable as one pair taking 0.5 cycle to execute
 
@@ -439,21 +439,11 @@ The penalty is gradual depending on distance from branch and is sensitive to ole
 	bne.w 1b                  || nop.w
 ```
 
-when compressed instructions are involved, misprediction penalty ranges from 8 to 13 cycles\
-6 cycle penalty is observed only when branch fails to tripple issue due to instruction dependency
+when compressed instructions are involved, misprediction penalty ranges from 8 to 15 cycles
+(1 of which can come from unaligned `.w` after the loop), it's no longer gradual\
+5-6 cycle penalty is observed only when branch fails to tripple issue with target due to operand dependency
 
-```
-	// all instructions compressed
-	subs r1, #1  // 8 cycles
-	mov r11, r11 // 8 cycles
-
-	mov r10, r10 // 12 cycles
-	mov r11, r11 // 12 cycles
-
-	mov r9, r9   // 12 cycles
-	bne 1b
-```
-
+overall, flag settings need to happen at least 2-3 cycles ahead of branch.
 
 ### HW loop (WLS/LE)
 
