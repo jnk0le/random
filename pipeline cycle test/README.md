@@ -403,7 +403,7 @@ There is an official optimization manual for cortex-m85: https://developer.arm.c
 
 I'll note only things that are not montioned, wrong or unclear in the official manual.
 
-uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
+uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
 	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
