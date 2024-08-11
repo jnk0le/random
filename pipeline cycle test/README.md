@@ -214,8 +214,8 @@ operand2 dual issuing matrix
 | constant pattern   |  +  |  +  |  +  |  +  |  +  |  +  |
 | shifted constant   |  +  |  +  |  -  |  -  |  +  |  +  |
 | inline shifted reg |  +  |  +  |  -  |  -  |  +  |  +  |
-| shift by constant  |  +  |  +  |  ?  |  ?  |  +  |  +  |
-| shift by register  |  +  |  +  |  ?  |  ?  |  +  |  +  |
+| shift by constant  |  +  |  +  | -(?)| -(?)|  +  |  +  |
+| shift by register  |  +  |  +  | -(?)| -(?)|  +  |  +  |
 
 legend:
 
