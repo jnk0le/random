@@ -35,65 +35,66 @@ CM85_pipetest_tmpl:
 	nop.w
 
 1:  //replace code below // don't use nops as those tripple issue after stall
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	subs.w r9, #1 // generate branch condition few cycles ahead of branch // 7 cycles
+	mov.n r10, r10
+	subs.n r9, #1 // generate branch condition few cycles ahead of branch
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r10, r10
-	mov.w r11, r11
+	mov.n r10, r10
+	mov.n r11, r11
 
-	mov.w r9, r9 // tripple issues with first instruction (when using compressed instructions)
-	bne.w 1b
+	mov.n r8, r8
+	mov.n r9, r9
+	bne.n 1b // can tripple issue with target or previous 2 insn
 
 	//end
 	mov.w r10, r10
