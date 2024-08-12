@@ -417,6 +417,9 @@ tested on RA8D1 (cm85 r0p2)
 `nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
+"slot 0" instructions can dual issue if surrounding pairs doesn't contain any other "slot 0" instruction.
+
+
 ### load/store
 
 ### branching
@@ -425,19 +428,8 @@ predicted taken branch can tripple issue with 2 prior instructions or 1 prior an
 fetch bandwidth (at least 4 (when close) or 8 (when far) `.n` instructions prior to branch (including branch opcode))\
 It is observable as one pair taking 0.5 cycle to execute
 
-branch mispredict penalty as in provided template is 7 to 11 cycles.
+branch mispredict penalty for case of all `.w` instructions, is 7 to 11 cycles.
 The penalty is gradual depending on distance from branch and is sensitive to oledr/younger op placement.
-
-```
-	subs r1, #1 // 7 cycles   || 7 cycles
-	nop.w       // 7 cycles   || 9 cycles
-
-	nop.w       // 9 cycles   || 11 cycles
-	nop.w       // 11 cycles  || 11 cycels
-
-	nop.w       // 11 cycles  || bne.w 1b
-	bne.w 1b                  || nop.w
-```
 
 when compressed instructions are involved, misprediction penalty ranges from 8 to 15 cycles
 (1 of which can come from unaligned `.w` after the loop), it's no longer gradual\
