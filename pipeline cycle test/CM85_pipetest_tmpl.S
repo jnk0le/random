@@ -97,7 +97,7 @@ CM85_pipetest_tmpl:
 	bne.n 1b // can tripple issue with target or previous 2 insn
 
 	//end
-	mov.w r10, r10
+	mov.n r10, r10 // odd .n in loop
 	ldr.w r9, [r11, #4] // read DWT.CYCCNT
 
 	cpsie i // reenable interrupts
