@@ -263,7 +263,7 @@ word loads can be consumed by late ALU in next cycle, except instructions that c
 
 byte/half loads can be consumed in secend cycle by late ALU (1 extra cycle of result latency), or third in early ALU
 
-two loads (targeting dtcm or cache or both) can be dual issued if each pair is targeting different bank (even and odd words)
+two loads (targeting dtcm or cache or both) can be dual issued if each one is targeting different bank (even and odd words)
 
 can't do simultaneous access to dtcm and dcache at the same (even or odd) bank (slippery if the load 
 pairs are targeting different bank than previous ones (reg offset or immediate doesn't matter))
