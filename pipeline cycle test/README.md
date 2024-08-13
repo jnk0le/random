@@ -432,7 +432,7 @@ branch mispredict penalty for case of all `.w` instructions, is 7 to 11 cycles.
 The penalty is gradual depending on distance from branch and is sensitive to oledr/younger op placement.
 
 when compressed instructions are involved, misprediction penalty ranges from 8 to 15 cycles
-(1 of which can come from unaligned `.w` after the loop), it's no longer gradual\
+(1 of which can come from unaligned fetch group after the loop), it's no longer gradual\
 5-6 cycle penalty is observed only when branch fails to tripple issue with target due to operand dependency
 
 overall, flag settings need to happen at least 2-3 cycles ahead of branch.
@@ -445,6 +445,8 @@ Net gain is however positive due to one less instruction (e.g. `cmp`) in inner l
 
 ### MVE
 
+
+### other optimization tips
 
 
 ## ch32v003
