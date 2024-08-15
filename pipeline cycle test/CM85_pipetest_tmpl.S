@@ -18,8 +18,8 @@ CM85_pipetest_tmpl:
 	vpush {s16-s31}
 
 	// prepare registers here
-	// r0 to r8, r12 and lr are available for use
-	// r9 is a loop counter
+	// r0 to r6, r8, r9, r12 and lr are available for use
+	// r7 is a loop counter
 
 	ldr r11, =0xE0001000 // DWT_BASE
 	cpsid i // disable interrupts
@@ -28,7 +28,7 @@ CM85_pipetest_tmpl:
 	dsb
 	isb
 
-	movs.w r9, #1000 // also start with consistent condition flags
+	movs.w r7, #1000 // also start with consistent condition flags
 	nop.w
 
 	ldr.w r10, [r11, #4] // read DWT.CYCCNT
@@ -84,7 +84,7 @@ CM85_pipetest_tmpl:
 	mov.n r11, r11
 
 	mov.n r10, r10
-	subs.w r9, #1 // generate branch condition few cycles ahead of branch
+	subs.w r7, #1 // generate branch condition few cycles ahead of branch
 
 	mov.n r10, r10
 	mov.n r11, r11
@@ -92,7 +92,7 @@ CM85_pipetest_tmpl:
 	mov.n r10, r10
 	mov.n r11, r11
 
-	mov.n r8, r8
+	mov.n r10, r10
 	mov.n r9, r9
 	bne.n 1b // can tripple issue with target or previous 2 insn
 
