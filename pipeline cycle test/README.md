@@ -471,6 +471,21 @@ EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions
 	adds.n r0, r1 // EX4
 ```
 
+"slot 0" instructions execute only in EX2 from older slot and EX3 from younger slot.
+
+```
+	adds.n r0, r1 // EX1 // cant
+	adds.n r0, r1 // EX2 // cant
+
+	uadd8 r0, r0, r1 // EX2 // only here
+	uadd8 r0, r0, r1 // EX3 // only here
+
+	adds.n r0, r1 // EX3
+	adds.n r0, r1 // EX4
+
+	mov.n r10, r10 // r0 not available
+	adds.n r0, r1 // EX4
+```
 
 
 ### load/store
