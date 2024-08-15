@@ -418,7 +418,7 @@ tested on RA8D1 (cm85 r0p2)
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
 two "slot 0" instructions can dual issue if preceeding younger slots and following older slots are free from other "slot 0"
-instructions. The effect carries until a pair free from any "slot 0" instruction.
+instructions. The effect carries in both directions, until a first pair free from any "slot 0" instruction.
 
 ```
 	//same applies to prior pairs
@@ -433,6 +433,43 @@ instructions. The effect carries until a pair free from any "slot 0" instruction
 	//same applies to following pairs
 ```
 
+The operand2 instructions have 1 extra cycle of input latency to the second register operand,
+even when the second operand is not shifted (e.g. `add r0, r1, r2`)
+
+
+(basic) ALU instructions (arith/bitwise) can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4 with possible chaining of
+0 cycle result forwading pairs.
+EX4 is available only from younger opcode slot. (it's also not documented)
+EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)
+
+```
+	eor.w r0, r3, r0 // shift in EX1, ALU in EX2
+	eor.w r0, r3, r0 // shift in EX3, ALU in EX4
+
+	eor.w r1, r4, r1 // r0 not available
+	eor.w r1, r0, r1 // EX4
+
+	eor.w r2, r2, r5 // EX2 (r5 shifted in EX1)
+	eor.w r2, r2, r5 // EX3
+
+	eor.w r2, r2, r5 // EX3
+	eor.w r2, r2, r5 // EX4
+
+	mov.n r10, r10 // r2 not available
+	eor.w r2, r2, r5 // EX4
+	
+	adds.n r0, r1 // EX1
+	adds.n r0, r1 // EX2
+
+	adds.n r0, r1 // EX2
+	adds.n r0, r1 // EX3
+
+	adds.n r0, r1 // EX3
+	adds.n r0, r1 // EX4
+
+	mov.n r10, r10 // r0 not available
+	adds.n r0, r1 // EX4
+```
 
 
 
@@ -453,7 +490,7 @@ when compressed instructions are involved, misprediction penalty ranges from 8 t
 
 overall, flag settings need to happen at least 2-3 cycles ahead of branch.
 
-### HW loop (WLS/LE)
+### HW loop (`WLS`/`LE`)
 
 `LE` instruction behaves like regular branch instruction with 4-5 cycles of "misprediction penalty".
 Meaning that it is executed every round.\
