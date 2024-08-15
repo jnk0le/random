@@ -417,7 +417,7 @@ tested on RA8D1 (cm85 r0p2)
 `nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
-two "slot 0" instructions can dual issue if preceeding younger slots and following older slots are free from other "slot 0"
+two "slot 0" (dsp/bitmanip) instructions can dual issue if preceeding younger slots and following older slots are free from other "slot 0"
 instructions. The effect carries in both directions, until a first pair free from any "slot 0" instruction.
 
 ```
@@ -471,7 +471,7 @@ EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions
 	adds.n r0, r1 // EX4
 ```
 
-"slot 0" instructions execute only in EX2 from older slot and EX3 from younger slot.
+"slot 0" (dsp/bitmanip) instructions execute only in EX2 from older slot and EX3 from younger slot.
 
 ```
 	adds.n r0, r1 // EX1 // cant
