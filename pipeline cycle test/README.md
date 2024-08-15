@@ -417,7 +417,23 @@ tested on RA8D1 (cm85 r0p2)
 `nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
-two "slot 0" instructions can dual issue if both surrounding pairs don't contain any other "slot 0" instruction.
+two "slot 0" instructions can dual issue if preceeding younger slots and following older slots are free from other "slot 0"
+instructions. The effect carries until a pair free from any "slot 0" instruction.
+
+```
+	//same applies to prior pairs
+	uadd8 r4, r5, r5 // ok
+	mov.n r11, r11 // cant
+
+	uadd8 r0, r1, r1
+	uadd8 r2, r3, r3
+
+	mov.n r10, r10 // cant
+	uadd8 r4, r5, r5 // ok
+	//same applies to following pairs
+```
+
+
 
 
 ### load/store
