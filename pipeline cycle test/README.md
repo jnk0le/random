@@ -437,7 +437,7 @@ The operand2 instructions have 1 extra cycle of input latency to the second regi
 even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 
 
-(basic) ALU instructions (arith/bitwise) can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4, with possible chaining of
+Most of the ALU instructions can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4, with possible chaining of
 0 cycle result forwading pairs.\
 EX4 is available only from younger opcode slot. (it's also not documented)\
 EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)
