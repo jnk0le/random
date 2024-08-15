@@ -84,7 +84,7 @@ CM85_pipetest_tmpl:
 	mov.n r11, r11
 
 	mov.n r10, r10
-	subs.w r7, #1 // generate branch condition few cycles ahead of branch
+	subs.n r7, #1 // generate branch condition few cycles ahead of branch
 
 	mov.n r10, r10
 	mov.n r11, r11
