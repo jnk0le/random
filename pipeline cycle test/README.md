@@ -401,6 +401,9 @@ multi cycle floating point instructions)
 
 There is an official optimization manual for cortex-m85: https://developer.arm.com/documentation/107950/0100
 
+(the "latency from the xxx source operand" means latency when output of given isntruction is forwarded to xxx operand
+of the same instruction)
+
 I'll note only things that are not montioned, wrong or unclear in the official manual.
 
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not work
