@@ -402,7 +402,7 @@ multi cycle floating point instructions)
 There is an official optimization manual for cortex-m85: https://developer.arm.com/documentation/107950/0100
 
 (the "latency from the xxx source operand" means latency when output of given isntruction is forwarded to xxx operand
-of the same instruction)
+of the same following instruction)
 
 I'll note only things that are not montioned, wrong or unclear in the official manual.
 
@@ -415,7 +415,7 @@ uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not wor
 tested on RA8D1 (cm85 r0p2)
 
 
-### overall
+### overall/ALU
 
 `nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
@@ -443,6 +443,7 @@ even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 Most of the ALU instructions can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4, with possible chaining of
 0 cycle result forwading pairs.\
 EX4 is available only from younger opcode slot. (it's also not documented)\
+EX1 is avaiable only from older opcode slot. (except implicitly as inline shfted reg etc.)
 EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)
 
 ```
