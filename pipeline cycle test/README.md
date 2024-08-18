@@ -517,6 +517,16 @@ Net gain is however positive due to one less instruction (e.g. `cmp`) in inner l
 ### other optimization tips
 
 
+
+some instructions have issuing limitations so you may want to replace them with equivalents:
+
+| offending instruction | more efficient equivalent | notes |
+|----------------------------|----------------------------------------------|------------------------|
+| `uxtb{.n} r0, r1, ror #0`  | `and r0, r1, #0xff`, `ubfx r0, r1, #0, #8` | no `.n` equivalent     |
+| `uxtb r0, r1, ror #8`      | `ubfx r0, r1, #8, #8` | |
+| `uxtb r0, r1, ror #16`     | `ubfx r0, r1, #16, #8` | |
+| `uxtb r0, r1, ror #24`     | `lsrs.n r0, r1, #24`, `ubfx r0, r1, #24, #8` | |
+
 ## ch32v003
 
 Uses proprietary WCH systick.
