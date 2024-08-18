@@ -415,7 +415,7 @@ uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not wor
 tested on RA8D1 (cm85 r0p2)
 
 
-### overall/ALU
+### overall/scalar ALU
 
 `nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
@@ -491,6 +491,25 @@ EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions
 	adds.n r0, r1 // EX4
 ```
 
+shift instructions (e.g. `lsls`, `ubfx`) can execute freely in EX1-EX2. In EX3, only from younger opcode slot 
+(either as explicit shift, or skewed operand2 shifted reg). If shifter was used in EX3 in previous
+cycle then current older op (ALU) cannot use it's result.
+
+```
+	lsls r0, r0, #1 // EX1
+	lsls r0, r0, #2 // EX2
+
+	lsls r0, r0, #3 // EX2
+	lsls r0, r0, #4 // EX3
+
+	adds.n r1, r1 // EX3 // can't use r0 due to shift in EX3, previous cycle
+	lsls r0, r0, #5 // EX3 // EX3-EX4 for reg-reg operand2
+
+	mov.n r10, r10 // r0 not available for shift, for ALU if EX4 after reg-reg operand2
+	adds.n r0, r1 // EX3 // can't shift if EX4
+```
+
+### scalar multiplication, MAC
 
 ### load/store
 
@@ -522,7 +541,7 @@ Net gain is however positive due to one less instruction (e.g. `cmp`) in inner l
 
 
 
-some instructions have issuing limitations so you may want to replace them with equivalents:
+some instructions have issuing limitations so you may want to replace them with other equivalents:
 
 | offending instruction | more efficient equivalent | notes |
 |----------------------------|----------------------------------------------|------------------------|
