@@ -516,7 +516,8 @@ cycle then current older op (ALU) cannot use it's result.
 ### branching
 
 predicted taken branch can tripple issue with 2 prior instructions or 1 prior and 1 at destination address, provided that there is enough
-fetch bandwidth (at least 4 (when close) or 8 (when far) `.n` instructions prior to branch (including branch opcode))\
+fetch bandwidth (at least 4 (when close, or doesn't tripple across branch) or 8 (when far and tripples across branch) `.n` 
+instructions prior to branch (including branch opcode))\
 It is observable as one pair taking 0.5 cycle to execute
 
 branch mispredict penalty for case of all `.w` instructions, is 7 to 11 cycles.
