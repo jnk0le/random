@@ -513,16 +513,54 @@ cycle then current older op (ALU) cannot use it's result.
 
 ### scalar load/store
 
-dcache has only 2 SRAM banks while DTCM 4 (all are 4 byte striped)
+DCACHE has only 2 SRAM banks while DTCM 4 (all are 4 byte striped)
+
+Two post/pre indexed loads/stores can be chained back to back each cycle.
+
+AGUs are skewed, load/store issued from older slot executes in EX1 and younger in EX2.
+Can chain AGUs even in 0 cycles within a dual issue pair (from EX1 to EX2, further loads/stores must happen from younger slot, 
+can't use AGU result from older slot next cycle after such chaining)
+
+load to use latency for `ldr` is 1 cycle, it's sensitive to oldery/ounger op placement due to skewed pipeline
+
+```
+	ldr r2, [r5], #4 // AGU in EX1, data in EX2
+	ldr r3, [r6], #4 // AGU in EX2, data in EX3 // same if AGU chained on r5
+
+	adds.n r0, r2 // can't use r3 in EX2
+	adds.n r0, r3 // EX3
+	
+	adds.n r0, r1 // EX3
+	adds.n r0, r1 // EX4
+
+	mov.n r10, r10 // r0 not available
+	adds.n r0, r1 // EX4
+```
+
+optimization manual suggests 2 cycle load to use which is the case of "pointer chasing"
+
+```
+	ldr r1, [r5]
+	mov.n r11, r11
+
+	mov.n r10, r10
+	ldr r2, [r5, r1] // younger to older next cycle still possible due to skewed pipe
+
+	mov.n r10, r10
+	mov.n r11, r11
+
+	mov.n r10, r10
+	ldr r3, [r5, r2]
+```
+
+
 
 `ldrd`/`strd` can be dual issued together
-- infinitely if targetting DTCM and the transfers are distributed across all 4 banks (even when each pair targets the same banks)
+- infinitely if targetting DTCM and the transfers are distributed across all 4 banks (regardless of overlaps)
 - with up to 5 (6 if not loading in following cycles) `strd` when targetting DCACHE
 (one more and there is up to 5 cycle stall (<5 if `ldrd` are not issued after/for last stores))
 
 `ldrd`/`strd` are not affected by 4 byte misalignment (with some exceptions when dual issuing `ldrd`/`strd` pairs)
-
-
 
 ### branching
 
@@ -537,6 +575,8 @@ The penalty is gradual depending on distance from branch and is sensitive to old
 when compressed instructions are involved, misprediction penalty ranges from 8 to 15 cycles
 (1 of which can come from unaligned fetch group after the loop), it's no longer gradual\
 5-6 cycle penalty is observed only when branch fails to tripple issue with target due to operand dependency
+
+
 
 overall, flag settings need to happen at least 2-3 cycles ahead of branch.
 
