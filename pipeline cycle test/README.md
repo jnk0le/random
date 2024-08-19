@@ -511,7 +511,15 @@ cycle then current older op (ALU) cannot use it's result.
 
 ### scalar multiplication, MAC
 
-### load/store
+### scalar load/store
+
+
+`ldrd`/`strd` (to DTCM ?) can be dual issued together infinitely if the transfers are distributed across all 4 banks
+(even when each pair targets the same banks)
+
+`ldrd`/`strd` (to DTCM ?) are not affected by 4 byte misalignment (with exception of only 2 banks accessed by all transfers)
+
+
 
 ### branching
 
@@ -539,7 +547,6 @@ Net gain is however positive due to one less instruction (e.g. `cmp`) in inner l
 
 
 ### other optimization tips
-
 
 
 some instructions have issuing limitations so you may want to replace them with other equivalents:
