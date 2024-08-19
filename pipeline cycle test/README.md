@@ -532,7 +532,7 @@ instructions prior to branch (including branch opcode))\
 It is observable as one pair taking 0.5 cycle to execute
 
 branch mispredict penalty for case of all `.w` instructions, is 7 to 11 cycles.
-The penalty is gradual depending on distance from branch and is sensitive to oledr/younger op placement.
+The penalty is gradual depending on distance from branch and is sensitive to older/younger op placement.
 
 when compressed instructions are involved, misprediction penalty ranges from 8 to 15 cycles
 (1 of which can come from unaligned fetch group after the loop), it's no longer gradual\
