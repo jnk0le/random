@@ -513,11 +513,14 @@ cycle then current older op (ALU) cannot use it's result.
 
 ### scalar load/store
 
+dcache has only 2 SRAM banks while DTCM 4 (all are 4 byte striped)
 
-`ldrd`/`strd` (to DTCM ?) can be dual issued together infinitely if the transfers are distributed across all 4 banks
-(even when each pair targets the same banks)
+`ldrd`/`strd` can be dual issued together
+- infinitely if targetting DTCM and the transfers are distributed across all 4 banks (even when each pair targets the same banks)
+- with up to 5 (6 if not loading in following cycles) `strd` when targetting DCACHE
+(one more and there is up to 5 cycle stall (<5 if `ldrd` are not issued after/for last stores))
 
-`ldrd`/`strd` (to DTCM ?) are not affected by 4 byte misalignment (with exception of only 2 banks accessed by all transfers)
+`ldrd`/`strd` are not affected by 4 byte misalignment (with some exceptions when dual issuing `ldrd`/`strd` pairs)
 
 
 
