@@ -538,6 +538,7 @@ to older/younger op placement due to skewed pipeline. It does however execute th
 	adds.n r0, r1 // EX4
 ```
 
+
 optimization manual suggests 2 cycle load to use which is the case of "pointer chasing"
 
 ```
@@ -595,7 +596,7 @@ Net gain is however positive due to one less instruction (e.g. `cmp`) in inner l
 
 some instructions have issuing limitations so you may want to replace them with other equivalents:
 
-| offending instruction | more efficient equivalent | notes |
+| offending instruction &nbsp; | more efficient equivalent | notes |
 |----------------------------|----------------------------------------------|------------------------|
 | `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX4 |
 | `uxtb r0, r1, ror #8`      | `ubfx r0, r1, #8, #8` | |
