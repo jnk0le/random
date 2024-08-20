@@ -544,7 +544,7 @@ optimization manual suggests 2 cycle load to use which is the case of "pointer c
 	mov.n r11, r11
 
 	mov.n r10, r10
-	ldr r2, [r5, r1] // younger to older next cycle, still possible due to skewed pipe
+	ldr r2, [r5, r1] // younger to older, still possible due to skewed pipe
 
 	mov.n r10, r10
 	mov.n r11, r11
