@@ -521,7 +521,8 @@ AGUs are skewed, load/store issued from older slot executes in EX1 and younger i
 Can chain AGUs even in 0 cycles within a dual issue pair (from EX1 to EX2, further loads/stores must happen from younger slot, 
 can't use AGU result from older slot next cycle after such chaining)
 
-effective load to use latency for `ldr` is 1 cycle, it's sensitive to older/younger op placement due to skewed pipeline
+effective load to use latency for `ldr` is 1 cycle (which covers "slot 0" instructions), it's sensitive
+to older/younger op placement due to skewed pipeline. It does however execute throughout 2 pipeline stages.
 
 ```
 	ldr r2, [r5], #4 // AGU in EX1, data in EX2
