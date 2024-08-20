@@ -546,7 +546,8 @@ to older/younger op placement due to skewed pipeline. It does however execute th
 ```
 
 
-optimization manual suggests 2 cycle load to use which is the case of "pointer chasing"
+Optimization manual suggests 2 cycle load to use which is the case of "pointer chasing",
+Due to skewed pipe, can't forward load from younger slot to older in 2 cycles.
 
 ```
 	ldr r1, [r5]
@@ -558,8 +559,21 @@ optimization manual suggests 2 cycle load to use which is the case of "pointer c
 	mov.n r10, r10
 	mov.n r11, r11
 
-	mov.n r10, r10
+	mov.n r10, r10 // can't
 	ldr r3, [r5, r2]
+```
+
+two `ldrd` or `strd` instructions can dual issue if preceeding younger slots and following older slots are free from other `ldrd`/`strd`
+instructions. The effect carries in both directions, until a first pair free from any `ldrd`/`strd` instruction.
+```
+	ldrd r2,r3, [r5, #0]
+	mov.n r11, r11 // can't
+
+	ldrd r0,r1, [r5, #0]
+	ldrd r2,r3, [r5, #0]
+
+	mov.n r10, r10 // can't
+	ldrd r2,r3, [r5, #0]
 ```
 
 
