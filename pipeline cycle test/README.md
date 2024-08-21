@@ -521,8 +521,9 @@ AGUs are skewed, load/store issued from older slot executes in EX1 and younger i
 Can chain AGUs even in 0 cycles within a dual issue pair (from EX1 to EX2, further loads/stores must happen from younger slot, 
 can't use AGU result from older slot next cycle after such chaining)
 
-effective load to use latency for `ldr` is 0 cycle (even to "slot 0" instructions), it's sensitive
-to older/younger op placement due to skewed pipeline. It does however execute throughout 2 pipeline stages.
+loads execute throughout 2 pipeline stages (AGU, and load)\
+Effective load to use latency for `ldr` is 0 cycle (even to "slot 0" instructions), it's sensitive
+to older/younger op placement due to skewed pipeline.
 
 ```
 	ldr r1, [r5], #4 // AGU in EX1, data in EX2
@@ -546,7 +547,7 @@ to older/younger op placement due to skewed pipeline. It does however execute th
 ```
 
 
-Optimization manual suggests 2 cycle load to use which is the case of "pointer chasing",
+Optimization manual suggests 2 cycle load to use which is the case of "pointer chasing".
 Due to skewed pipe, can't forward load from younger slot to older in 2 cycles.
 
 ```
@@ -563,6 +564,7 @@ Due to skewed pipe, can't forward load from younger slot to older in 2 cycles.
 	ldr r3, [r5, r2]
 ```
 
+
 two `ldrd` or `strd` instructions can dual issue if preceeding younger slots and following older slots are free from other `ldrd`/`strd`
 instructions. The effect carries in both directions, until a first pair free from any `ldrd`/`strd` instruction.
 ```
@@ -576,7 +578,7 @@ instructions. The effect carries in both directions, until a first pair free fro
 	ldrd r2,r3, [r5, #0]
 ```
 
-
+both `ldrd` loads are not skewed
 
 `ldrd`/`strd` can be dual issued together
 - infinitely if targetting DTCM and the transfers are distributed across all 4 banks (regardless of overlaps)
