@@ -564,6 +564,13 @@ Due to skewed pipe, can't forward load from younger slot to older in 2 cycles.
 	ldr r3, [r5, r2]
 ```
 
+`ldr{b,h,sb,sh}` executes throughout 3 pipeline stages (AGU, load, format)
+Realistic load to use latency is 1 cycle, though it can achieve 0 cycles to EX4 instructions.
+
+```
+	ldrb r0, [r5, #4] // AGU in EX1, data in EX2, formatting in EX3
+	adds r2, r0 // EX4
+```
 
 two `ldrd` or `strd` instructions can dual issue if preceeding younger slots and following older slots are free from other `ldrd`/`strd`
 instructions. The effect carries in both directions, until a first pair free from any `ldrd`/`strd` instruction.
