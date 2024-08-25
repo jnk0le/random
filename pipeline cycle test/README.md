@@ -643,7 +643,6 @@ load/store instructions can dual issue with scalar, only from younger slot, it a
 that during its latency window no scalar instructions are issued (1 cycle for normal, 2 for scatter/gather)
 
 gather/scatter experience 1 extra stall cycle (each invocation) in fully vectorized code. cause unknown
-(only in synthetic scanario it is possible to fully pipeline it)
 
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
