@@ -640,9 +640,11 @@ Net gain is however positive due to one less instruction (e.g. `cmp`) in inner l
 scatter/gather doesn't support unaligned access
 
 load/store instructions can dual issue with scalar, only from younger slot, it also requires
-that during its latency window no scalar instructions are issued (1 cycle for normal, 2 for scatter/gather)
+that during its latency window no scalar instructions are issued (following 1 cycle)\
+(after gather/scatter all further vector instructions in a chain have to be issued from younger slot)
 
-gather/scatter experience 1 extra stall cycle (each invocation) in fully vectorized code. cause unknown
+gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
+
 
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
