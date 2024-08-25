@@ -529,7 +529,7 @@ Two post/pre indexed loads/stores can be chained back to back each cycle.
 
 AGUs are skewed, load/store issued from older slot executes in EX1 and younger in EX2.
 Can chain AGUs even in 0 cycles within a dual issue pair (from EX1 to EX2, further loads/stores must happen from younger slot, 
-can't use AGU result from older slot next cycle after such chaining)
+can't use AGU result in older slot next cycle after such chaining)
 
 loads execute throughout 2 pipeline stages (AGU, and load)\
 Effective load to use latency for `ldr` is 0 cycle (even to "slot 0" instructions), it's sensitive
@@ -604,6 +604,9 @@ both `ldrd` loads are not skewed
 
 `ldrd`/`strd` are not affected by 4 byte misalignment (with some exceptions when dual issuing `ldrd`/`strd` pairs)
 
+Effective input latency to store instruction is 0 cycles.
+The data argument can be consumed in EX4 stage, only from younger issue slot.
+
 ### branching
 
 predicted taken branch can tripple issue with 2 prior instructions or 1 prior and 1 at destination address, provided that there is enough
@@ -629,6 +632,20 @@ Meaning that it is executed every round.\
 Net gain is however positive due to one less instruction (e.g. `cmp`) in inner loops.
 
 ### MVE
+
+
+
+#### loads/stores
+
+scatter/gather doesn't support unaligned access
+
+load/store instructions can dual issue with scalar, only from younger slot, it also requires
+that during its latency window no scalar instructions are issued (1 cycle for normal, 2 for gather scatter)
+
+gather/scatter experience 1 extra stall cycle (each invocation) in fully vectorized code. cause unknown
+(only in synthetic scanario it is possible to fully pipeline it)
+
+
 
 
 ### other optimization tips
