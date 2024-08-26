@@ -662,7 +662,7 @@ some instructions have issuing limitations so you may want to replace them with 
 | `uxtb r0, r1, ror #16`     | `ubfx r0, r1, #16, #8` | |
 | `uxtb r0, r1, ror #24`     | `lsrs.n r0, r1, #24`<br />`ubfx r0, r1, #24, #8` | |
 | `ldm`<br />`stm`           | sequence of `ldrd`<br />sequence of `strd` | load/store double can dual issue with other instructions per 64bits of transferred data |
-| `vldm`<br />`vstm`         |||
+
 
 ## ch32v003
 
