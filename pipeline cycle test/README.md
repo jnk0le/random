@@ -641,7 +641,8 @@ scatter/gather doesn't support unaligned access
 
 load/store instructions can dual issue with scalar, only from younger slot, it also requires
 that during its latency window no scalar instructions are issued (following 1 cycle)\
-(after gather/scatter all further vector instructions in a chain have to be issued from younger slot)
+(after gather/scatter all further vector instructions in a chain have to be issued from younger slot,
+in order to dual issue with scalar)
 
 gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
 
