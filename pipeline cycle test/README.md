@@ -607,6 +607,8 @@ both `ldrd` loads are not skewed
 Effective input latency to store instruction is 0 cycles.
 The data argument can be consumed in EX4 stage, only from younger issue slot.
 
+unaligned loads add 0.5 - 1 cycle of stall each. 
+
 ### branching
 
 predicted taken branch can tripple issue with 2 prior instructions or 1 prior and 1 at destination address, provided that there is enough
