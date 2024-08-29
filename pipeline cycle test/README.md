@@ -623,15 +623,22 @@ when compressed instructions are involved, misprediction penalty ranges from 8 t
 (1 of which can come from unaligned fetch group after the loop), it's no longer gradual\
 5-6 cycle penalty is observed only when branch fails to tripple issue with target due to operand dependency
 
+overall, flag settings need to happen at least 2-4 cycles ahead of branch.
 
+In a nested loop scenario, the inner branch 4 cycles of mispredict penalty. There is also 
+around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
 
-overall, flag settings need to happen at least 2-3 cycles ahead of branch.
+le + bne nested - around 30 cycles
+bne + bne nested  4031
 
 ### HW loop (`WLS`/`LE`)
 
-`LE` instruction behaves like regular branch instruction with 4-5 cycles of "misprediction penalty".
+`le` instruction behaves like regular branch instruction with 4-5 cycles of "misprediction penalty".
 Meaning that it is executed every round.\
 Net gain is however positive due to one less instruction (e.g. `cmp`) in inner loops.
+
+In a nested loop scenario, `le` instruction doesn't show any "misprediction penalty". There is also
+around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
 
 ### MVE
 
