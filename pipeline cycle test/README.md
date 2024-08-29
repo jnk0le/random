@@ -625,7 +625,7 @@ when compressed instructions are involved, misprediction penalty ranges from 8 t
 
 overall, flag settings need to happen at least 2-4 cycles ahead of branch.
 
-In a nested loop scenario, the inner branch 4 cycles of mispredict penalty. There is also 
+In a nested loop scenario, the inner branch shows 4 cycles of mispredict penalty. There is also 
 around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
 
 ### HW loop (`WLS`/`LE`)
