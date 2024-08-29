@@ -628,9 +628,6 @@ overall, flag settings need to happen at least 2-4 cycles ahead of branch.
 In a nested loop scenario, the inner branch 4 cycles of mispredict penalty. There is also 
 around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
 
-le + bne nested - around 30 cycles
-bne + bne nested  4031
-
 ### HW loop (`WLS`/`LE`)
 
 `le` instruction behaves like regular branch instruction with 4-5 cycles of "misprediction penalty".
