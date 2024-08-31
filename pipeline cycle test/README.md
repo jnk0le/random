@@ -452,10 +452,11 @@ even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 
 Most of the ALU instructions can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4, with possible chaining of
 0 cycle result forwading pairs.\
-EX4 is available only from younger opcode slot. (in a very specific scenarios EX4 seems to be available from older slot)
-(it's also not documented)\
-EX1 is avaiable only from older opcode slot. (except implicitly as inline shfted reg etc.)
-EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)
+EX4 is available only from younger opcode slot.(it's also not documented)\
+EX1 is available only from older opcode slot. (except implicitly as inline shfted reg etc.)\
+EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)\
+Exceptions from those rules are observable in specific scenarios (e.g. EX4 available from older issue slot or shifter not
+available in EX3 from younger issue slot etc.)
 
 ```
 	eor.w r0, r3, r0 // shift in EX1, ALU in EX2
@@ -667,6 +668,12 @@ overall, flag settings need to happen at least 2-4 cycles ahead of branch.
 
 In a nested loop scenario, the inner branch shows 4 cycles of mispredict penalty. There is also 
 around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
+
+`it` instruction tripple issues provided that there is enough fetch bandwidth.\
+`it` instruction perform actual predication (no branching, "wastes" execution slots instead)\
+Predicated out instruction cause less stalls due to operand contention, than when allowed to retire. (stalls are still being measured)\
+`it` intruction can onsume flags in 0 cycles, however it is recommended to keep 1-2 cycle clearance as it cannot
+immediately consume flags from EX4 ALU or EX3 shifts (same or previous cycle)
 
 ### HW loop (`WLS`/`LE`)
 
