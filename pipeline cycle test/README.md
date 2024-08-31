@@ -537,7 +537,7 @@ directions, until a first pair free from any mul/MAC instruction. (doesn't conte
 	umlal r0, r1, r6, r7
 ```
 
-can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with reg offset store or strd.
+can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with reg offset store or `strd`.
 (scalar regfile has only 6 read ports)
 
 can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with post and pre indexed `ldrd`
