@@ -521,6 +521,26 @@ cycle then current older op (ALU) cannot use it's result.
 
 ### scalar multiplication, MAC
 
+All multiply and MAC instructions can't freely dual issue (optimization manual is incorrect here)
+However, similarly to "slot 0" instructions (dsp/bitmanip) they can dual issue if preceeding younger
+slots and following older slots are free from other mul/MAC instructions. The effect carries in both
+directions, until a first pair free from any mul/MAC instruction. (doesn't contend slot 0 resources)
+
+```
+	umlal r0, r1, r2, r3
+	mov.n r11, r11 // can't
+
+	umlal r0, r1, r2, r3
+	umlal r0, r1, r6, r7 // can be chained on accumulator dependency
+
+	mov.n r10, r10 // can't
+	umlal r0, r1, r6, r7
+```
+
+can't dual issue 4 operand MAC (`umlal`,`umaal`) with reg offset store or strd.
+(scalar regfile has only 6 read ports)
+
+
 ### scalar load/store
 
 DCACHE has only 2 SRAM banks while DTCM 4 (all are 4 byte striped)
@@ -555,7 +575,6 @@ to older/younger op placement due to skewed pipeline.
 	mov.n r10, r10 // r0 not available
 	adds.n r0, r1 // EX4
 ```
-
 
 Optimization manual suggests 2 cycle load to use which is the case of "pointer chasing".
 Due to skewed pipe, can't forward load from younger slot to older in 2 cycles.
