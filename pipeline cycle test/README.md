@@ -521,7 +521,7 @@ cycle then current older op (ALU) cannot use it's result.
 
 ### scalar multiplication, MAC
 
-All multiply and MAC instructions can't freely dual issue (optimization manual is incorrect here)\
+All multiply and MAC instructions can't freely dual issue.
 However, similarly to "slot 0" instructions (dsp/bitmanip) they can dual issue if preceeding younger
 slots and following older slots are free from other mul/MAC instructions. The effect carries in both
 directions, until a first pair free from any mul/MAC instruction. (doesn't contend slot 0 resources)
