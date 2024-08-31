@@ -452,7 +452,8 @@ even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 
 Most of the ALU instructions can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4, with possible chaining of
 0 cycle result forwading pairs.\
-EX4 is available only from younger opcode slot. (it's also not documented)\
+EX4 is available only from younger opcode slot. (in a very specific scenarios EX4 seems to be available from older slot)
+(it's also not documented)\
 EX1 is avaiable only from older opcode slot. (except implicitly as inline shfted reg etc.)
 EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)
 
@@ -521,19 +522,38 @@ cycle then current older op (ALU) cannot use it's result.
 
 ### scalar multiplication, MAC
 
+mul/MAC instructions execute throughout EX2 and EX3 from older issue slot and
+EX3 and EX4 from younger issue slot.
+
+```
+	umlal r0, r1, r2, r3 // MUL in EX2, ACC in EX3
+	adds r0, r5 // EX4
+
+	mov.n r10, r10 // can't use r0/r1
+	adds r0, r5 //EX4
+```
+
+```
+	ldrd r2,r3, [r12] // AGU in EX1, DATA in EX2
+	umlal r0, r1, r2, r3 // MUL in EX3, ACC in EX4
+
+	mov.n r10, r10 // can't use r0/r1
+	adds r0, r5 // EX4
+```
+
 Similarly to "slot 0" instructions (dsp/bitmanip), mul/MAC instructions can dual issue if preceeding younger
 slots and following older slots are free from other mul/MAC instructions. The effect carries in both
 directions, until a first pair free from any mul/MAC instruction. (doesn't contend slot 0 resources)
 
 ```
-	umlal r0, r1, r2, r3
+	umlal r0, r1, r2, r3 // MUL in EX2, ACC in EX3
 	mov.n r11, r11 // can't
 
-	umlal r0, r1, r2, r3
-	umlal r0, r1, r6, r7 // can be chained on accumulator dependency
+	umlal r0, r1, r2, r3 // MUL in EX2, ACC in EX3
+	umlal r0, r1, r6, r7 // MUL in EX3, ACC in EX4
 
 	mov.n r10, r10 // can't
-	umlal r0, r1, r6, r7
+	umlal r0, r1, r6, r7 // MUL in EX3, ACC in EX4
 ```
 
 can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with reg offset store or `strd`.
