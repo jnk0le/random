@@ -456,6 +456,7 @@ EX4 is available only from younger opcode slot.(it's also not documented)\
 EX1 is available only from older opcode slot. (except implicitly as inline shfted reg etc.)\
 EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)\
 EX3 is not available by shifts issued from older slot.\
+EX2 is not available by bitwise issued from younger slot.\
 Exceptions from those rules are observable in specific scenarios (e.g. EX4 available from older issue slot etc.)
 
 ```
