@@ -673,7 +673,7 @@ around 30 accumulated loop invariant cycles of penealty. (which includes outer l
 `it` instruction perform actual predication (no branching, "wastes" execution slots instead)\
 Predicated out instruction cause less stalls due to operand contention, than when allowed to retire. (stalls are still being measured)\
 `it` intruction can onsume flags in 0 cycles, however it is recommended to keep 1-2 cycle clearance as it cannot
-immediately consume flags from EX4 ALU or EX3 shifts (same or previous cycle)
+immediately consume flags from EX4 ALU or shifts in younger op previous cycle etc.
 
 ### HW loop (`WLS`/`LE`)
 
