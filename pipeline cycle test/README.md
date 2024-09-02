@@ -457,7 +457,8 @@ EX1 is available only from older opcode slot. (except implicitly as inline shfte
 EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)\
 EX3 is not available by shifts issued from older slot.\
 EX2 is not available by bitwise issued from younger slot.\
-Exceptions from those rules are observable in specific scenarios (e.g. EX4 available from older issue slot etc.)
+Exceptions from those rules are observable in specific scenarios (e.g. EX4 available from older issue slot or
+something that cannot be forwarded to the "correct" pipeline stage etc.)
 
 ```
 	eor.w r0, r3, r0 // shift in EX1, ALU in EX2
