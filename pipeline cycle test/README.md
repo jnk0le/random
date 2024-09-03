@@ -424,6 +424,12 @@ uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not wor
 
 tested on RA8D1 (cm85 r0p2)
 
+little glossary:
+```
+// for a given dual issued instruction bundle:
+080004a0:   add.w r10, r11, r12 // this is "older op/issue slot"
+080004a4:   nop.w               // this is "younger op/issue slot"
+```
 
 ### overall/scalar ALU
 
