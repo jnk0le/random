@@ -436,25 +436,8 @@ little glossary:
 `nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
-two "slot 0" (dsp/bitmanip) instructions can dual issue if preceeding younger slots and following older slots are free from other "slot 0"
-instructions. The effect carries in both directions, until a first pair free from any "slot 0" instruction.
-
-```
-	//same applies to prior pairs
-	uadd8 r4, r5, r5 // ok
-	mov.n r11, r11 // cant
-
-	uadd8 r0, r1, r1
-	uadd8 r2, r3, r3
-
-	mov.n r10, r10 // cant
-	uadd8 r4, r5, r5 // ok
-	//same applies to following pairs
-```
-
 The operand2 instructions have 1 extra cycle of input latency to the second register operand,
 even when the second operand is not shifted (e.g. `add r0, r1, r2`)
-
 
 Most of the ALU instructions can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4, with possible chaining of
 0 cycle result forwading pairs.\
@@ -529,6 +512,16 @@ cycle then current older op (ALU) cannot use it's result.
 	adds.n r0, r1 // EX3 // can't shift if EX4
 ```
 
+### "slippery condition"
+
+observable as half cycle execution slide, which results in 1 cycle of loop invariant stall
+(if no further stall is hit) due to tripple issue across branch.
+
+- issuing instruction pairs that can't be dual issued (`uxtb`+`uxtb`, `ldrd`+`ldrd` etc.)
+- certain
+
+
+
 ### scalar multiplication, MAC
 
 mul/MAC instructions execute throughout EX2 and EX3 from older issue slot and
@@ -548,21 +541,6 @@ EX3 and EX4 from younger issue slot.
 
 	mov.n r10, r10 // can't use r0/r1
 	adds r0, r5 // EX4
-```
-
-Similarly to "slot 0" instructions (dsp/bitmanip), mul/MAC instructions can dual issue if preceeding younger
-slots and following older slots are free from other mul/MAC instructions. The effect carries in both
-directions, until a first pair free from any mul/MAC instruction. (doesn't contend slot 0 resources)
-
-```
-	umlal r0, r1, r2, r3 // MUL in EX2, ACC in EX3
-	mov.n r11, r11 // can't
-
-	umlal r0, r1, r2, r3 // MUL in EX2, ACC in EX3
-	umlal r0, r1, r6, r7 // MUL in EX3, ACC in EX4
-
-	mov.n r10, r10 // can't
-	umlal r0, r1, r6, r7 // MUL in EX3, ACC in EX4
 ```
 
 can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with reg offset store or `strd`.
@@ -631,20 +609,7 @@ Realistic load to use latency is 1 cycle, though it can achieve 0 cycles to EX4 
 	adds r2, r0 // EX4
 ```
 
-two `ldrd` or `strd` instructions can dual issue if preceeding younger slots and following older slots are free from other `ldrd`/`strd`
-instructions. The effect carries in both directions, until a first pair free from any `ldrd`/`strd` instruction.
-```
-	ldrd r2,r3, [r5, #0]
-	mov.n r11, r11 // can't
-
-	ldrd r0,r1, [r5, #0]
-	ldrd r2,r3, [r5, #0]
-
-	mov.n r10, r10 // can't
-	ldrd r2,r3, [r5, #0]
-```
-
-both `ldrd` loads are not skewed
+both destinations of `ldrd` loads are not skewed
 
 `ldrd`/`strd` can be dual issued together
 - infinitely if targetting DTCM and the transfers are distributed across all 4 banks (regardless of overlaps)
