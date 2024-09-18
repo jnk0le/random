@@ -441,7 +441,7 @@ even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 
 Most of the ALU instructions can be executed in 3 total pipeline stages, EX1, EX2, EX3.
 
-- basic ALU instructions (e.g. `add`, `mov`) can execute in all 3 stages
+- basic ALU instructions (e.g. `add`, `mov`, operand2 constant) can execute in all 3 stages
 - bitwise instructions (e.g. `eors`, `and`) can execute in EX2 and EX3
 - shift instructions (e.g. `lsrs`, `ubfx`) can execute in EX1 and EX2
 - reg-reg operand2 (e.g. `add.w`, `and.w`) instructions execute throughout 2 stages (shift + ALU) EX1+EX2 or EX2+EX3.\
