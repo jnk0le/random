@@ -436,86 +436,37 @@ little glossary:
 `nop` instructions can be tripple issued even as `.w` opcode with 2 other (e.g ALU) instructions provided that there is
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
-The operand2 instructions have 1 extra cycle of input latency to the second register operand,
+The operand2 (reg-reg) instructions have 1 extra cycle of input latency to the second register operand,
 even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 
-Most of the ALU instructions can be executed in 4 total pipeline stages, EX1, EX2, EX3, EX4, with possible chaining of
-0 cycle result forwading pairs.\
-EX4 is available only from younger opcode slot.(it's also not documented)\
-EX1 is available only from older opcode slot. (except implicitly as inline shfted reg etc.)\
-EX1 is not availale by bitwise (`eors.n` etc.) and operand2 reg-reg instructions (shifted constants still work)\
-EX3 is not available by shifts issued from older slot.\
-EX2 is not available by bitwise issued from younger slot.\
-Exceptions from those rules are observable in specific scenarios (e.g. EX4 available from older issue slot or
-something that cannot be forwarded to the "correct" pipeline stage etc.)
+Most of the ALU instructions can be executed in 3 total pipeline stages, EX1, EX2, EX3.
+
+- basic ALU instructions (e.g. `add`, `mov`) can execute in all 3 stages
+- bitwise instructions (e.g. `eors`, `and`) can execute in EX2 and EX3
+- shift instructions (e.g. `lsrs`, `ubfx`) can execute in EX1 and EX2
+- reg-reg operand2 (e.g. `add.w`, `and.w`) instructions execute throughout 2 stages (shift + ALU) EX1+EX2 or EX2+EX3.\
+Non shifted input operand (for ALU stage) is consumed in the same stage (no false dependecy by shifter) 
+- "slot 0" instructions (e.g. `uxtb`, `uadd8`) instruction can execute only in EX2 (from any issue slot)
+
+It is possible to forward dependent operands in 0 cycles into a later stages.
 
 ```
-	eor.w r0, r3, r0 // shift in EX1, ALU in EX2
-	eor.w r0, r3, r0 // shift in EX3, ALU in EX4
+	adds r0, r1 // EX1
+	adds r0, r1 // EX2
 
-	eor.w r1, r4, r1 // r0 not available
-	eor.w r1, r0, r1 // EX4
+	adds r0, r1 // EX2
+	adds r0, r1 // EX3
 
-	eor.w r2, r2, r5 // EX2 (r5 shifted in EX1)
-	eor.w r2, r2, r5 // EX3
-
-	eor.w r2, r2, r5 // EX3
-	eor.w r2, r2, r5 // EX4
-
-	mov.n r10, r10 // r2 not available
-	eor.w r2, r2, r5 // EX4
-	
-	adds.n r0, r1 // EX1
-	adds.n r0, r1 // EX2
-
-	adds.n r0, r1 // EX2
-	adds.n r0, r1 // EX3
-
-	adds.n r0, r1 // EX3
-	adds.n r0, r1 // EX4
-
-	mov.n r10, r10 // r0 not available
-	adds.n r0, r1 // EX4
+	adds r0, r1 // EX3
+	mov.n r11, r11 // can't forward more
 ```
 
-"slot 0" (dsp/bitmanip) instructions execute only in EX2 from older slot and EX3 from younger slot.
-
-```
-	adds.n r0, r1 // EX1 // cant
-	adds.n r0, r1 // EX2 // cant
-
-	uadd8 r0, r0, r1 // EX2 // only here
-	uadd8 r0, r0, r1 // EX3 // only here
-
-	adds.n r0, r1 // EX3 // cant
-	adds.n r0, r1 // EX4 // cant
-
-	mov.n r10, r10 // r0 not available
-	adds.n r0, r1 // EX4
-```
-
-shift instructions (e.g. `lsls`, `ubfx`) can execute freely in EX1-EX2. In EX3, only from younger opcode slot 
-(either as explicit shift, or skewed operand2 shifted reg). If shifter was used in EX3 in previous
-cycle then current older op (ALU) cannot use it's result.
-
-```
-	lsls r0, r0, #1 // EX1
-	lsls r0, r0, #2 // EX2
-
-	lsls r0, r0, #3 // EX2
-	lsls r0, r0, #4 // EX3
-
-	adds.n r1, r1 // EX3 // can't use r0 due to shift in EX3, previous cycle
-	lsls r0, r0, #5 // EX3 // EX3-EX4 for reg-reg operand2
-
-	mov.n r10, r10 // r0 not available for shift, for ALU if EX4 after reg-reg operand2
-	adds.n r0, r1 // EX3 // can't shift if EX4
-```
 
 ### "slippery condition"
 
-observable as half cycle execution slide, which results in 1 cycle of loop invariant stall
-(if no further stall is hit) due to tripple issue across branch.
+Observable as half cycle execution slide, which results in 1 cycle of loop invariant stall
+(if no further stall is hit) due to tripple issue across branch.\
+Obsrvation of a skewed pipeline is a false positive caused by this.
 
 - issuing instruction pairs that can't be dual issued (`uxtb`+`uxtb`, `ldrd`+`ldrd` etc.)
 - certain
@@ -524,24 +475,12 @@ observable as half cycle execution slide, which results in 1 cycle of loop invar
 
 ### scalar multiplication, MAC
 
-mul/MAC instructions execute throughout EX2 and EX3 from older issue slot and
-EX3 and EX4 from younger issue slot.
+mul/MAC instructions execute throughout EX2 and EX3 satges (MUL + ACC)
 
-```
-	umlal r0, r1, r2, r3 // MUL in EX2, ACC in EX3
-	adds r0, r5 // EX4
+even the simple `mul` instructions occupy accumulate stage and have same result latency
 
-	mov.n r10, r10 // can't use r0/r1
-	adds r0, r5 //EX4
-```
-
-```
-	ldrd r2,r3, [r12] // AGU in EX1, DATA in EX2
-	umlal r0, r1, r2, r3 // MUL in EX3, ACC in EX4
-
-	mov.n r10, r10 // can't use r0/r1
-	adds r0, r5 // EX4
-```
+can't forward `ldr` result into accumulate operand in 0 cycles (theoretically: AGU in EX1, DATA and MUL in EX2, ACC in EX3),
+all other combinations (from EX2 in 0 cycles or EX3 in 1 cycle) work as expected
 
 can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with reg offset store or `strd`.
 (scalar regfile has only 6 read ports)
@@ -551,65 +490,32 @@ can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) wi
 
 ### scalar load/store
 
-DCACHE has only 2 SRAM banks while DTCM 4 (all are 4 byte striped)
+loads execute throughout EX1 and EX2 (AGU, and DATA)
 
 Two post/pre indexed loads/stores can be chained back to back each cycle.
 
-AGUs are skewed, load/store issued from older slot executes in EX1 and younger in EX2.
-Can chain AGUs even in 0 cycles within a dual issue pair (from EX1 to EX2, further loads/stores must happen from younger slot, 
-can't use AGU result in older slot next cycle after such chaining)
+DCACHE has only 2 SRAM banks while DTCM 4 (all are 4 byte striped)
 
-loads execute throughout 2 pipeline stages (AGU, and load)\
-Effective load to use latency for `ldr` is 0 cycle (even to "slot 0" instructions), it's sensitive
-to older/younger op placement due to skewed pipeline.
-
-```
-	ldr r1, [r5], #4 // AGU in EX1, data in EX2
-	add.w r0, r0, r1 // shift in EX3, ALU in EX4
-
-	mov.n r10, r10 // can't use r0
-	adds r0, r2 // EX4
-```
-```
-	ldr r2, [r5], #4 // AGU in EX1, data in EX2
-	ldr r3, [r6], #4 // AGU in EX2, data in EX3 // same if AGU chained on r5
-
-	uadd8 r0, r0, r2 // can't use r3 in EX2
-	uadd8 r0, r0, r3 // EX3
-	
-	adds.n r0, r1 // EX3
-	adds.n r0, r1 // EX4
-
-	mov.n r10, r10 // r0 not available
-	adds.n r0, r1 // EX4
-```
+Effective load to use latency for `ldr` is 0 cycle into the EX3 stage.
 
 Optimization manual suggests 2 cycle load to use which is the case of "pointer chasing".
-Due to skewed pipe, can't forward load from younger slot to older in 2 cycles.
 
 ```
-	ldr r1, [r5]
-	mov.n r11, r11
-
 	mov.n r10, r10
-	ldr r2, [r5, r1] // younger to older, still possible due to skewed pipe
+	ldr r0, [r5]
 
 	mov.n r10, r10
 	mov.n r11, r11
 
-	mov.n r10, r10 // can't
-	ldr r3, [r5, r2]
+	ldr r1, [r5, r0]
+	mov.n r11, r11
 ```
 
-`ldr{b,h,sb,sh}` executes throughout 3 pipeline stages (AGU, load, format)
-Realistic load to use latency is 1 cycle, though it can achieve 0 cycles to EX4 instructions.
+`ldr{b,h,sb,sh}` executes throughout 3 pipeline stages (AGU, DATA, FORMAT)
+Realistic load to use latency is 1 cycle into EX3.
 
-```
-	ldrb r0, [r5, #4] // AGU in EX1, data in EX2, formatting in EX3
-	adds r2, r0 // EX4
-```
+unaligned loads add 0.5 - 1 cycle of stall each. 
 
-both destinations of `ldrd` loads are not skewed
 
 `ldrd`/`strd` can be dual issued together
 - infinitely if targetting DTCM and the transfers are distributed across all 4 banks (regardless of overlaps)
@@ -618,10 +524,8 @@ both destinations of `ldrd` loads are not skewed
 
 `ldrd`/`strd` are not affected by 4 byte misalignment (with some exceptions when dual issuing `ldrd`/`strd` pairs)
 
-Effective input latency to store instruction is 0 cycles.
-The data argument can be consumed in EX4 stage, only from younger issue slot.
+store instruction consume its operand in EX3 stage, so the effective input latency is 0 cycles (except EX3)
 
-unaligned loads add 0.5 - 1 cycle of stall each. 
 
 ### branching
 

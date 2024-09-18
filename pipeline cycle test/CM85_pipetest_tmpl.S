@@ -87,9 +87,9 @@ CM85_pipetest_tmpl:
 	subs.n r7, #1 // generate branch condition few cycles ahead of branch
 
 	mov.n r10, r10
-	mov.n r11, r11
+	uxtb r0, r1 // remove slippery condition
 
-	mov.n r10, r10
+	uxtb r2, r3 // remove slippery condition
 	mov.n r11, r11
 
 	mov.n r10, r10
