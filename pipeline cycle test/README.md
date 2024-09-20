@@ -444,7 +444,7 @@ Most of the ALU instructions can be executed in 3 total pipeline stages, EX1, EX
 - basic ALU instructions (e.g. `add`, `mov`, operand2 constant) can execute in all 3 stages
 - bitwise instructions (e.g. `eors`, `and`) can execute in EX2 and EX3
 - shift instructions (e.g. `lsrs`, `ubfx`) can execute in EX1 and EX2
-- reg-reg operand2 (e.g. `add.w`, `and.w`) instructions execute throughout 2 stages (shift + ALU) EX1+EX2 or EX2+EX3.\
+- reg-reg operand2 (e.g. `add.w`, `and.w`) instructions execute throughout 2 stages (SHIFT + ALU) EX1+EX2 or EX2+EX3.\
 Non shifted input operand (for ALU stage) is consumed in the same stage (no false dependecy by shifter) 
 - "slot 0" instructions (e.g. `uxtb`, `uadd8`) instruction can execute only in EX2 (from any issue slot)
 
