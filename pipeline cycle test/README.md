@@ -576,9 +576,22 @@ in order to dual issue with scalar)
 
 gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
 
-
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
+
+vector store to vector load latency is 2 cycles
+
+```
+	mov.n r10, r10
+	vstrw.u32 q0, [r12]
+
+	veor q1, q2, q3 // no scalar
+
+	mov.n r10, r10
+	vldrw.u32 q7, [r12]
+
+	veor q1, q2, q3 // no scalar
+```
 
 ### other optimization tips
 
