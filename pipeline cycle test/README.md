@@ -519,10 +519,10 @@ unaligned loads add 0.5 - 1 cycle of stall each.
 
 `ldrd`/`strd` can be dual issued together
 - infinitely if targetting DTCM and the transfers are distributed across all 4 banks (regardless of overlaps)
-- with up to 5 (6 if not loading in following cycles) `strd` when targetting DCACHE
-(one more and there is up to 5 cycle stall (<5 if `ldrd` are not issued after/for last stores))
+- with up to 6 (4 when not 8 byte aligned) `strd` when targetting DCACHE. After filling, the store buffer must be fully
+drained (no DCACHE loads in subsequent cycles) to not hit (up to 5 cycle) stall.
 
-`ldrd`/`strd` are not affected by 4 byte misalignment (with some exceptions when dual issuing `ldrd`/`strd` pairs)
+`ldrd`/`strd` are not affected by 4 byte misalignment.
 
 store instruction consume its operand in EX3 stage, so the effective input latency is 0 cycles (except EX3)
 
