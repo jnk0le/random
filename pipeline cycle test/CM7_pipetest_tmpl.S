@@ -90,7 +90,7 @@ CM7_pipetest_tmpl:
 	nop.w
 	nop.w
 
-	uxtb.w r0, r1 // remove slippery condition
+	uxtb.w r0, r0 // remove slippery condition
 	nop.w
 
 	nop.w

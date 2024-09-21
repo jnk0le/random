@@ -34,7 +34,7 @@ CM85_pipetest_tmpl:
 	ldr.w r10, [r11, #4] // read DWT.CYCCNT
 	nop.w
 
-1:  //replace code below // don't use nops as those tripple issue after stall
+1:  //replace code below // don't use nops as those tripple issue
 	mov.n r10, r10
 	mov.n r11, r11
 
@@ -87,9 +87,9 @@ CM85_pipetest_tmpl:
 	subs.n r7, #1 // generate branch condition few cycles ahead of branch
 
 	mov.n r10, r10
-	uxtb r0, r1 // remove slippery condition
+	uxtb r0, r0 // remove slippery condition
 
-	uxtb r2, r3 // remove slippery condition
+	uxtb r1, r1 // remove slippery condition
 	mov.n r11, r11
 
 	mov.n r10, r10
