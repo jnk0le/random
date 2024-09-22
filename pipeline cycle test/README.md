@@ -609,24 +609,9 @@ vector store to vector load latency is 2 cycles (if not gathering from store "ti
 
 some instructions have issuing limitations so you may want to replace them with other equivalents:
 
-<style>
 
-	table th:first-of-type {
-		width: 20%;
-	}
-	table th:nth-of-type(2) {
-		width: 20%;
-	}
-	table th:nth-of-type(3) {
-		width: 60%;
-	}
-
-</style>
-
-<div class="table1">
-
-| offending instruction | more efficient equivalent | notes |
-|----------------------------|----------------------------------------------|------------------------|
+| <div style="width:90%">offending instruction</div> | <div style="width:5%">more efficient equivalent</div> | notes |
+|----------------------------|---<div style="width:290px">-------------------------------------------|------------------------|
 | `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX4 |
 | `uxtb r0, r1, ror #8`      | `ubfx r0, r1, #8, #8` | |
 | `uxtb r0, r1, ror #16`     | `ubfx r0, r1, #16, #8` | |
@@ -634,7 +619,6 @@ some instructions have issuing limitations so you may want to replace them with 
 | `ldm`(`pop`)<br />`stm`(`push`)| sequence of `ldrd`<br />sequence of `strd` | load/store double can dual issue with other instructions per 64bits of transferred data |
 | `vldm`(`vpop`)<br />`vstm`(`vpush`) | sequence of `vldr.64` (scalar)<br />sequence of `vstr.64` (scalar) | can dual issue with other scalar instructions (fixed point)<br /> you can use vector loads stores but those impose limitations on issuing scalar instructions (use only in vector dominated prologues/epilogues) |
 
-</div>
 
 ## ch32v003
 
