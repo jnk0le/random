@@ -611,7 +611,6 @@ some instructions have issuing limitations so you may want to replace them with 
 
 <style>
 
-.table1 table {
 	table th:first-of-type {
 		width: 20%;
 	}
@@ -621,7 +620,6 @@ some instructions have issuing limitations so you may want to replace them with 
 	table th:nth-of-type(3) {
 		width: 60%;
 	}
-}
 
 </style>
 
