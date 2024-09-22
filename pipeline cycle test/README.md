@@ -563,16 +563,26 @@ around 30 accumulated loop invariant cycles of penealty. (which includes outer l
 
 ### MVE
 
+("scalar" means integer instructions, e.g. `add`, `uxtb`)
 
 
 #### loads/stores
 
 scatter/gather doesn't support unaligned access
 
-load/store instructions can dual issue with scalar, only from younger slot, it also requires
-that during its latency window no scalar instructions are issued (following 1 cycle)\
-(after gather/scatter all further vector instructions in a chain have to be issued from younger slot,
-in order to dual issue with scalar)
+basic vector load/store instructions can dual issue with scalar, only from younger slot,
+gather/scatter can't dual issue with scalar at all
+
+scalar instructions can't be issued a cycle after vector loads/stores (during its second beat)
+
+```
+	mov.n r10, r10 // can't dual issue with scatter/gather
+	vldrw.u32 q0, [r12]
+
+	veor q1, q2, q3 
+	//mov.n r11, r11 // can't issue any scalar here
+```
+
 
 gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
 
