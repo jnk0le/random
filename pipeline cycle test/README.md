@@ -610,6 +610,7 @@ vector store to vector load latency is 2 cycles (if not gathering from store "ti
 some instructions have issuing limitations so you may want to replace them with other equivalents:
 
 <style>
+
 .table1 table {
 	table th:first-of-type {
 		width: 20%;
@@ -621,6 +622,7 @@ some instructions have issuing limitations so you may want to replace them with 
 		width: 60%;
 	}
 }
+
 </style>
 
 <div class="table1">
