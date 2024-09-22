@@ -610,7 +610,7 @@ vector store to vector load latency is 2 cycles (if not gathering from store "ti
 some instructions have issuing limitations so you may want to replace them with other equivalents:
 
 
-| <div style="width:200px">offending instruction</div> | <div style="width:200px">more efficient equivalent</div> | notes |
+| <img width=200/> offending instruction | <img width=200/> more efficient equivalent | notes |
 |----------------------------|---<div style="width:290px">-------------------------------------------|------------------------|
 | `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX4 |
 | `uxtb r0, r1, ror #8`      | `ubfx r0, r1, #8, #8` | |
