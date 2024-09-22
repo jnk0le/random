@@ -589,7 +589,7 @@ gather/scatter experience 1 extra stall cycle (each invocation) in any kind of c
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
 
-vector store to vector load latency is 2 cycles
+vector store to vector load latency is 2 cycles (if not gathering from store "tick 1" into load "tick0")
 
 ```
 	mov.n r10, r10
