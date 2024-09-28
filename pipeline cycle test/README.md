@@ -439,7 +439,7 @@ sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used f
 The operand2 (reg-reg) instructions have 1 extra cycle of input latency to the second register operand,
 even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 
-Most of the ALU instructions can be executed in 3 total pipeline stages, EX1, EX2, EX3.
+Most of the ALU instructions can be executed in 3 total (symmetric) pipeline stages, EX1, EX2, EX3.
 
 - basic ALU instructions (e.g. `add`, `mov`, operand2 constant) can execute in all 3 stages
 - bitwise instructions (e.g. `eors`, `and`) can execute in EX2 and EX3
