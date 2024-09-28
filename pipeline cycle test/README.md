@@ -612,7 +612,7 @@ some instructions have issuing limitations so you may want to replace them with 
 
 | <img width=200/> offending instruction | <img width=200/> more efficient equivalent | notes |
 |----------------------------|----------------------------------------------|------------------------|
-| `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX4 |
+| `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX3 |
 | `uxtb r0, r1, ror #8`      | `ubfx r0, r1, #8, #8` | |
 | `uxtb r0, r1, ror #16`     | `ubfx r0, r1, #16, #8` | |
 | `uxtb r0, r1, ror #24`     | `lsrs.n r0, r1, #24`<br />`ubfx r0, r1, #24, #8` | |
