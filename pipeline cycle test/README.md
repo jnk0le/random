@@ -584,8 +584,9 @@ scalar instructions can't be issued a cycle after vector loads/stores (during it
 ```
 
 
-gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code.\
-cause unknown
+gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
+
+0 stride gather/scatter has the same timmings as unit stride (unlike e.g. 16 stride)
 
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
