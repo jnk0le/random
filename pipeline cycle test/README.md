@@ -566,7 +566,7 @@ around 30 accumulated loop invariant cycles of penealty. (which includes outer l
 ("scalar" means integer instructions, e.g. `add`, `uxtb`)
 
 
-#### loads/stores
+### vector loads/stores
 
 scatter/gather doesn't support unaligned access
 
