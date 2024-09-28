@@ -498,7 +498,7 @@ DCACHE has only 2 SRAM banks while DTCM 4 (all are 4 byte striped)
 
 Effective load to use latency for `ldr` is 0 cycle into the EX3 stage.
 
-Optimization manual suggests 2 cycle load to use which is the case of "pointer chasing".
+Optimization manual suggests 2 cycle load to use, which is the case of "pointer chasing".
 
 ```
 	mov.n r10, r10
