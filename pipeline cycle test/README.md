@@ -585,7 +585,7 @@ scalar instructions can't be issued a cycle after vector loads/stores (during it
 
 
 gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code.\
-cause unknown, however it has the same timming as when gathering 4 elements from only one bank
+cause unknown, however linear (word) gather has the same timming as when gathering 4 elements from only one bank
 
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
