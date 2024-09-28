@@ -524,7 +524,7 @@ drained (no DCACHE loads in subsequent cycles) to not hit (up to 5 cycle) stall.
 
 `ldrd`/`strd` are not affected by 4 byte misalignment.
 
-store instruction consume its operand in EX3 stage, so the effective input latency is 0 cycles (except EX3)
+store instruction consume its operand in EX3 stage, so the effective input latency is 0 cycles from EX1 and EX2
 
 
 ### branching
