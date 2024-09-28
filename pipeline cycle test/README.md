@@ -584,7 +584,7 @@ scalar instructions can't be issued a cycle after vector loads/stores (during it
 ```
 
 
-gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
+word/doubleword gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
 
 0 stride gather/scatter has the same timmings as unit stride (unlike e.g. 16 stride)
 
