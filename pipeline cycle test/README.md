@@ -439,14 +439,18 @@ sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used f
 The operand2 (reg-reg) instructions have 1 extra cycle of input latency to the second register operand,
 even when the second operand is not shifted (e.g. `add r0, r1, r2`)
 
+`bfi` instruction cannot be dual issued with other `bfi` or "slot 0" instructions (unlike suggested by optimization manual)
+
 Most of the ALU instructions can be executed in 3 total (symmetric) pipeline stages, EX1, EX2, EX3.
 
 - basic ALU instructions (e.g. `add`, `mov`, operand2 constant) can execute in all 3 stages
 - bitwise instructions (e.g. `eors`, `and`) can execute in EX2 and EX3
 - shift instructions (e.g. `lsrs`, `ubfx`) can execute in EX1 and EX2
 - reg-reg operand2 (e.g. `add.w`, `and.w`) instructions execute throughout 2 stages (SHIFT + ALU) EX1+EX2 or EX2+EX3.\
-Non shifted input operand (for ALU stage) is consumed in the stage, where it's used (no false dependecy by shifter) 
+Non shifted input operand (for ALU stage) is consumed in the stage, where it's used (no false dependecy by shifter stage) 
 - "slot 0" instructions (e.g. `uxtb`, `uadd8`) instruction can execute only in EX2 (from any issue slot)
+- `bfi` instruction executes throughout EX1 and EX2 (SHIFT + ALU), destination operand is consumed in
+EX2 stage (no false dependecy by shifter stage) 
 
 It is possible to forward dependent operands in 0 cycles into a later stages.
 
