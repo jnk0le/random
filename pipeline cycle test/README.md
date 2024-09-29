@@ -586,9 +586,12 @@ scalar instructions can't be issued a cycle after vector loads/stores (during it
 
 word/doubleword gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
 
-0 stride gather/scatter has the same timmings as unit stride (unlike e.g. 16 stride)
-
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
+
+byte scatter (`vstrb.8`) has 47 cycles of stall overhead at 16 byte stride (11 at 4 byte stride and 7 at 1 byte stride)
+
+pseudorandom permutation within a 16byte area or 0 stride scatter, has the same timmings as unit stride
+(unlike e.g. 16 stride)
 
 
 vector store to vector load latency is 2 cycles (if not gathering from store "tick 1" into load "tick0")
