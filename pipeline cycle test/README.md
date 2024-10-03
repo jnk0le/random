@@ -588,7 +588,8 @@ scalar instructions can't be issued a cycle after vector loads/stores (during it
 ```
 
 
-word/doubleword gather/scatter experience 1 extra stall cycle (each invocation) in any kind of code. cause unknown
+scatter/gather is not pipelined into the following cycle (as per MVE overlapping), resulting in e.g. 1 extra
+stall cycle in word/doubleword scatter/gather.
 
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
