@@ -595,7 +595,7 @@ non widening byte/half gather/scatter stalls pipeline for additional transfers (
 
 byte scatter (`vstrb.8`) has 47 cycles of stall overhead at 16 byte stride (11 at 4 byte stride and 7 at 1 byte stride)
 
-pseudorandom permutation within a 16byte area or 0 stride scatter, has the same timmings as unit stride
+pseudorandom byte permutation within at least 16byte (32 for half) area or 0 stride scatter, has the same timmings as unit stride
 (unlike e.g. 16 stride)
 
 
