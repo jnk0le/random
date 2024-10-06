@@ -565,6 +565,14 @@ Net gain is however positive due to one less instruction (e.g. `cmp`) in inner l
 In a nested loop scenario, `le` instruction doesn't show any "misprediction penalty". There is also
 around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
 
+### scalar floating point
+
+cannot dual issue two fp arithmetic/move instructions (`vmov`, `vadd` etc.)
+
+can dual issue fp arithmetic/move instructions with fp loads/stores only. (except `vldr.64`)
+
+cannot dual issue double precision arithmetic even with integer instructions (`vadd.f64`, double moves can)
+
 ### MVE
 
 ("scalar" means integer instructions, e.g. `add`, `uxtb`)
