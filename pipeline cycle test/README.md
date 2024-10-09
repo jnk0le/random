@@ -577,7 +577,6 @@ cannot dual issue double precision arithmetic even with integer instructions (`v
 
 ("scalar" means integer instructions, e.g. `add`, `uxtb`)
 
-
 ### vector loads/stores
 
 scatter/gather doesn't support unaligned access
@@ -596,8 +595,10 @@ scalar instructions can't be issued a cycle after vector loads/stores (during it
 ```
 
 
-scatter/gather is not pipelined into the following cycle (as per MVE overlapping), resulting in e.g. 1 extra
+scatter/gather cannot overlap (not pipelined) into the following cycle (any insn), resulting in e.g. 1 extra
 stall cycle in word/doubleword scatter/gather.
+
+scatter/gather cannot overlap with prior vector loads/stores (e.g. `vldrw.32 q0, [r12, #0]` into `vstrw.32 q1, [r11, q3]`)
 
 non widening byte/half gather/scatter stalls pipeline for additional transfers (2 per cycle) 
 
