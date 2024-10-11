@@ -103,7 +103,7 @@ CM85_pipetest_tmpl:
 	cpsie i // reenable interrupts
 
 	subs r0, r9, r10 // get cycle diff
-	subs r0, #1 // subtract extra overhead outside the loop // extra cycles come from mispredicted branch
+	subs r0, #1 // subtract extra overhead outside the loop // unaccounted cycles come from mispredicted branch
 
 	vpop {s16-s31}
 	pop {r4-r12, pc}
