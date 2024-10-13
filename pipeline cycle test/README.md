@@ -607,6 +607,9 @@ byte scatter (`vstrb.8`) has 47 cycles of stall overhead at 16 byte stride (11 a
 pseudorandom byte permutation within at least 16byte (32 for half) area or 0 stride scatter, has the same timmings as unit stride
 (unlike e.g. 16 stride)
 
+vector load to scatter/gather indices latency is 4 cycles
+
+vector ALU (bitwise) to scatter/gather indices latency is 3 cycles
 
 vector store to vector load latency is 2 cycles (if not gathering from store "tick 1" into load "tick0")
 
