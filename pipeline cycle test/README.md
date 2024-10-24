@@ -377,7 +377,7 @@ It has 3 cycles of input latency from fp ALU, 2 cycles from `vldr` and 5 cycles 
 `vmov` from GPR to FPR (`vmov s0, r0`) has 3 cycles of result latency (to another vmov, FP ALU and `vfma.f` accumulate (!) dependency)
 It has 1 cycle of input latency from any ALU (early/late/MAC)
 
-`vmov` from FPR to FPR (`vmov s0, s1`) has 3 cycles of result result latency (to another vmov, FP ALU and `vfma.f` accumulate (!) dependency)
+`vmov` from FPR to FPR (`vmov s0, s1`) has 3 cycles of result latency (to another vmov, FP ALU and `vfma.f` accumulate (!) dependency)
 It has 3 cycles of input latency from fp ALU, 1 cycle from `vldr` and 5 cycles from `vfma.f`
 
 ### fpu (double precision)
