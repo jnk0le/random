@@ -472,10 +472,9 @@ Observable as half cycle execution slide, which results in 1 cycle of loop invar
 (if no further stall is hit) due to tripple issue across branch.\
 Obsrvation of a skewed pipeline is a false positive caused by this.
 
+can be caused by:
 - issuing instruction pairs that can't be dual issued (`uxtb`+`uxtb`, `ldrd`+`ldrd` etc.)
-- certain
-
-
+- certain prohibited forwardings (e.g. EX2 to EX2 or EX3 to (nonexistent) EX4) and some rare exceptions
 
 ### scalar multiplication, MAC
 
