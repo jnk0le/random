@@ -157,11 +157,12 @@ be consumed by instruction Y in next cycle, it most likely means that if instruc
 (e.g. `mov`) in following cycles, there still needs to be a 1 cycle gap in processing chain to dodge stall from Y
 
 result of early alu can be forwarded to late alu in 0 cycles, or early alu next cycle:
-- `add`, `sub` with simple and constructed constants (not shifted ones)
-- `mov` with simple and constructed constants (not shifted ones) + simple shifts and rotations (aliased to mov) except rrx
+- `add`, `sub`, reg-reg or simple and constructed constants (not shifted ones)
+- `mov`, reg-reg or simple and constructed constants (not shifted ones) + simple shifts and rotations (aliased to mov) except rrx
 - `rev`, `rev16`, `revsh`, `rbit` (result can't be used by AGU, another `rev*`,`rbit` instruction or as inline shifted operand next cycle)
+- AGU with pre/post increments (result can't be used by `add`, `sub` and non shifting `mov` in early ALU next cycle)
 
-`add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the younger op
+AGU, `add`, `sub` and non shifting `mov` in earlu ALU is not clobbered by inline shifted operand of the younger op
 
 e.g. following snippet doesn't stall:
 ```
@@ -177,8 +178,7 @@ e.g. following snippet doesn't stall:
 shifts and rotations (aliased to mov) can enter early alu from older or younger op provided that the 
 other instruction is not inline shifted operand one or bitmanip (e.g. `rev`, `bfi`, `uxtab`) op using early alu shifter
 
-the only case when both instructions can be forwarded from early alu (to early alu next cycle) is `add`, `sub` or non shifting 
-`mov` in older slot and simple shift or rotation in younger slot
+AGUs can execute from either op, with no extra restrictions
 
 flags generated in early ALU cannot be forwarded to late ALU in 0 cycles (slippery)
 
@@ -573,7 +573,7 @@ can dual issue fp arithmetic/move instructions with fp loads/stores only. (excep
 
 cannot dual issue double precision arithmetic even with integer instructions (`vadd.f64`, double moves can)
 
-### MVE
+### MVE overall
 
 ("scalar" means integer instructions, e.g. `add`, `uxtb`)
 
