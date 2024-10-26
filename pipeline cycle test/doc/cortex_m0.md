@@ -34,3 +34,5 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 `rev16` + `rev` sequence is equivalent to rotate by 16 bits (more flexible and lower reg pressure than `movs`+`rors`)
 
 `sbcs r0,r0` can turn carry flag into predication mask
+
+`add r12, r12` can perform laft shift by one in upper registers
