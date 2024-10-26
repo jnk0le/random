@@ -1,5 +1,11 @@
 # cortex m3 and m4
 
+other sources:
+
+- https://developer.arm.com/documentation/ddi0439/b/CHDDIGAC
+- https://developer.arm.com/documentation/ddi0439/b/BEHJADED
+- https://www.cse.scu.edu/~dlewis/book3/docs/Cortex-M4%20Instruction%20Timing.pdf
+
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise randomly doesn't work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
