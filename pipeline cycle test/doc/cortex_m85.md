@@ -41,7 +41,10 @@ Most of the ALU instructions can be executed in 3 total (symmetric) pipeline sta
 Non shifted input operand (for ALU stage) is consumed in the stage, where it's used (no false dependecy by shifter stage) 
 - "slot 0" instructions (e.g. `uxtb`, `uadd8`) instruction can execute only in EX2 (from any issue slot)
 - `bfi` instruction executes throughout EX1 and EX2 (SHIFT + ALU), destination operand is consumed in
-EX2 stage (no false dependecy by shifter stage) 
+EX2 stage (no false dependecy by shifter stage)
+- {u,s}xta{b,h,b16} instruction executes throughout EX1 and EX2 (SHIFT + ALU), destination and addend operand is consumed in
+EX2 stage, there is false dependency when attempting to forward from older slot (in EX1) same cycle
+
 
 It is possible to forward dependent operands in 0 cycles into a later stages.
 
@@ -166,6 +169,10 @@ cannot dual issue double precision arithmetic even with integer instructions (`v
 ## MVE
 
 ("scalar" means integer instructions, e.g. `add`, `uxtb`)
+
+### overall
+
+vector instructions can't be dual issed with "slot 0" scalar instructions
 
 ### vector predication
 
