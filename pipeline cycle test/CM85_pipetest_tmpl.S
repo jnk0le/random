@@ -32,7 +32,7 @@ CM85_pipetest_tmpl:
 	nop.w
 
 	ldr.w r10, [r11, #4] // read DWT.CYCCNT
-	nop.w //wls lr, r7, 2f
+	nop.w //dls lr, r7, 2f
 
 1:  //replace code below // don't use nops as those tripple issue
 	mov.n r10, r10
@@ -95,6 +95,7 @@ CM85_pipetest_tmpl:
 	mov.n r10, r10 
 	mov.n r11, r11
 	bne.n 1b // le lr, 1b // can tripple issue with target or previous 2 insn
+
 
 	//end
 	mov.n r10, r10 // odd .n in loop
