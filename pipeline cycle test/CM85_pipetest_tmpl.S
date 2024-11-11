@@ -32,7 +32,7 @@ CM85_pipetest_tmpl:
 	nop.w
 
 	ldr.w r10, [r11, #4] // read DWT.CYCCNT
-	nop.w
+	nop.w //wls lr, r7, 2f
 
 1:  //replace code below // don't use nops as those tripple issue
 	mov.n r10, r10
@@ -84,17 +84,17 @@ CM85_pipetest_tmpl:
 	mov.n r11, r11
 
 	mov.n r10, r10
-	subs.n r7, #1 // generate branch condition few cycles ahead of branch
+	mov.n r11, r11
 
-	mov.n r10, r10
+	subs.n r7, #1 // generate branch condition few cycles ahead of branch
 	uxtb r0, r0 // remove slippery condition
 
 	uxtb r1, r1 // remove slippery condition
 	mov.n r11, r11
 
-	mov.n r10, r10
-	mov.n r9, r9
-	bne.n 1b // can tripple issue with target or previous 2 insn
+	mov.n r10, r10 
+	mov.n r11, r11
+	bne.n 1b // le lr, 1b // can tripple issue with target or previous 2 insn
 
 	//end
 	mov.n r10, r10 // odd .n in loop
