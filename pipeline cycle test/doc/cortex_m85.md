@@ -148,7 +148,7 @@ across branch, upper end is reached by lacking code compression (1 cycle))
 
 anomalies suggest that the total loop invariant cost ("misprediction penalty") of a loop (as in provided template) 
 consists of one branch misprediction (at the end) and a setup cost. Part of the setup cost is inability to tripple
-issue in first iteration which costs 3 cycles.
+issue in first iteration which costs 2 or 3 cycles.
 
 
 ## HW loop (`WLS`/`LE`)
