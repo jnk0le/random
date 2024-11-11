@@ -154,7 +154,7 @@ issue in first iteration which costs 3 cycles.
 ## HW loop (`WLS`/`LE`)
 
 `le` instruction behaves like regular branch instruction with 4-5 cycles of "misprediction penalty".
-Meaning that it is executed every round.\
+Meaning that it is similarly "tripple issued".\
 Net gain is however positive due to one less instruction (e.g. `cmp`) in inner loops.
 
 ## predicated execution
