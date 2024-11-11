@@ -210,7 +210,7 @@ It doesn't matter if instruction was or wasn't predicated out.
 	mov.n r11, r11
 ```
 
-predicated out instructions might cause less stalls due to pipeline stage contention, than when allowed to retire.
+predicated out instructions might cause less stalls (by following instructions) due to pipeline stage contention, than when allowed to retire.
 
 
 ## scalar floating point
