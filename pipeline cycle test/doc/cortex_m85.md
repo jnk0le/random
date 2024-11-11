@@ -128,28 +128,28 @@ store instruction consume its operand in EX3 stage, so the effective input laten
 
 ## branching
 
+branch predictor is even less deterministic than the one in cortex-m7, randomly adding extra cycles penalty
+in the simplest loops that are executed repeatedly (happens usually when tripple issuing across branch)
+
+`isb`/`dsb` instructions have no effect on observable "branch mispredicion" times
+
+flag setting for branching seems to take effect in EX2 and EX3 stages
+
+flag setting has to happen at least 1 cycle (from EX1 and EX2) or 2 cycle (from EX3) ahead of branch,
+otheerwise you get +5 cycle to misprediction overhead
+
 predicted taken branch can tripple issue with 2 prior instructions or 1 prior and 1 at destination address, provided that there is enough
 fetch bandwidth (at least 4 (when close, or doesn't tripple across branch) or 8 (when far and tripples across branch) `.n` 
 instructions prior to branch (including branch opcode))\
 It is observable as one pair taking 0.5 cycle to execute
 
-branch mispredict penalty for case of all `.w` instructions, is 7 to 11 cycles.
-The penalty is gradual depending on distance from branch and is sensitive to older/younger op placement.
+simple loop scenario as in provided template shows total 9-15 cycles of "mispredict penalty" (7-12 cycles when not tripple issuing
+across branch, upper end is reached by lacking code compression (1 cycle))
 
-when compressed instructions are involved, misprediction penalty ranges from 8 to 15 cycles
-(1 of which can come from unaligned fetch group after the loop), it's no longer gradual\
-5-6 cycle penalty is observed only when branch fails to tripple issue with target due to operand dependency
+anomalies suggest that the total loop invariant cost ("misprediction penalty") of a loop (as in provided template) 
+consists of one branch misprediction (at the end) and a setup cost. Part of the setup cost is inability to tripple
+issue in first iteration which costs 3 cycles.
 
-overall, flag settings need to happen at least 2-4 cycles ahead of branch.
-
-In a nested loop scenario, the inner branch shows 4 cycles of mispredict penalty. There is also 
-around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
-
-`it` instruction tripple issues provided that there is enough fetch bandwidth.\
-`it` instruction perform actual predication (no branching, "wastes" execution slots instead)\
-Predicated out instruction cause less stalls due to operand contention, than when allowed to retire. (stalls are still being measured)\
-`it` intruction can onsume flags in 0 cycles, however it is recommended to keep 1-2 cycle clearance as it cannot
-immediately consume flags from EX4 ALU or shifts in younger op previous cycle etc.
 
 ## HW loop (`WLS`/`LE`)
 
@@ -157,8 +157,9 @@ immediately consume flags from EX4 ALU or shifts in younger op previous cycle et
 Meaning that it is executed every round.\
 Net gain is however positive due to one less instruction (e.g. `cmp`) in inner loops.
 
-In a nested loop scenario, `le` instruction doesn't show any "misprediction penalty". There is also
-around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
+## predicated execution
+
+
 
 ## scalar floating point
 
