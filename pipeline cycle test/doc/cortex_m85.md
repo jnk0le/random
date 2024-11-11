@@ -148,14 +148,19 @@ across branch, upper end is reached by lacking code compression (1 cycle))
 
 anomalies suggest that the total loop invariant cost ("misprediction penalty") of a loop (as in provided template) 
 consists of one branch misprediction (at the end) and a setup cost. Part of the setup cost is inability to tripple
-issue in first iteration which costs 2 or 3 cycles.
+issue in first iteration which costs 2 or 3 cycles (scenario as in provided template).
 
+In a nested loop scenario, the inner branch shows 3-4 cycles (5-6 when flags are generated last cycle EX2, 6-7 EX3) of "mispredict penalty.
+(cycle difference comes from inability to tripple issue in first iteration)\
+There is also around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
 
 ## HW loop (`WLS`/`LE`)
 
 `le` instruction behaves like regular branch instruction with 4-5 cycles of "misprediction penalty".
-Meaning that it is similarly "tripple issued".\
-Net gain is however positive due to one less instruction (e.g. `cmp`) in inner loops.
+(cycle difference comes from inability to tripple issue in first iteration)\
+
+In a nested loop scenario, `le` instruction doesn't show any "misprediction penalty". There is also
+around 30 accumulated loop invariant cycles of penealty. (which includes outer loop penalty)
 
 ## predicated execution
 
