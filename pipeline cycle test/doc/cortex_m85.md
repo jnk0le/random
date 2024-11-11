@@ -164,6 +164,53 @@ around 30 accumulated loop invariant cycles of penealty. (which includes outer l
 
 ## predicated execution
 
+`it` instruction tripple issues provided that there is enough fetch bandwidth.
+
+`it` instruction perform actual predication (no branching, "wastes" execution slots instead)
+
+result of predicated instruction cannot be forwarded to anything in 0 cycles
+
+similarly to branching flags are effective from EX2 and EX3 only, but cannot forward flags from EX3 in same cycle
+
+availability of results from predicated instruction to unpredicated ones depends on the availability of condition flags.\
+The result is available in stage EXn a cycle later than (implied) result of flag setting instructions would be available in EXn stage\
+Generating flags 2 (in EX2) or 3 (in EX3) cycles ahead of predication allows forwarding.\
+It doesn't matter if instruction was or wasn't predicated out.
+
+```
+	add.w r6, r0, r0 // EX1 EX2
+	adds r6, #1 // EX3 // generate flags
+
+	mov.n r10, r10
+	mov.n r11, r11 // can generate here from EX2
+
+	mov.n r10, r10
+	mov.n r11, r11
+
+	mov.n r10, r10
+	it ne
+	addne.n r0, r1 // EX1
+
+	add.w r3, r1, r0 // EX1 EX2
+	add.n r3, r4 // EX3
+```
+
+```
+	add.w r6, r0, r0 // EX1 EX2
+	adds r6, #1 // EX3
+
+	mov.n r10, r10 // can generate here from EX2
+	it ne
+	addne.w r0, r1 // EX1 // it can produce even in ex3 in this case
+
+	mov.n r10, r10
+	add.n r2, r0 // EX3 // not available in EX1 due to predication
+
+	add.w r3, r2, r0 // r0 in EX2, r2 in EX3
+	mov.n r11, r11
+```
+
+predicated out instructions might cause less stalls due to pipeline stage contention, than when allowed to retire.
 
 
 ## scalar floating point
