@@ -221,6 +221,9 @@ can dual issue fp arithmetic/move instructions with fp loads/stores only. (excep
 
 cannot dual issue double precision arithmetic even with integer instructions (`vadd.f64`, double moves can)
 
+mixing with vector instructions is not recommended as the scheduling gets highly non obvious and weird
+(it's most torelable to vloating point moves, but still weird)
+
 ## MVE
 
 ("scalar" means integer instructions, e.g. `add`, `uxtb`)
