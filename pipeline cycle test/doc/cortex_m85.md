@@ -242,12 +242,13 @@ vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle la
 - can move from destination of immediately preceeding vector instruction
 - can't be overlpped with preceeding vector load/store (unlike "proper" moves)
 - can't use odd `d` registers if overlapping with previous vector insn
+- theoretically should be a B group but overlaps with A as well (unlike "proper" move)
 
 (there might be some anomalies still)
 
 ```
 	mov.n r10, r10
-	veor q1, q1, q2 // can't be vector load in this cycle
+	veor q0, q1, q2 // can't be vector load in this cycle
 
 	vmov.64 r0,r1, d0 // can't use odd d reg
 	mov.n r11, r11
@@ -269,7 +270,6 @@ vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle la
 	add.n r2, r3 // EX3
 	mov.n r11, r11
 ```
-
 
 ### vector predication
 
