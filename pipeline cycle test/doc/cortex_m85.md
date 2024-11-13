@@ -240,7 +240,7 @@ moving 2 "vector lanes" to scalar `vmov r0, r1, q0[2], q0[0]` has 3 cycle latenc
 vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle latency into EX3 (2 into EX2, 3 into EX1)
 
 - can move from destination of immediately preceeding vector instruction
-- can't be overlpped with vector load/store (unlike "proper" moves)
+- can't be overlpped with preceeding vector load/store (unlike "proper" moves)
 - can't use odd `d` registers if overlapping with previous vector insn
 
 (there might be some anomalies still)
