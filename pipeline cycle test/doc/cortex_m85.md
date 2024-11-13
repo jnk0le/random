@@ -235,7 +235,7 @@ vector instructions can't be dual issed with "slot 0" scalar instructions
 ### moves
 
 moving 2 "vector lanes" to scalar `vmov r0, r1, q0[2], q0[0]` has 3 cycle latency into EX3 stage
-(4 into EX2, 5 into EX1) both scalar outputs have same latency
+(4 into EX2, 5 into EX1) both scalar outputs have same latency, same latency if moving from prior vector computation
 
 
 
