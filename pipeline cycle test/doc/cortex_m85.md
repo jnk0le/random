@@ -235,8 +235,40 @@ vector instructions can't be dual issed with "slot 0" scalar instructions
 ### moves
 
 moving 2 "vector lanes" to scalar `vmov r0, r1, q0[2], q0[0]` has 3 cycle latency into EX3 stage
-(4 into EX2, 5 into EX1) both scalar outputs have same latency, same latency if moving from prior vector computation
+(4 into EX2, 5 into EX1) both scalar outputs have same latency, prior vector computations are not influencing latency
 
+vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle latency into EX3 (2 into EX2, 3 into EX1)
+
+- can move from destination of immediately preceeding vector instruction
+- can't be overlpped with vector load/store (unlike "proper" moves)
+- can't use odd `d` registers if overlapping with previous vector insn
+
+(there might be some anomalies still)
+
+```
+	mov.n r10, r10
+	veor q1, q1, q2 // can't be vector load in this cycle
+
+	vmov.64 r0,r1, d0 // can't use odd d reg
+	mov.n r11, r11
+	
+	add.n r2, r0 // EX3
+	mov.n r11, r11
+```
+
+```
+	mov.n r10, r10
+	veor q0, q1, q2 // can't be vector load in this cycle
+
+	vmov.64 r0,r1, d0 // can't use odd d reg
+	mov.n r11, r11
+
+	vmov.64 r2,r3, d1
+	add.n r0, r1 // EX3
+
+	add.n r2, r3 // EX3
+	mov.n r11, r11
+```
 
 
 ### vector predication
