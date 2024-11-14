@@ -8,6 +8,10 @@ there are another independent cm7 pipeline analysis:
 - https://community.arm.com/support-forums/f/architectures-and-processors-forum/5567/what-is-the-advantage-of-floating-point-of-cm7-versus-cm4 (VFMA canot dual issue with VLDR)
 - https://web.archive.org/web/20240224123717/https://semiaccurate.com/2015/04/30/arm-goes-great-detail-m7-core/ (some hints about fpu weirdness)
 
+(not analysis, but from ARM and matching observations)
+- https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/ARM/ARMScheduleM7.td
+- https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/ARM/ARMLatencyMutations.cpp#L637
+
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise may not work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
