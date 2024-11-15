@@ -269,7 +269,7 @@ vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle la
 	mov.n r11, r11
 ```
 
-"proper" moving of 2 scalar regs to 2 "vector lanes" (`vmov q0[2], q0[0], r0, r1`) consume both operands in EX3 stage
+"proper" moving of 2 scalar regs to 2 "vector lanes" (`vmov q0[2], q0[0], r0, r1`) consume both inputs in EX3 stage
 
 
 
