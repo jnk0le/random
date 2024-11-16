@@ -306,7 +306,7 @@ vector store to vector load latency is 2 cycles (if not gathering from store "ti
 	veor q1, q2, q3 // no scalar
 ```
 
-deinterleaving loads (`vld40.32`) behave like regular loads but have 4 cycle result latency (all loaded registers have same latency)
+deinterleaving loads (`vld40.32`, `vld41.8` etc.) behave like regular loads but have 4 cycle result latency (all loaded registers have same latency)
 
 ### vector scatetr/gather
 
