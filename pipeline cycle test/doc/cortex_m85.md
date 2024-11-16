@@ -7,6 +7,9 @@ of the same following instruction)
 
 I'll note only things that are not montioned, wrong or unclear in the official manual.
 
+additional resources:
+- https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/ARM/ARMScheduleM85.td (slightly incorrect about shifts)
+
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
