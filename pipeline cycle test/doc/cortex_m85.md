@@ -225,7 +225,7 @@ can dual issue fp arithmetic/move instructions with fp loads/stores only. (excep
 cannot dual issue double precision arithmetic even with integer instructions (`vadd.f64`, double moves can)
 
 mixing with vector instructions is not recommended as the scheduling gets highly non obvious and weird
-(it's most torelable to vloating point moves, but still weird)
+(it's most torelable to vloating point moves, but still weird, scatter/gather indices are extra sensitive)
 
 ## MVE
 
@@ -274,10 +274,25 @@ vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle la
 
 "proper" moving of 2 scalar regs to 2 "vector lanes" (`vmov q0[2], q0[0], r0, r1`) consume both inputs in EX3 stage
 
+vloating point move of two scalars into double (`vmov.64 d0, r0,r1`) consume its operands in EX3 stage
+- can't be overlpped with preceeding vector load/store (unlike "proper" moves)
+- can't use odd `d` registers if overlapping with previous vector insn
+- overlaps like A/B group instructions (similarly to "proper" equivalent)
+- (there might be some anomalies still)
 
+```
+	mov.n r10, r10
+	veor q1, q2, q3
 
+	add.w r1, r2, r3 // EX1 EX2
+	vmov.64 d0, r0,r1 // can't use odd d reg
 
+	vmov.64 d1, r2,r3
+	mov.n r11, r11
 
+	veor q0, q4, q0
+	mov.n r11, r11
+```
 
 ### vector predication
 
