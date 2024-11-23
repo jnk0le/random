@@ -31,7 +31,7 @@ little glossary:
 sufficient fetch bandwidth (e.g. 2x `.n` ALU instructions and one `nop.w` used for padding)
 
 The operand2 (reg-reg) instructions have 1 extra cycle of input latency to the second register operand,
-even when the second operand is not shifted (e.g. `add r0, r1, r2`)
+even when the second operand is not shifted (e.g. `eor.w r0, r1, r2`)
 
 `bfi` instruction cannot be dual issued with other `bfi` or "slot 0" instructions (unlike suggested by optimization manual)
 
