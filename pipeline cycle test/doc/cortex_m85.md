@@ -154,7 +154,7 @@ consists of one branch misprediction (at the end) and a setup cost. Part of the 
 issue in first iteration which costs 2 or 3 cycles (scenario as in provided template).
 
 In a nested loop scenario, the inner branch shows 3-4 cycles (5-6 when flags are generated last cycle EX2, 6-7 EX3) of "mispredict penalty.
-(cycle difference comes from inability to tripple issue in first iteration)\
+(1 cycle difference comes from inability to tripple issue in first iteration)\
 There is also around 30 accumulated loop invariant cycles of penealty. (which includes outer loop mispredict penalty)
 
 ## HW loop (`WLS`/`LE`)
