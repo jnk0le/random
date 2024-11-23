@@ -77,7 +77,7 @@ there needs to be no stall after slide for slippery condition to manifest
 
 ## scalar multiplication, MAC
 
-mul/MAC instructions execute throughout EX2 and EX3 satges (MUL + ACC)
+mul/MAC instructions execute throughout EX2 and EX3 stages (MUL + ACC)
 
 even the simple `mul` instructions occupy accumulate stage and have same result latency
 
