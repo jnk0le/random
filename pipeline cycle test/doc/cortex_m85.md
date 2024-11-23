@@ -326,7 +326,7 @@ vector store to vector load latency is 2 cycles (if not gathering from store "ti
 
 deinterleaving loads (`vld40.32`, `vld41.8` etc.) behave like regular loads but have 4 cycle result latency (all loaded registers have same latency)
 
-### vector scatetr/gather
+### vector scatter/gather
 
 scatter/gather doesn't support unaligned access
 
@@ -341,12 +341,12 @@ non widening byte/half gather/scatter stalls pipeline for additional transfers (
 
 byte scatter (`vstrb.8`) has total of 47 cycles of stall overhead at 16 byte stride (11 at 4 byte stride and 7 at 1 byte stride)
 
-pseudorandom byte permutation within at least 16byte (32 for half) area or 0 stride scatter, has the same timmings as unit stride
+pseudorandom byte permutation within e.g. 16byte (32 for half) area or 0 stride scatter, has the same timmings as unit stride
 (unlike e.g. 16 stride)
 
 vector load to scatter/gather indices latency is 4 cycles
 
-vector ALU (bitwise) to scatter/gather indices latency is 3 cycles
+vector ALU (e.g. bitwise) to scatter/gather indices latency is 3 cycles
 
 ## other optimization tips
 
