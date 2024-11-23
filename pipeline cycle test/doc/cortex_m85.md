@@ -73,7 +73,7 @@ can be caused by:
 - issuing instruction pairs that can't be dual issued (`uxtb`+`uxtb`, `ldrd`+`ldrd` etc.)
 - certain prohibited forwardings (e.g. EX2 to EX2 or EX3 to (nonexistent) EX4) and some rare exceptions
 
-there needs to be no stall after slide sor slippery ondition to manifest
+there needs to be no stall after slide for slippery condition to manifest
 
 ## scalar multiplication, MAC
 
