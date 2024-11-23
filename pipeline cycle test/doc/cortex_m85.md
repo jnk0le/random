@@ -139,7 +139,7 @@ in the simplest loops that are executed repeatedly (happens usually when tripple
 flag setting for branching seems to take effect in EX2 and EX3 stages
 
 flag setting has to happen at least 1 cycle (from EX1 and EX2) or 2 cycle (from EX3) ahead of branch,
-otheerwise you get +5 cycle to misprediction overhead
+otherwise you get +5 cycle to misprediction overhead
 
 predicted taken branch can tripple issue with 2 prior instructions or 1 prior and 1 at destination address, provided that there is enough
 fetch bandwidth (at least 4 (when close, or doesn't tripple across branch) or 8 (when far and tripples across branch) `.n` 
@@ -177,7 +177,7 @@ similarly to branching flags are effective from EX2 and EX3 only, but cannot for
 
 availability of results from predicated instruction to unpredicated ones depends on the availability of condition flags.\
 The result is available in stage EXn a cycle later than (implied) result of flag setting instructions would be available in EXn stage\
-Generating flags 2 (in EX2) or 3 (in EX3) cycles ahead of predication allows forwarding.\
+Generating flags 2 (in EX2) or 3 (in EX3) cycles ahead of predication allows forwarding from EX1.\
 It doesn't matter if instruction was or wasn't predicated out.
 
 ```
