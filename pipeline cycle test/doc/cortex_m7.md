@@ -45,12 +45,12 @@ i.e 20 instructions of which one is a branch, execute in exactly 10 cycles with 
 It is observable as a swap of the young and old opcode slot.
 It could also be a source of false-positives in micro benchmarking of assembly implementations.
 
-The "post loop entry" alignment seems to be necessary to avoid stalls. 
+The "linear execution" alignment seems to be necessary to avoid stalls. 
 e.g. sometimes four `.n` instructions need to just be in close proximity to each other
 and sometimes there is a hard wall (relative to absolute number of instructions from loop start, not the cache lines etc.)
 that no `.n` instruction can't cross even though all 4 instructions are paired next to each other (across the wall).
 Putting new compressed instruction depends on if the previous instructions were compressed, i.e. 4 `.n` instructions at 
-beggining of the loop will make further compression easier (effect seems to carry forward and far, but not into the next iteration)
+beggining of the loop will make further compression easier (effect seems to carry forward and far, but not into the next loop iteration)
 
 there is an early and late ALU (similarly to SweRV or Sifive E7) one cycle apart, if e.g. instruction X result cannot
 be consumed by instruction Y in next cycle, it most likely means that if instruction X result is processed by regular ALU 
