@@ -84,8 +84,6 @@ even the simple `mul` instructions occupy accumulate stage and have same result 
 can't forward `ldr` result into accumulate operand in 0 cycles (theoretically: AGU in EX1, DATA and MUL in EX2, ACC in EX3),
 all other combinations (from EX2 in 0 cycles or EX3 in 1 cycle) work as expected
 
-can't forward `ldr` result into vector or vloating point moves in 0 cycles. (theoretically: AGU in EX1, DATA in EX2, consume in EX3)
-
 can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with reg offset store or `strd`.
 (scalar regfile has only 6 read ports)
 
@@ -295,6 +293,8 @@ vloating point move of two scalars into double (`vmov.64 d0, r0,r1`) consume its
 	veor q0, q4, q0
 	mov.n r11, r11
 ```
+
+can't forward `ldr` result into vector or vloating point moves in 0 cycles. (theoretically: AGU in EX1, DATA in EX2, consume in EX3)
 
 ### vector predication
 
