@@ -173,7 +173,7 @@ around 30 accumulated loop invariant cycles of penealty. (which includes outer l
 
 result of predicated instruction cannot be forwarded to anything in 0 cycles
 
-similarly to branching flags are effective from EX2 and EX3 only, but cannot forward flags from EX3 in same cycle
+similarly to branching, flags are effective from EX2 and EX3 only, but cannot forward flags from EX3 in same cycle
 
 availability of results from predicated instruction to unpredicated ones depends on the availability of condition flags.\
 The result is available in stage EXn a cycle later than (implied) result of flag setting instructions would be available in EXn stage\
