@@ -5,7 +5,7 @@ There is an official optimization manual for cortex-m85: https://developer.arm.c
 (the "latency from the xxx source operand" means latency when output of given isntruction is forwarded to xxx operand
 of the same following instruction)
 
-I'll note only things that are not montioned, wrong or unclear in the official manual.
+I'll note only things that are not mentioned, wrong or unclear in the official manual.
 
 additional resources:
 - https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/ARM/ARMScheduleM85.td (slightly incorrect about shifts)
