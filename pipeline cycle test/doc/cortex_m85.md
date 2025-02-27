@@ -46,7 +46,7 @@ Non shifted input operand (for ALU stage) is consumed in the stage, where it's u
 - `bfi` instruction executes throughout EX1 and EX2 (SHIFT + ALU), destination operand is consumed in
 EX2 stage (no false dependecy by shifter stage)
 - {u,s}xta{b,h,b16} instruction executes throughout EX1 and EX2 (SHIFT + ALU), destination and addend operand is consumed in
-EX2 stage, there is false dependency when attempting to forward from older slot (in EX1) same cycle
+EX2 stage, there is false dependency hazard when attempting to forward from older slot (in EX1) same cycle
 
 
 It is possible to forward dependent operands in 0 cycles into a later stages.
@@ -67,7 +67,7 @@ It is possible to forward dependent operands in 0 cycles into a later stages.
 
 Observable as half cycle execution slide, which results in 1 cycle of loop invariant stall
 (if no further stall is hit) due to tripple issue across branch.\
-Obsrvation of a skewed pipeline is a false positive caused by this.
+Observation of a skewed pipeline is a false positive caused by this.
 
 can be caused by:
 - issuing instruction pairs that can't be dual issued (`uxtb`+`uxtb`, `ldrd`+`ldrd` etc.)
@@ -104,12 +104,12 @@ Optimization manual suggests 2 cycle load to use, which is the case of "pointer 
 
 ```
 	mov.n r10, r10
-	ldr r0, [r5]
+	ldr r0, [r5] // EX1 EX2
 
-	mov.n r10, r10
+	mov.n r10, r10 // r0 available in EX2
 	mov.n r11, r11
 
-	ldr r1, [r5, r0]
+	ldr r1, [r5, r0] // r0 available in EX1
 	mov.n r11, r11
 ```
 
@@ -139,7 +139,7 @@ in the simplest loops that are executed repeatedly (happens usually when tripple
 flag setting for branching seems to take effect in EX2 and EX3 stages
 
 flag setting has to happen at least 1 cycle (from EX1 and EX2) or 2 cycle (from EX3) ahead of branch,
-otherwise you get +5 cycle to misprediction overhead
+otherwise you get +5 cycle to misprediction penalty
 
 predicted taken branch can tripple issue with 2 prior instructions or 1 prior and 1 at destination address, provided that there is enough
 fetch bandwidth (at least 4 (when close, or doesn't tripple across branch) or 8 (when far and tripples across branch) `.n` 
@@ -222,10 +222,10 @@ cannot dual issue two fp arithmetic/move instructions (`vmov`, `vadd` etc.)
 
 can dual issue fp arithmetic/move instructions with fp loads/stores only. (except `vldr.64`)
 
-cannot dual issue double precision arithmetic even with integer instructions (`vadd.f64`, double moves can)
+cannot dual issue double precision arithmetic even with integer instructions (e.g. `vadd.f64`, double moves can)
 
 mixing with vector instructions is not recommended as the scheduling gets highly non obvious and weird
-(it's most torelable to vloating point moves, but still weird, scatter/gather indices are extra sensitive)
+(it's most tolerable to vloating point moves, but still weird, scatter/gather indices are extra sensitive)
 
 ## MVE
 
@@ -244,7 +244,7 @@ vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle la
 - can move from destination of immediately preceeding vector instruction
 - can't be overlpped with preceeding vector load/store (unlike "proper" moves)
 - can't use odd `d` registers if overlapping with previous vector insn
-- theoretically should be a B group but overlaps with A as well (unlike "proper" move)
+- theoretically should be a B group but overlaps with both A and B instructions (unlike "proper" move)
 - (there might be some anomalies still)
 
 ```
@@ -362,4 +362,4 @@ some instructions have issuing limitations so you may want to replace them with 
 | `uxtb r0, r1, ror #16`     | `ubfx r0, r1, #16, #8` | |
 | `uxtb r0, r1, ror #24`     | `lsrs{.n} r0, r1, #24`<br />`ubfx r0, r1, #24, #8` | |
 | `ldm`(`pop`)<br />`stm`(`push`)| sequence of `ldrd`<br />sequence of `strd` | load/store double can dual issue with other instructions per 64bits of transferred data |
-| `vldm`(`vpop`)<br />`vstm`(`vpush`) | sequence of `vldr.64` (scalar)<br />sequence of `vstr.64` (scalar) | can dual issue with other scalar instructions (fixed point)<br /> you can use vector loads/stores but those impose limitations on issuing scalar instructions (use only in vector dominated prologues/epilogues) |
+| `vldm`(`vpop`)<br />`vstm`(`vpush`) | sequence of `vldr.64` (scalar)<br />sequence of `vstr.64` (scalar) | can easily dual issue with other scalar instructions (fixed point)<br /> you can use vector loads/stores but those impose limitations on issuing scalar instructions (use only in vector dominated prologues/epilogues) |
