@@ -5,6 +5,7 @@ other sources:
 - https://developer.arm.com/documentation/ddi0439/b/CHDDIGAC
 - https://developer.arm.com/documentation/ddi0439/b/BEHJADED
 - https://www.cse.scu.edu/~dlewis/book3/docs/Cortex-M4%20Instruction%20Timing.pdf
+- https://eprint.iacr.org/2025/523.pdf ("multi-cycle instruction followed by three unaligned 32-bit instructions", not just consecutive unaligned loads)
 
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise randomly doesn't work
 ```
