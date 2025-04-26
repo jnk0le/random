@@ -36,3 +36,6 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 `sbcs r0,r0` can turn carry flag into predication mask
 
 `add r12, r12` can perform laft shift by one in upper registers
+
+
+[CM0??] pc-rel loads are cycle faster if executed as first instruction in aligned pair
