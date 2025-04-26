@@ -35,7 +35,15 @@ using rev16 allows to extract middle bytes in one less cycle at the cost of high
 
 `sbcs r0,r0` can turn carry flag into predication mask
 
-`add r12, r12` can perform laft shift by one in upper registers
+`add r12, r12` can perform left shift by one in upper registers
 
-
-[CM0??] pc-rel loads are cycle faster if executed as first instruction in aligned pair
+[CM0??, stm32f0??] pc-rel loads, from waitstated (prefetched, typically flash) memory, are cycle faster if executed
+as first instruction in aligned pair. Can be repeated. 
+Additionally second to first is also possible at similar penalty. (probably strongly dependent on implemented prefetcher)
+```
+.balign 4
+	nop
+	ldr r0, =0x11223344
+	ldr r1, =0x22334455
+	nop
+```
