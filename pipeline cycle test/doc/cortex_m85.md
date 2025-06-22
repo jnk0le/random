@@ -35,6 +35,8 @@ even when the second operand is not shifted (e.g. `eor.w r0, r1, r2`)
 
 `bfi` instruction cannot be dual issued with other `bfi` or "slot 0" instructions (unlike suggested by optimization manual)
 
+`rev` instructions execute and bypass as every other shift instructions, llvm is incorrect about it.
+
 Most of the ALU instructions can be executed in 3 total (symmetric) pipeline stages, EX1, EX2, EX3.
 
 - basic ALU instructions (e.g. `add`, `mov`, operand2 constant) can execute in all 3 stages
