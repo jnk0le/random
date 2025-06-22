@@ -247,7 +247,10 @@ vloating point move of double to two scalar (`vmov.64 r0,r1, d0`) has 1 cycle la
 - can't be overlpped with preceeding vector load/store (unlike "proper" moves)
 - can't use odd `d` registers if overlapping with previous vector insn
 - theoretically should be a B group but overlaps with both A and B instructions (unlike "proper" move)
-- (there might be some anomalies still)
+- there is additional 1 cycle of latency if both output registers are to be used by both instructions in following pair
+(not applied if both registers are used by one instruction) If the stall happens due to the violation of
+that extra latency, then this rule resets and applies to the following cycle. (e.g. 6 consecutive violating 
+pairs give 6 cycles of penalty)
 
 ```
 	mov.n r10, r10
