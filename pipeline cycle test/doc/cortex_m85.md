@@ -360,7 +360,7 @@ vector ALU (e.g. bitwise) to scatter/gather indices latency is 3 cycles
 some instructions have issuing limitations so you may want to replace them with other equivalents:
 
 
-| <img width=270/> offending instruction | <img width=270/> more efficient equivalent | notes |
+| <img width=290/> offending instruction | <img width=290/> more efficient equivalent | notes |
 |----------------------------|----------------------------------------------|------------------------|
 | `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX3 |
 | `uxtb{.n} r0, r1`          | `sbfx r0, r1, #0, #8` | no `.n` equivalent |
