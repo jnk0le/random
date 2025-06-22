@@ -363,8 +363,10 @@ some instructions have issuing limitations so you may want to replace them with 
 | <img width=200/> offending instruction | <img width=200/> more efficient equivalent | notes |
 |----------------------------|----------------------------------------------|------------------------|
 | `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX3 |
-| `uxtb r0, r1, ror #8`      | `ubfx r0, r1, #8, #8` | |
-| `uxtb r0, r1, ror #16`     | `ubfx r0, r1, #16, #8` | |
-| `uxtb r0, r1, ror #24`     | `lsrs{.n} r0, r1, #24`<br />`ubfx r0, r1, #24, #8` | |
+| `uxtb{.n} r0, r1`          | `sbfx r0, r1, #0, #8` | no `.n` equivalent |
+| `{s,u}xtb r0, r1, ror #{8,16}` | `{s,u}bfx r0, r1, #{8,16}, #8` | |
+| `{s,u}xtb r0, r1, ror #24`     | `{a,l}srs{.n} r0, r1, #24`<br />`{s,u}bfx r0, r1, #24, #8` | |
+| `{s,u}xtab r0, r1, r2, ror #24` | `add r0, r1, r2, {a,l}sr #24` | |
+| `{s,u}xtah r0, r1, r2, ror #16` | `add r0, r1, r2, {a,l}sr #16` | |
 | `ldm`(`pop`)<br />`stm`(`push`)| sequence of `ldrd`<br />sequence of `strd` | load/store double can dual issue with other instructions per 64bits of transferred data |
 | `vldm`(`vpop`)<br />`vstm`(`vpush`) | sequence of `vldr.64` (scalar)<br />sequence of `vstr.64` (scalar) | can easily dual issue with other scalar instructions (fixed point)<br /> you can use vector loads/stores but those impose limitations on issuing scalar instructions (use only in vector dominated prologues/epilogues) |
