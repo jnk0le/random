@@ -363,7 +363,7 @@ some instructions have issuing limitations so you may want to replace them with 
 | <img width=300/> offending instruction | <img width=290/> more efficient equivalent | notes |
 |----------------------------|----------------------------------------------|------------------------|
 | `uxtb{.n} r0, r1`          | `ubfx r0, r1, #0, #8`<br />`and r0, r1, #0xff` | no `.n` equivalent, `ubfx` can execute in EX1, `and` can execute in EX3 |
-| `uxtb{.n} r0, r1`          | `sbfx r0, r1, #0, #8` | no `.n` equivalent |
+| `sxtb{.n} r0, r1`          | `sbfx r0, r1, #0, #8` | no `.n` equivalent |
 | `{s,u}xtb r0, r1, ror #{8,16}` | `{s,u}bfx r0, r1, #{8,16}, #8` | |
 | `{s,u}xtb r0, r1, ror #24`     | `{a,l}srs{.n} r0, r1, #24`<br />`{s,u}bfx r0, r1, #24, #8` | |
 | `{s,u}xtab r0, r1, r2, ror #24` | `add r0, r1, r2, {a,l}sr #24` | |
