@@ -84,7 +84,7 @@ mul/MAC instructions execute throughout EX2 and EX3 stages (MUL + ACC)
 even the simple `mul` instructions occupy accumulate stage and have same result latency
 
 can't forward `ldr` result into accumulate operand in 0 cycles (theoretically: AGU in EX1, DATA and MUL in EX2, ACC in EX3),
-all other combinations (from EX2 in 0 cycles or EX3 in 1 cycle) work as expected
+all other instruction combinations (from EX2 in 0 cycles or EX3 in 1 cycle) work as expected
 
 can't dual issue 4 operand MAC (with 64bit accumulator, e.g. `umlal`,`umaal`) with reg offset store or `strd`.
 (scalar regfile has only 6 read ports)
