@@ -218,6 +218,8 @@ It doesn't matter if instruction was or wasn't predicated out.
 predicated out instructions might cause less stalls (by following instructions) due to pipeline stage contention, than when allowed to retire.
 
 
+armv8-m predicated instruction (`csel`, `csinc` etc.) execute in EX3 stage.
+
 ## scalar floating point
 
 cannot dual issue two fp arithmetic/move instructions (`vmov`, `vadd` etc.)
