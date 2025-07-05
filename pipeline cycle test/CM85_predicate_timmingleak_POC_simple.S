@@ -124,15 +124,15 @@ CM85_predicate_timmingleak_POC_simple:
 	// now do the predication
 	// if secret is zero then the r3 result is commited (left (eq) scenario)
 
-	itt eq          // r2 is //       eq         |       ne
+	itt eq            // r2 is //       eq         |       ne
 	addeq.w r3, r4, r5, lsl #1 // EX1 EX2          | ???? - NOP
-	addeq.n r3, r6           // EX3              | ???? - NOP
+	addeq.n r3, r6             // EX3              | ???? - NOP
 
 	// r3 should be available in EX3 now
 	// this pair expects r3 to be available in EX1
 
-	add.w r4, r7, r3, lsl #1 // stall -> EX2 EX3 | EX1 EX2 (r3 consumed in EX1)
-	add.n r4, r5             // stall -> EX3     | EX3
+	add.w r4, r7, r3, lsl #1   // stall -> EX2 EX3 | EX1 EX2 (r3 consumed in EX1)
+	add.n r4, r5               // stall -> EX3     | EX3
 
 	mov.n r10, r10
 	mov.n r11, r11
@@ -229,4 +229,8 @@ int main()
 		// add your delay if needed
 	}
 }
+
+// secret is zero - cycles: 22005
+// secret contains something - cycles: 20001
+
 */
