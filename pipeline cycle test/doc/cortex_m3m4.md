@@ -2,8 +2,8 @@
 
 other sources:
 
-- https://developer.arm.com/documentation/ddi0439/b/CHDDIGAC
-- https://developer.arm.com/documentation/ddi0439/b/BEHJADED
+- https://developer.arm.com/documentation/100166/0001/ric1417175924567
+- https://developer.arm.com/documentation/100166/0001/Floating-Point-Unit/FPU-functional-description/FPU-instruction-set-table?lang=en
 - https://www.cse.scu.edu/~dlewis/book3/docs/Cortex-M4%20Instruction%20Timing.pdf
 - https://eprint.iacr.org/2025/523.pdf ("multi-cycle instruction followed by three unaligned 32-bit instructions", not just consecutive unaligned loads)
 
