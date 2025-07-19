@@ -175,13 +175,13 @@ CM85_predicate_timmingleak_POC_simple:
 	le lr, 1b //bne.n 1b
 
 	//end
-	mov.n r10, r10
+	mov.n r10, r10 // odd .n in loop
 	ldr.w r9, [r11, #4] // read DWT.CYCCNT
 
 	cpsie i // reenable interrupts
 
 	subs r0, r9, r10 // get cycle diff
-	subs r0, #1 // subtract extra overhead outside the loop // extra 7 cycles comes from mispredicted branch
+	subs r0, #1 // subtract extra overhead outside the loop // unaccounted cycles come from mispredicted branch
 
 	vpop {s16-s31}
 	pop {r4-r12, pc}
