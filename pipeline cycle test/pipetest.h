@@ -2,7 +2,7 @@
  * \file pipetest.h
  * \brief pipeline testing templates
  *
- * \author jnk0le <jnk0le@hotmail.com>
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \copyright CC0 License
  * \date 26 Jul 2021
  */

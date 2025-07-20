@@ -2,7 +2,7 @@
  * \file CM3_pipetest_tmpl.S
  * \brief cortex-m3 dedicated template fore pipeline testing
  *
- * \author jnk0le <jnk0le@hotmail.com>
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \copyright SPDX-License-Identifier: CC0-1.0
  */
 

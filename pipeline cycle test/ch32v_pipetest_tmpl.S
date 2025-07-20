@@ -2,7 +2,7 @@
  * \file ch32v_pipetest_tmpl.S
  * \brief ch32v (riscv) dedicated template fore pipeline testing
  *
- * \author jnk0le <jnk0le@hotmail.com>
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \license SPDX-License-Identifier: CC0-1.0
  */
 
