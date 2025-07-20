@@ -215,8 +215,9 @@ It doesn't matter if instruction was or wasn't predicated out.
 	mov.n r11, r11
 ```
 
-predicated out instructions might cause less stalls (by following instructions) due to pipeline stage contention, than when allowed to retire.
-
+If the condition flags were generated early enough to allow forwarding from EX2 or EX1, then the
+predicated out instructions are not allocating its supposed execution stages at all. (i.e. execute as a 'nop')
+Therefore it is possible to leak predication flags. See the [POC](../CM85_predicate_timmingleak_POC_simple.S) for details.
 
 armv8-m predicated instructions (`csel`, `csinc` etc.) execute in EX3 stage.
 
