@@ -220,8 +220,14 @@ Predicted (any direction and length) taken branch is capable of dual issuing wit
 It is highly sensitive to alignment and compression of surrounding instructions, requires at 
 least 2 `.n` instructions executed prior to branch. (this is most likely the cause of slippery condition)
 
-`it` instruction (over one instruction) behaves similar to predicted
-not-taken branch (including scenarios of 0.67 cycles of averaged penalty)
+## predication
+
+`it` instruction cannot be tripple issued.
+
+predicated out instruction cause pipeline contention as if they were fully executed. 
+
+predicated out multi-cycle instructions take the same number of cycles as if their results
+were commited (i.e. predicated out `ldmia` still wastes all cycles as if it executed normally)
 
 ## fpu (single precision)
 
