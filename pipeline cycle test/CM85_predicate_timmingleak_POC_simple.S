@@ -58,8 +58,8 @@
 	In order to get architecturally guaranteed constant time predication, you need to
 	use the new conditional/predicated instructions added in armv8m arch (`csel`, `csinc` etc.)
 
-
-	Cortex-m7 and all other cortex-m (as known during the writing) are unaffected.
+	Cortex-m7 is unaffected even with multicycle instructions (i.e. predicated out `ldmia` still wastes
+	all cycles) and "else" path depending on predicated out instructions. 
 	ARM didn't tell me whether cortex-A/R (and which ones) are affected, but architecturally
 	it's the same story. Their pipelines are also more complex than M85, which suggests
 	the obvious. "Partially deprecated in T32" forms of IT predication should be the most offending.
