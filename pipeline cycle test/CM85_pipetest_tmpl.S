@@ -3,7 +3,7 @@
  * \brief cortex-m85 dedicated template fore pipeline testing
  *
  * \author Jan Oleksiewicz <jnk0le@hotmail.com>
- * \copyright CC0 License
+ * \copyright SPDX-License-Identifier: CC0-1.0
  */
 
 .syntax unified

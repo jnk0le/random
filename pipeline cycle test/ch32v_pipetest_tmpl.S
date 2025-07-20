@@ -4,7 +4,6 @@
  *
  * \author jnk0le <jnk0le@hotmail.com>
  * \license SPDX-License-Identifier: CC0-1.0
- * \date 21 May 2023
  */
 
 // ilp32e abi, can run on ilp32i

@@ -3,8 +3,7 @@
  * \brief cortex-m0 dedicated template fore pipeline testing
  *
  * \author jnk0le <jnk0le@hotmail.com>
- * \copyright CC0 License
- * \date 14 Oct 2021
+ * \copyright SPDX-License-Identifier: CC0-1.0
  */
 
 .syntax unified
