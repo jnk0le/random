@@ -23,8 +23,7 @@ CM3_pipetest_tmpl:
 	ldr r11, =0xE0001000 // DWT_BASE
 	cpsid i // disable interrupts
 
-	.align 3 // align to 8 bytes
-
+	.balign 8
 	dsb
 	isb
 

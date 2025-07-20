@@ -30,8 +30,7 @@ CM0_pipetest_tmpl:
 	ldr r0, =0xE000E010 // SysTick Base
 	cpsid i // disable interrupts
 
-	.align 2 // align to 4 bytes
-
+	.balign 4
 	dsb
 	isb
 

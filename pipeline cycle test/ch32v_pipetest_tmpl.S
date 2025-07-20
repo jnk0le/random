@@ -28,7 +28,7 @@ ch32v_pipetest_tmpl:
 
 	li t2, 0xE000F000 // Systick base // +8
 
-.balign 8 // 8 byte alignment
+	.balign 8
 	fence.i
 	lw t1, 8(t2) // read systick->CNT (aka CNTR)
 .option push
