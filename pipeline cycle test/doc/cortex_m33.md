@@ -12,7 +12,7 @@ tested on RP2350 (cm33 r1p0)
 
 
 
-## "limited dual issue"
+## "limited dual issue" and branching
 
 only two 16 bit (`.n`) instructions can dual issue (random comment on ycombinator is incorrect)
 
@@ -23,7 +23,15 @@ dual issue pair doesn't need to be aligned at word boundary (but the second op n
 can't dual issue arithmetic+arithmetic or load/store + aritmetic (as described in M55 optimization guide)
 Those also cannot dual issue with `nop` from "slot 1"
 
+not taken branch can dual issue, from "slot 1", even when preceded with flag generating instruction
 
+```
+	subs r7, #1 // 1 cycle (must be .n)
+	bne 1b // 2 cycles taken, 0 not taken
+	
+	adds r3, r4 // 1 cycle (must be .n)
+	beq 2f // 2 cycles taken, 0 not taken
+```
 
 
 
@@ -33,7 +41,5 @@ Those also cannot dual issue with `nop` from "slot 1"
 load/store double execute in 2 cycles
 
 
-
-## branching
 
 
