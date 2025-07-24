@@ -18,12 +18,12 @@ only two 16 bit (`.n`) instructions can dual issue (random comment on ycombinato
 
 dual issue pair doesn't need to be aligned at word boundary (but the second op needs to be pre fetched)
 
-`nop` can dual issue with arithmetic or load/store instruction (from any slot)
+`nop` can dual issue with arithmetic or load/store instruction
 
 can't dual issue arithmetic+arithmetic or load/store + aritmetic (as described in M55 optimization guide)
 Those also cannot dual issue with `nop` from "slot 1"
 
-not taken branch can dual issue, from "slot 1", even when preceded with flag generating instruction
+not taken branch, can dual issue (from "slot 1") even when preceded with flag generating instruction
 
 ```
 	subs r7, #1 // 1 cycle (must be .n)
@@ -33,8 +33,15 @@ not taken branch can dual issue, from "slot 1", even when preceded with flag gen
 	beq 2f // 2 cycles taken, 0 not taken
 ```
 
+taken branch, can dual issue (from "slot 1") when preceded by 16 bit instruction that doesn't generate
+condition flags. It's effectively executing in 1 cycle.
 
-
+```
+	subs r7, #1 // 1 cycle
+	add r0, r1 // 1 cycle (must be .n)
+	bne 1b // 1 cycles taken, 0 not taken
+```
+  
 
 ## load/store
 
