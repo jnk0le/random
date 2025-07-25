@@ -42,6 +42,8 @@ condition flags. It's effectively executing in 1 cycle.
 
 ## load/store
 
+load to use latency is 2 cycles
+
 load/store double execute in 2 cycles
 
 
