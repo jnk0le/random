@@ -12,6 +12,10 @@ tested on RP2350 (cm33 r1p0)
 
 result latency of operand2 shifted reg, instructions is 2 cycles (can't be chained like multiply accumulates)
 
+multiply accumulates have 2 cycle result latency
+
+MAC accumualte dependency can be chained from previous MAC or operand2 sifted reg, insns
+
 ## "limited dual issue" and branching
 
 only two 16 bit (`.n`) instructions can dual issue (random comment on ycombinator is incorrect)
