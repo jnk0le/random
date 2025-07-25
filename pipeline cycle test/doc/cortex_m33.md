@@ -8,9 +8,6 @@ uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not wor
 
 tested on RP2350 (cm33 r1p0)
 
-## overall
-
-
 
 ## "limited dual issue" and branching
 

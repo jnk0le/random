@@ -4,7 +4,6 @@
  *
  * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \copyright CC0 License
- * \date 26 Jul 2021
  */
 
 #ifndef PIPETEST_H_
@@ -33,6 +32,12 @@
 	 * \return number of cycles the code took to run
 	 */
 	uint32_t CM7_pipetest_tmpl(void);
+
+	/*!
+	 * \brief cortex-m33 dedicated template fore pipeline testing
+	 * \return number of cycles the code took to run
+	 */
+	uint32_t CM33_pipetest_tmpl(void);
 
 	/*!
 	 * \brief cortex-m85 dedicated template fore pipeline testing
