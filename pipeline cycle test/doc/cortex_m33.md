@@ -8,6 +8,9 @@ uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not wor
 
 tested on RP2350 (cm33 r1p0)
 
+## overall
+
+result latency of operand2 shifted reg, instructions is 2 cycles (can't be chained like multiply accumulates)
 
 ## "limited dual issue" and branching
 
@@ -38,14 +41,13 @@ condition flags. It's effectively executing in 1 cycle.
 	add r0, r1 // 1 cycle (must be .n)
 	bne 1b // 1 cycles taken, 0 not taken
 ```
-  
+ 
 
 ## load/store
 
 load to use latency is 2 cycles
 
 load/store double execute in 2 cycles
-
 
 
 
