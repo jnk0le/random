@@ -11,7 +11,7 @@
 /*
 	This has been submitted to ARM psirt and, after investigation, concluded as a non-vulnerability.
 	The reason is that DIT is applied only if instruction passes "Condition code check"
-	(i.e. their destination result is beeing commited). Instructions that have been
+	(i.e. their destination result is being commited). Instructions that have been
 	predicated out, are allowed to cause different timming.
 
 	See: Chapter B3.34 of the Armv8-M Architecture Reference Manual, section RDNPM.
