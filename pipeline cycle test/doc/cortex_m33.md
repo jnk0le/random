@@ -14,7 +14,7 @@ result latency of operand2 shifted reg, instructions is 2 cycles (can't be chain
 
 multiply accumulates have 2 cycle result latency
 
-MAC accumualte dependency can be chained from previous MAC and even operand2 sifted reg, insns
+MAC accumualte dependency can be chained from previous MAC and even operand2 (sifted reg), insns
 
 ## "limited dual issue" and branching
 
@@ -31,10 +31,10 @@ not taken branch, can dual issue (from "slot 1") even when preceded with flag ge
 
 ```
 	subs r7, #1 // 1 cycle (must be .n)
-	bne 1b // 2 cycles taken, 0 not taken
+	bne 1b // 2 cycles taken, 0 not taken (must be .n)
 	
 	adds r3, r4 // 1 cycle (must be .n)
-	beq 2f // 2 cycles taken, 0 not taken
+	beq 2f // 2 cycles taken, 0 not taken (must be .n)
 ```
 
 taken branch, can dual issue (from "slot 1") when preceded by 16 bit instruction that doesn't generate
@@ -43,7 +43,7 @@ condition flags. It's effectively executing in 1 cycle.
 ```
 	subs r7, #1 // 1 cycle
 	add r0, r1 // 1 cycle (must be .n)
-	bne 1b // 1 cycles taken, 0 not taken
+	bne 1b // 1 cycles taken, 0 not taken (must be .n)
 ```
  
 
