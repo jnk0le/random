@@ -18,7 +18,7 @@ CM85_pipetest_tmpl:
 	vpush {s16-s31}
 
 	// prepare registers here
-	// r0 to r6, r8, r9, r12 and lr are available for use
+	// r0 to r8, r12 and lr are available for use
 	// r7 is a loop counter
 
 	ldr r11, =0xE0001000 // DWT_BASE
@@ -28,7 +28,7 @@ CM85_pipetest_tmpl:
 	dsb
 	isb
 
-	movs.w r7, #1000 // also start with consistent condition flags
+	movs.w r9, #1000 // also start with consistent condition flags
 	nop.w
 
 	ldr.w r10, [r11, #4] // read DWT.CYCCNT
@@ -86,7 +86,7 @@ CM85_pipetest_tmpl:
 	mov.n r10, r10
 	mov.n r11, r11
 
-	subs.n r7, #1 // generate branch condition few cycles ahead of branch
+	subs.w r9, #1 // generate branch condition few cycles ahead of branch
 	uxtb r0, r0 // remove slippery condition
 
 	uxtb r1, r1 // remove slippery condition
