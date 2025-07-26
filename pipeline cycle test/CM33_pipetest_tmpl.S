@@ -57,7 +57,7 @@ CM33_pipetest_tmpl:
 
 	subs.w r9, #1 // generate condition 2 cycles ahead
 	mov.n r10, r10 // must be .n
-	bne 1b // 1 cycles taken, 0 not taken
+	bne 1b // 1 cycle taken, 0 not taken
 
 	//end
 	nop.w

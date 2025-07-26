@@ -23,7 +23,7 @@ result latency of operand2 shifted reg/constant, instructions is 2 cycles (can't
 
 multiply accumulates have 2 cycle result latency
 
-MAC accumualte dependency can be chained from previous MAC or operand2 (sifted reg/constant), insns
+MAC accumualte dependency can be chained from previous MAC or operand2 (shifted reg/constant), insns
 
 ## "limited dual issue" and branching
 
@@ -52,7 +52,7 @@ condition flags. It's effectively executing in 1 cycle.
 ```
 	subs r7, #1 // 1 cycle
 	add r0, r1 // 1 cycle (must be .n)
-	bne 1b // 1 cycles taken, 0 not taken (must be .n)
+	bne 1b // 1 cycle taken, 0 not taken (must be .n)
 ```
  
 
