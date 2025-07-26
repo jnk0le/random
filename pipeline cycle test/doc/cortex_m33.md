@@ -21,9 +21,12 @@ __operand2__
 
 result latency of operand2 shifted reg/constant, instructions is 2 cycles (can't be chained like multiply accumulates)
 
-multiply accumulates have 2 cycle result latency
+`{u,x}xta{b,h,b16}` have 2 cycle result latenct, accumulate dependency can be chained like in multiply accumulates
 
-MAC accumualte dependency can be chained from previous MAC or operand2 (shifted reg/constant), insns
+multiply accumulates have 2 cycle result latency, accumualte dependency can be chained from previous MAC,
+`*xta*` or operand2 (shifted reg/constant), insns
+
+`bfi` is a single stage instruction (like the basic ones)
 
 ## "limited dual issue" and branching
 
@@ -59,6 +62,9 @@ condition flags. It's effectively executing in 1 cycle.
 ## load/store
 
 load to use latency is 2 cycles
+
+load result can be consumed as MAC accumulate dependency in 1 cycle (`*xta*` or operand2
+shifted insns, cannot consume like that)
 
 load to store latency is 1 cycle
 
