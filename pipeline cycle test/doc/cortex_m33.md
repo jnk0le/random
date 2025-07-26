@@ -8,13 +8,22 @@ uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not wor
 
 tested on RP2350 (cm33 r1p0)
 
+little glossary:
+
+__operand2__ 
+- shifted reg - `add.w r3, r4, r5, ror #24`
+- shifted constant - `eor r0, r1, #0x1fc0`
+- simple constant - 8bit and 12bit (in add/sub instruction) constants e.g. `add.w r0, r1, #1` and `add.w r0, r1, #0xff9`
+(if 12 bit constant can be created by shifted 8 bits, compiler might use it instead. use `addw`/`subw` as a workaround to force encoding T4)
+- constant pattern - pattern constructed from 8bit imm as `0x00XY00XY`,`0xXY00XY00` or `0xXYXYXYXY` e.g. `eor.w r6, r7, #0x1b1b1b1b`
+
 ## overall
 
 result latency of operand2 shifted reg/constant, instructions is 2 cycles (can't be chained like multiply accumulates)
 
 multiply accumulates have 2 cycle result latency
 
-MAC accumualte dependency can be chained from previous MAC and even operand2 (sifted reg/constant), insns
+MAC accumualte dependency can be chained from previous MAC or operand2 (sifted reg/constant), insns
 
 ## "limited dual issue" and branching
 
