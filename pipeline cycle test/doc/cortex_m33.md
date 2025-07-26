@@ -14,7 +14,7 @@ result latency of operand2 shifted reg, instructions is 2 cycles (can't be chain
 
 multiply accumulates have 2 cycle result latency
 
-MAC accumualte dependency can be chained from previous MAC or operand2 sifted reg, insns
+MAC accumualte dependency can be chained from previous MAC and even operand2 sifted reg, insns
 
 ## "limited dual issue" and branching
 
@@ -50,6 +50,8 @@ condition flags. It's effectively executing in 1 cycle.
 ## load/store
 
 load to use latency is 2 cycles
+
+load to store latency is 1 cycle
 
 load/store double execute in 2 cycles
 
