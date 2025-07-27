@@ -72,6 +72,8 @@ branch can dual issue with load/store multiple as well
 	bne 1b // 1 cycle taken, 0 not taken (must be .n)
 ```
 
+`it` can dual issue with preceding instruction
+
 ## load/store
 
 load to use latency is 2 cycles
