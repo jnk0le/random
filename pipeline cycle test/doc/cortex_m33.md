@@ -81,7 +81,11 @@ shifted insns, cannot consume like that)
 
 load to store latency is 1 cycle
 
+can store result from "accumulate" stage in 1 cycle
+
 load/store double execute in 2 cycles
 
 load/store multiple of x registers execute in exactly x cycles
 
+
+## fpu
