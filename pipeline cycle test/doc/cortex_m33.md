@@ -57,7 +57,14 @@ condition flags. It's effectively executing in 1 cycle.
 	add r0, r1 // 1 cycle (must be .n)
 	bne 1b // 1 cycle taken, 0 not taken (must be .n)
 ```
- 
+
+branch can dual issue with load/store multiple as well
+
+```
+	subs r7, #1 // 1 cycle
+	ldmia r7!, {r0-r3} // 4 cycles (must be .n)
+	bne 1b // 1 cycle taken, 0 not taken (must be .n)
+```
 
 ## load/store
 
@@ -70,5 +77,5 @@ load to store latency is 1 cycle
 
 load/store double execute in 2 cycles
 
-
+load/store multiple of x registers execute in exactly x cycles
 
