@@ -28,6 +28,12 @@ multiply accumulates have 2 cycle result latency, accumualte dependency can be c
 
 `bfi` is a single stage instruction (like the basic ones)
 
+some instructions that execute throghout 2 pipeline stages (2 cycle result latency) and set a condition flags, 
+take a total of 2 cycles to execute.\
+Affected are: `muls.n` (no .w equivalent) and operand2 shifted constant (inline shifted reg and `movs.w` (any type) are unaffected)
+
+
+
 ## "limited dual issue" and branching
 
 only two 16 bit (`.n`) instructions can dual issue (random comment on ycombinator is incorrect)
