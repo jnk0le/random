@@ -68,7 +68,7 @@ branch can dual issue with load/store multiple as well
 
 ```
 	subs r7, #1 // 1 cycle
-	ldmia r7!, {r0-r3} // 4 cycles (must be .n)
+	ldmia r6!, {r0-r3} // 4 cycles (must be .n)
 	bne 1b // 1 cycle taken, 0 not taken (must be .n)
 ```
 
