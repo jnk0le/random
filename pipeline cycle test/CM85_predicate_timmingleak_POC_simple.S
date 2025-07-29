@@ -60,6 +60,10 @@
 
 	Cortex-m7 is unaffected even with multicycle instructions (i.e. predicated out `ldmia` still wastes
 	all cycles) and "else" path depending on destination of predicated out instructions.
+	
+	Cortex-m33 is similarly affected as the "accumulator" stage used by some instructions is
+	available for exploitation or just blatant multi cycle instructions (like `adds.w r0, r1, #256` ...)
+	
 	ARM didn't tell me whether cortex-A/R (and which ones) are affected, but architecturally
 	it's the same story. Their pipelines are also more complex than M85, which suggests
 	the obvious. "Partially deprecated in T32" forms of IT predication should be the most offending.
