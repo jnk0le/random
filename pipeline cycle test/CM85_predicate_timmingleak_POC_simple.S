@@ -44,7 +44,7 @@
 	code, that depends on results from the predicated instructions.
 	Offending dependency can be chained in EX2 or EX3 very far. It can reach another predication block
 	which doesn't even need to be secret dependent, to cause O(2^n) analysis complexity.
-	Dependency chain is broken once the offending result is available in EX1. (in both cases)
+	Dependency chain is broken once the offending result is available in EX1. (in both paths)
 
 
 	I'm suspecting that the probability of the occurence in randomnly compiled code is rather low.
