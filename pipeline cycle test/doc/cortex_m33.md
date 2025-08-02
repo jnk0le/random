@@ -111,6 +111,8 @@ load/store multiple of x registers execute in exactly x cycles
 
 ## fpu
 
+`vldr.32` has 1 cycle of load to use latency 
+
 FMA/MLA execute in 1 cycle with 3 cycle of result latency (accumulator has the same input latency as
 multipli{er,cand}). No other floating point instruction can be issued in the following 2 cycles. 
 
