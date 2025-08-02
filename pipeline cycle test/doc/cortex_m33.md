@@ -1,7 +1,7 @@
 # cortex-m33
 
 additional resources:
-- https://developer.arm.com/documentation/ka001260/latest/ (`muls` stals for additional cycle)
+- https://developer.arm.com/documentation/ka001260/latest/ (`muls` stalls for additional cycle)
 
 
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not work
