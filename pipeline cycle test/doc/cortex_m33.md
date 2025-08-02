@@ -1,5 +1,9 @@
 # cortex-m33
 
+additional resources:
+- https://developer.arm.com/documentation/ka001260/latest/ (`muls` stals for additional cycle)
+
+
 uses `DWT.CYCCNT`, it must be initialized by application, otherwise will not work
 ```
 	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
