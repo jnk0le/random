@@ -106,3 +106,13 @@ load/store multiple of x registers execute in exactly x cycles
 
 
 ## fpu
+
+FMA/MLA execute in 1 cycle with 3 cycle of result latency (accumulator has the same input latency as
+multipli{er,cand}). No other floating point instruction can be issued in the following 2 cycles. 
+
+```
+	vfma.f32 s0, s1, s2
+	mov.n r10, r10 // can't use vloating point insns
+	mov.n r10, r10 // can't use vloating point insns
+	vfma.f32 s0, s1, s0 // s0 can be used as accumulator or multipli{er,cand} as well
+```
