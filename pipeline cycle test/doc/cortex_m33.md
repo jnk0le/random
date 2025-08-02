@@ -104,21 +104,31 @@ load to store latency is 1 cycle
 
 can store result from "accumulate" stage in 1 cycle
 
-load/store double execute in 2 cycles
+load/store double execute in 2 cycles (applies to FPU)
 
-load/store multiple of x registers execute in exactly x cycles
+load/store multiple of x registers execute in exactly x cycles (applis to FPU)
 
 
 ## fpu
 
-`vldr.32` has 1 cycle of load to use latency 
+`vldr.32` has 1 cycle of load to use latency
 
 FMA/MLA execute in 1 cycle with 3 cycle of result latency (accumulator has the same input latency as
-multipli{er,cand}). No other floating point instruction can be issued in the following 2 cycles. 
+multipli{er,cand}). No other vloating point instruction can be issued in the following 2 cycles. (including `vldr`/`vstr`)
 
 ```
 	vfma.f32 s0, s1, s2
 	mov.n r10, r10 // can't use vloating point insns
 	mov.n r10, r10 // can't use vloating point insns
 	vfma.f32 s0, s1, s0 // s0 can be used as accumulator or multipli{er,cand} as well
+```
+
+`vstr.32` has 1 extra cycle of input latency from FMA
+
+```
+	vfma.f32 s0, s1, s2
+	mov.n r10, r10 // can't use vloating point insns
+	mov.n r10, r10 // can't use vloating point insns
+	vadd.f32 s30, s30, s31 // can't store yet, can't be FMA
+	vstr.32 s0, [r12, #256]
 ```
