@@ -113,22 +113,71 @@ load/store multiple of x registers execute in exactly x cycles (applis to FPU)
 
 `vldr.32` has 1 cycle of load to use latency
 
-FMA/MLA execute in 1 cycle with 3 cycle of result latency (accumulator has the same input latency as
-multipli{er,cand}). No other vloating point instruction can be issued in the following 2 cycles. (including `vldr`/`vstr`)
+FMA/MLA execute in 1 cycle with 3 cycle of result latency into accumulator of another FMA or 4 as
+multipli{er, cand}. No other vloating point instruction can be issued in the following 2 cycles. (including `vldr`/`vstr`)
 
 ```
 	vfma.f32 s0, s1, s2
 	mov.n r10, r10 // can't use vloating point insns
 	mov.n r10, r10 // can't use vloating point insns
-	vfma.f32 s0, s1, s0 // s0 can be used as accumulator or multipli{er,cand} as well
+	vfma.f32 s0, s3, s4 // s0 can be used as accumulator
 ```
-
-`vstr.32` has 1 extra cycle of input latency from FMA
 
 ```
 	vfma.f32 s0, s1, s2
 	mov.n r10, r10 // can't use vloating point insns
 	mov.n r10, r10 // can't use vloating point insns
-	vadd.f32 s30, s30, s31 // can't store yet, can't be FMA
-	vstr.32 s0, [r12, #256]
+	vadd.f32 s30, s30, s31
+	vfma.f32 s4, s3, s0 // s0 can be used by anything else
 ```
+
+result latency of every other FP compute instruction (`vadd.f32`, `vmul.f32`) is 2 cycles.
+Those are pipelined so can be issued every cycle.\
+Therefore each of the unfused multiply accumulate operations can be
+performed in 2 cycles total, by appropriately interleaving accumulations.
+
+```
+	// can be scheduled like that (two accumulators)
+	vmul.f32 s0, s1, s2
+	vmul.f32 s4, s5, s6
+	vadd.f32 s3, s3, s0
+	vadd.f32 s7, s7, s4
+
+	// or like that (single accumulator)
+	vmul.f32 s0, s1, s2
+	vmul.f32 s3, s4, s5
+	vadd.f32 s30, s30, s0
+	vmul.f32 s6, s7, s8
+	vadd.f32 s30, s30, s3
+	vmul.f32 s9, s10, s11
+	vadd.f32 s30, s30, s6
+	mov.n r10, r10
+	vadd.f32 s30, s30, s9
+```
+
+
+Can issue vloating point instruction (`vadd.f32`, `vfma.f32`) a cycle before one of it's
+operands is availale. The offending instruction will then execute "out of order".\
+issuing further FPU instructions (even not dependent in first cycle) will result in a stall.\
+Therefore you will encounter some anomalies when testing the FPU code.
+
+```
+	vmul.f32 s0, s1, s2
+	vadd.f32 s3, s0, s4
+	mov.n r10, r10 // can't use vloating point insns
+	mov.n r10, r10 // insn with s3 dependency will issue "out of order" here
+	vstr s3, [r12, #256]
+```
+
+FMA issues "out of order" only on multipli{er,cand} dependency.
+
+```
+	vadd.f32 s1, s4, s5
+	vfma.f32 s0, s1, s2
+	mov.n r10, r10 // can't use vloating point insns
+	mov.n r10, r10 // can't use vloating point insns
+	mov.n r10, r10 // can't use vloating point insns
+	vfma.f32 s0, s1, s2 // insn with s0 dependency will issue "out of order" here (except FMA accumulator)
+```
+
+`vstr.32` can't be issued "out of order", even after non related FP instruction that has been issued "out of order"
