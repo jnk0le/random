@@ -183,3 +183,16 @@ FMA issues "out of order" only on multipli{er,cand} dependency.
 ```
 
 `vstr.32` can't be issued "out of order", even after non related FP instruction that has been issued "out of order"
+
+`vmov` of two S (or one D) registers to two GPR takes 2 cycles, it
+has 1 cycle of result latency (both results).
+
+`vmov` of two GPR registers to two S (or one D) takes 1 cycle, it
+has 2 cycles of result latency (both results). Can consume output from any ALU.
+Can't execute "out of order" with following FP instructions
+
+`vmov` of one S register to one GPR takes 1 cycle, it
+has 2 cycles of result latency
+
+`vmov` of one GPR register to one S has 1 cycle of result latency. 
+Can consume output from any ALU.
