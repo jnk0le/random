@@ -95,6 +95,19 @@ branch can dual issue with load/store multiple as well
 
 `it` can dual issue with preceding instruction, no restrictions on when/where condition flags were generated.
 
+`pop {lr}, bx lr` is 1-2 cycles faster than `pop {pc}`, when additional instruction can be scheduld after load to `lr`
+
+```
+	pop {r4-r11,lr}
+	mov.n r10, r10 // free cycle
+	mov.n r10, r10 // free cycle
+	mov.n r10, r10 // can dual issue with bx (only 1 cycle gained if not dual issuing here)
+	bx lr
+```
+
+`ldmia.n`/`stmia.n` used in small window between `pop {lr}` and `bx lr` (as in above) can cause a few cycles
+of anomalus penalty. Easiest solution is to avoid them.
+
 ## load/store
 
 load to use latency is 2 cycles
