@@ -56,7 +56,7 @@
 	dependent branches, "because screw you" (see: https://eprint.iacr.org/2025/435.pdf)
 
 	In order to get architecturally guaranteed constant time predication, you need to
-	use the new conditional/predicated instructions added in armv8m arch (`csel`, `csinc` etc.)
+	use the new conditional/predicated instructions added in armv8.1-m arch (`csel`, `csinc` etc.)
 
 	Cortex-m7 is unaffected even with multicycle instructions (i.e. predicated out `ldmia` still wastes
 	all cycles) and "else" path depending on destination of predicated out instructions.
