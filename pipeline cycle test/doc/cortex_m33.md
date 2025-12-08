@@ -121,7 +121,7 @@ can store result from "accumulate" stage in 1 cycle
 
 load/store double execute in 2 cycles (applies to FPU)
 
-load/store multiple of x registers execute in exactly x cycles (applis to FPU)
+load/store multiple of x registers execute in exactly x cycles (also applies to FPU)
 
 
 ## fpu
