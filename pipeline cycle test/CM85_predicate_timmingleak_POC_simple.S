@@ -69,6 +69,29 @@
 	it's the same story. Their pipelines are also more complex than M85, which suggests
 	the obvious. "Partially deprecated in T32" forms of IT predication should be the most offending.
 	Not sure about A32 predication. A64 ones should be architecturally guaranteed for DIT.
+	
+	Update: 27.12.2025
+	Leak doesn't manifest if you try to obtain it in the most obvious way. e.g.
+	
+	  itt ne
+	  addne r0, r1, r0, ror #23 // EX1 EX2        // supposed to dual issue with insn below
+	  addne r0, r1, r0, ror #23 // stall EX2 EX3
+	
+	Above snipped will always stall regardless of condition
+	
+	Predicated out `ldm`/`stm` will consume all cycles regardless of condition
+	(not sure if memory transfers actually come out onto the bus, performance degradation
+	when "accessing" illegal areas or using unaligned pointers)
+	
+	Hovewer, you can still achieve a leak within long `it` sequence:
+	
+	  itttt ne
+	  addne r0, r1, r0, ror #23 // EX1 EX2
+	  addne r0, r2              // EX3
+	
+	  // stalls only if condition is met
+	  addne r0, r1, r0, ror #23 // stall EX2 EX3
+	  addne r0, r2              // stall EX3
 */
 
 .syntax unified
