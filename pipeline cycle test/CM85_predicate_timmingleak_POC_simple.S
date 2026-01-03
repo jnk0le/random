@@ -53,7 +53,7 @@
 	stall scenarios.
 
 	Most importantly. If your crypto code can be hit by predication, it's more likely to receive a secret
-	dependent branches, "because screw you" (see: https://eprint.iacr.org/2025/435.pdf)
+	dependent branches, "because screw you" (see: https://web.archive.org/web/20251130134132/https://eprint.iacr.org/2025/435.pdf)
 
 	In order to get architecturally guaranteed constant time predication, you need to
 	use the new conditional/predicated instructions added in armv8.1-m arch (`csel`, `csinc` etc.)
