@@ -61,7 +61,7 @@
 	Cortex-m7 is unaffected even with multicycle instructions (i.e. predicated out `ldmia` still wastes
 	all cycles) and "else" path depending on destination of predicated out instructions.
 	
-	Cortex-m33 is similarly affected as the "accumulator" stage used by some instructions is
+	Cortex-m33 is similarly affected as the "accumulator" stage used by some instructions, is
 	available for exploitation or just blatant multi cycle instructions
 	(like `muls r0, r1` or `adds.w r0, r1, #256` ...)
 	
