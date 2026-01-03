@@ -77,7 +77,7 @@
 	  addne r0, r1, r0, ror #23 // EX1 EX2        // supposed to dual issue with insn below
 	  addne r0, r1, r0, ror #23 // stall EX2 EX3
 	
-	Above snipped will always stall regardless of condition
+	Above snippet will always stall regardless of condition
 	
 	Predicated out `ldm`/`stm` will consume all cycles regardless of condition
 	(not sure if memory transfers actually come out onto the bus, performance degradation
