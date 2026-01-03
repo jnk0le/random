@@ -203,7 +203,7 @@ CM85_predicate_timmingleak_POC_simple:
 	le lr, 1b //bne.n 1b
 
 	//end
-	mov.n r10, r10 // odd .n in loop
+	mov.n r10, r10
 	ldr.w r9, [r11, #4] // read DWT.CYCCNT
 
 	cpsie i // reenable interrupts
