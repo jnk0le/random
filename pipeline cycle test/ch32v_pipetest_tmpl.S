@@ -2,6 +2,8 @@
  * \file ch32v_pipetest_tmpl.S
  * \brief ch32v (riscv) dedicated template fore pipeline testing
  *
+ * function is self timming, returns cycle count
+ *
  * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \license SPDX-License-Identifier: CC0-1.0
  */

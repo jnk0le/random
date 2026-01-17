@@ -2,6 +2,8 @@
  * \file CM33_pipetest_tmpl.S
  * \brief cortex-m33 dedicated template fore pipeline testing
  *
+ * function is self timming, returns cycle count
+ *
  * \author jnk0le <jnk0le@hotmail.com>
  * \copyright SPDX-License-Identifier: CC0-1.0
  */
